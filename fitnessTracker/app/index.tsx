@@ -9,7 +9,17 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "black",
+        }}
+      />
+      <Text style={{ color: "white", padding: 8 }}>Test hot relode</Text>
     </View>
   );
 }
