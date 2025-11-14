@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { WorkoutBox } from '../components/WorkoutBox';
 
 export default function OverviewScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Test Text</Text>
             <Text style={styles.subtitle}>Das ist ein Testtext in der OverviewScreen.</Text>
+            <WorkoutBox />
+            <WorkoutBox />
         </View>
     );
 }
