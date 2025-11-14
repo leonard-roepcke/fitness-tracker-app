@@ -1,0 +1,1 @@
+export { WorkoutBox } from './WorkoutBox';
