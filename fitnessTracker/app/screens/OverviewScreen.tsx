@@ -8,9 +8,9 @@ export default function OverviewScreen() {
             <Text style={styles.title}>Test Text</Text>
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}>Das ist ein Testtext in der OverviewScreen.</Text>
-                <WorkoutBox text="Hallo"/>
-                <WorkoutBox text="Hallo Test"/>
-                <WorkoutBox text="Hallo"/>
+                <WorkoutBox text="Push"/>
+                <WorkoutBox text="Pull"/>
+                <WorkoutBox text="Leg"/>
             </ScrollView>
         </View>
     );
@@ -32,5 +32,8 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 16,
         color: '#333',
+    },
+    scrollView: {
+        flex: 1,
     },
 });
