@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     scrollView: {
-        flex: 1,
+        width: '100%',
     },
 });
