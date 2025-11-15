@@ -7,8 +7,9 @@ export default function OverviewScreen() {
         <View style={styles.container}>
             <Text style={styles.title}>Test Text</Text>
             <Text style={styles.subtitle}>Das ist ein Testtext in der OverviewScreen.</Text>
-            <WorkoutBox />
-            <WorkoutBox />
+            <WorkoutBox text="Hallo"/>
+            <WorkoutBox text="Hallo Test"/>
+            <WorkoutBox text="Hallo"/>
         </View>
     );
 }
