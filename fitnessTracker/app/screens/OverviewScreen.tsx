@@ -7,6 +7,9 @@ import { CreateBox } from '../components/CreateBox';
 
 export default function OverviewScreen() {
     const [workouts, setWorkouts] = useState(["Push", "Pull", "Leg", "Cardio"]);
+    const addWorkout = () => {
+        setWorkouts([...workouts, "Neuer Workout"]); 
+    };
     return (
         <View style={styles.container}>
             <ScrollView style={styles.scrollView}>
@@ -14,7 +17,7 @@ export default function OverviewScreen() {
                 
                 {workouts.map((w, index) => (<WorkoutBox key={index} text={w} />))}
 
-                <CreateBox  />
+                <CreateBox  onCreate={addWorkout}/>
             </ScrollView>
         </View>
     );
