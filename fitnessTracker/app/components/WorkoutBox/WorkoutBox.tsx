@@ -2,20 +2,23 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { Workout } from '../../../../types/workout';
 
-export const WorkoutBox = ({text}:{text:string}) => {
+const WorkoutBox = ({ text }: { text: Workout | string }) => {
+
+    const name = typeof text === 'string' ? text : text.name;
 
     const handlePress = () => {
         router.push({
-            pathname: '/screens/WorkoutScreen',
-            params: { name: text },
+            pathname: '/screens/WorkoutScreen', 
+            params: { name },
         });
     };
 
     return (
         <TouchableOpacity style={styles.box} onPress={handlePress}>
             <View style={styles.content}>
-                <Text style={styles.text}>{text}</Text>
+                <Text style={styles.text}>{name}</Text>
                 <TouchableOpacity>
                     <Ionicons name="create-outline" size={24} color="#c5c5c5ff" />
                 </TouchableOpacity>
@@ -23,6 +26,8 @@ export const WorkoutBox = ({text}:{text:string}) => {
         </TouchableOpacity>
     );
 }
+
+export default WorkoutBox;
 
 const styles = StyleSheet.create({
     box: {

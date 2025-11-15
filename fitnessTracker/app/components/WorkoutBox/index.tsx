@@ -1,1 +1,3 @@
-export { WorkoutBox } from './WorkoutBox';
+import WorkoutBox from './WorkoutBox';
+
+export { WorkoutBox };
