@@ -6,11 +6,13 @@ import { View,ScrollView, Text, StyleSheet } from 'react-native';
 export default function WorkoutScreen() {
     const params = useSearchParams(); // Parameter aus URL
     const workoutName = params.get('name') ?? 'Workout';
+    const workoutId = params.get('id');
     
     return (
         <View>
             <ScrollView>
-                <Text>{workoutName}</Text>
+                <Text>{workoutName} </Text>
+                <Text>{workoutId}</Text>
             </ScrollView>
         </View>
     );

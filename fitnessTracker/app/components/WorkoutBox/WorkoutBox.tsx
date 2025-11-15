@@ -4,14 +4,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Workout } from '../../../../types/workout';
 
-const WorkoutBox = ({ text }: { text: Workout | string }) => {
+const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
 
-    const name = typeof text === 'string' ? text : text.name;
+    
+    const isString = typeof workout === "string";
+
+    const name = isString ? workout : workout.name;
+    const id = isString ? null : workout.id;
+
 
     const handlePress = () => {
         router.push({
             pathname: '/screens/WorkoutScreen', 
-            params: { name },
+            params: { id, name },
         });
     };
 

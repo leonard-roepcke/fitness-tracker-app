@@ -3,7 +3,6 @@ import { View,ScrollView, Text, StyleSheet } from 'react-native';
 import { WorkoutBox } from '../components/WorkoutBox';
 import { CreateBox } from '../components/CreateBox';
 import { Workout } from "../../types/workout";
-import { v4 as uuid } from 'uuid';
 
 
 export default function OverviewScreen() {
@@ -13,7 +12,7 @@ export default function OverviewScreen() {
     ]);
     const addWorkout = () => {
         const newWorkout: Workout = {
-            id: workouts.length-1,
+            id: workouts.length,
             name: "Neuer Workout",
             exercises: [],
         };
@@ -26,7 +25,7 @@ export default function OverviewScreen() {
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}>Klick auf ein Workout um es zu starten</Text>
                 
-                {workouts.map((w, index) => (<WorkoutBox key={index} text={w} />))}
+                {workouts.map((w, index) => (<WorkoutBox key={index} workout={w} />))}
 
                 <CreateBox  onCreate={addWorkout}/>
             </ScrollView>
