@@ -2,9 +2,9 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-export const CreateBox = () => {
+export const CreateBox = ({onCreate}: { onCreate: () => void }) => {
     return (
-        <TouchableOpacity style={styles.box}>
+        <TouchableOpacity style={styles.box} onPress={onCreate}>
                 <Ionicons name="add" size={24} color="#c5c5c5ff" />
         </TouchableOpacity>
     );
