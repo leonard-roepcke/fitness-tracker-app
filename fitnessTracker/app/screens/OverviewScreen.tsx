@@ -1,6 +1,7 @@
 import React from 'react';
 import { View,ScrollView, Text, StyleSheet } from 'react-native';
 import { WorkoutBox } from '../components/WorkoutBox';
+import { CreateBox } from '../components/CreateBox';
 
 export default function OverviewScreen() {
     return (
@@ -11,6 +12,7 @@ export default function OverviewScreen() {
                 <WorkoutBox text="Push"/>
                 <WorkoutBox text="Pull"/>
                 <WorkoutBox text="Leg"/>
+                <CreateBox  />
             </ScrollView>
         </View>
     );
