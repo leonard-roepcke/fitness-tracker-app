@@ -1,10 +1,19 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 export const WorkoutBox = ({text}:{text:string}) => {
+
+    const handlePress = () => {
+        router.push({
+            pathname: '/screens/WorkoutScreen',
+            params: { name: text },
+        });
+    };
+
     return (
-        <TouchableOpacity style={styles.box}>
+        <TouchableOpacity style={styles.box} onPress={handlePress}>
             <View style={styles.content}>
                 <Text style={styles.text}>{text}</Text>
                 <TouchableOpacity>
