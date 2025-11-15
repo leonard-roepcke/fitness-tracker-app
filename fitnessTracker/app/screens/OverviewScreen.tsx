@@ -1,15 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View,ScrollView, Text, StyleSheet } from 'react-native';
 import { WorkoutBox } from '../components/WorkoutBox';
 
 export default function OverviewScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Test Text</Text>
-            <Text style={styles.subtitle}>Das ist ein Testtext in der OverviewScreen.</Text>
-            <WorkoutBox text="Hallo"/>
-            <WorkoutBox text="Hallo Test"/>
-            <WorkoutBox text="Hallo"/>
+            <ScrollView style={styles.scrollView}>
+                <Text style={styles.subtitle}>Das ist ein Testtext in der OverviewScreen.</Text>
+                <WorkoutBox text="Hallo"/>
+                <WorkoutBox text="Hallo Test"/>
+                <WorkoutBox text="Hallo"/>
+            </ScrollView>
         </View>
     );
 }
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        //justifyContent: 'center',
         padding: 16,
         backgroundColor: '#000000',
     },

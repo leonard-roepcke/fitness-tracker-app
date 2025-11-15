@@ -1,10 +1,16 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 
 export const WorkoutBox = ({text}:{text:string}) => {
     return (
         <TouchableOpacity style={styles.box}>
-            <Text style={styles.text}>{text}</Text>
+            <View style={styles.content}>
+                <Text style={styles.text}>{text}</Text>
+                <TouchableOpacity>
+                    <Ionicons name="create-outline" size={24} color="#c5c5c5ff" />
+                </TouchableOpacity>
+            </View>
         </TouchableOpacity>
     );
 }
@@ -16,6 +22,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 16,
         width: '90%',
+    },
+    content: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     text: {
         color: "#c5c5c5ff",
