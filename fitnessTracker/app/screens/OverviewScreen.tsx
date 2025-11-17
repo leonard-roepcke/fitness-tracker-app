@@ -34,8 +34,24 @@ export default function OverviewScreen() {
 
 
     const [workouts, setWorkouts] = useState<Workout[]>([
-        { id: 0, name: "Push", exercises: ["Bench", "Dips"] },
-        { id: 1, name: "Pull", exercises: ["Rows", "Curls"] },
+        { 
+            id: 0, 
+            name: "Push", 
+            exercises: [
+                { name: "Bench Press", sets: 3, last_reps: [10,4], last_weight: [20,18] },
+                { name: "Dips", sets: 4, last_reps: [], last_weight: [] }
+            ],
+            createdAt: Date.now()
+        },
+        { 
+            id: 0, 
+            name: "Pull", 
+            exercises: [
+                { name: "Klimzüge", sets: 3, last_reps: [10,4], last_weight: [20,18] },
+                { name: "zusammen dinger :)", sets: 3, last_reps: [1], last_weight: [2] }
+            ],
+            createdAt: Date.now()
+        },
     ]);
     const addWorkout = () => {
         const newWorkout: Workout = {

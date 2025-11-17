@@ -2,6 +2,7 @@ import { useSearchParams } from 'expo-router/build/hooks';
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
+import { SetRepPicker } from '../components/SetRepPicker';
 
 export default function WorkoutScreen() {
     const colors = useTheme();
@@ -11,6 +12,7 @@ export default function WorkoutScreen() {
     const workout = workoutString ? JSON.parse(workoutString) : null;
 
     let i_exercise = 0;
+    let i_set = 0;
     
     if (!workout) {
         return <Text>Workout nicht gefunden</Text>;
@@ -56,9 +58,19 @@ export default function WorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{workout.name} </Text>
-            <Text style={styles.subtitle}>{i_exercise+1}/{workout.exercises.length} {workout.exercises[i_exercise]}</Text>
-            
+            <Text style={styles.title}>{i_exercise+1}/{workout.exercises.length} {workout.name} </Text>
+            <Text style={styles.subtitle}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
+           
+            <SetRepPicker
+                sets={workout.exercises[i_exercise].sets}
+                reps={workout.exercises[i_exercise].last_reps[i_set] || 10}
+                onSetsChange={(newSets) => {
+                    // Handle sets change
+                }}
+                onRepsChange={(newReps) => {
+                    // Handle reps change
+                }}
+            />
         </View>
     );
 }
