@@ -35,7 +35,7 @@ export default function WorkoutScreen() {
             textAlign: 'center',
             marginBottom: 0,
             marginTop: 10,
-            color: colors.text
+            color: colors.text,
         },
         content: {
             flex: 1,

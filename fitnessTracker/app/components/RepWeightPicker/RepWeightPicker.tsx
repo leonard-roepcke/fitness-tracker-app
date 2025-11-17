@@ -52,7 +52,7 @@ export const RepWeightPicker: React.FC<RepWeightPicker> = ({
           value={weight}
           onValueChange={onSetsChange}
           width={90}
-          sufix=' Reps'
+          suffix=' Reps'
         />
       </View>
       
@@ -66,7 +66,7 @@ export const RepWeightPicker: React.FC<RepWeightPicker> = ({
           value={reps}
           onValueChange={onRepsChange}
           width={90}
-          sufix=' kg'
+          suffix=' kg'
         />
       </View>
     </View>

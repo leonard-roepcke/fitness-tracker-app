@@ -1,13 +1,8 @@
 // components/ui/NumberWheel.tsx
-import React, { useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  StyleSheet, 
-  Dimensions 
-} from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
+
 
 interface NumberWheelProps {
   min?: number;
@@ -15,7 +10,7 @@ interface NumberWheelProps {
   value: number;
   onValueChange: (value: number) => void;
   width?: number;
-  sufix?: string;
+  suffix?: string;
 }
 
 export const NumberWheel: React.FC<NumberWheelProps> = ({
@@ -24,54 +19,32 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
   value,
   onValueChange,
   width = 80,
-  sufix = ''
+  suffix = ''
 }) => {
   const colors = useTheme();
-  const scrollViewRef = useRef<ScrollView>(null);
-  const itemHeight = 40;
+  const scrollRef = useRef<ScrollView>(null);
+  const [scrolling, setScrolling] = useState(false);
+  const itemHeight = 44;
   const visibleItems = 5;
+  
+  const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
+  const paddingItems = 2;
 
-  const numbers = Array.from({ length: max - min + 1 }, (_, i) => (i + min));
-
-  const styles = StyleSheet.create({
-    container: {
-      width: width,
-      height: itemHeight * visibleItems,
-      overflow: 'hidden',
-    },
-    scrollView: {
-      width: '100%',
-    },
-    numberItem: {
-      height: itemHeight,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    numberText: {
-      fontSize: 20,
-      color: colors.text,
-    },
-    selectedNumberText: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: colors.text,
-    },
-    selectionIndicator: {
-      position: 'absolute',
-      top: itemHeight * 2,
-      left: 0,
-      right: 0,
-      height: itemHeight,
-      borderTopWidth: 1,
-      borderBottomWidth: 1,
-      borderColor: colors.primary,
-      backgroundColor: `${colors.primary}20`, // 20% opacity
-    },
-  });
+  useEffect(() => {
+    if (scrollRef.current && !scrolling) {
+      const index = numbers.indexOf(value);
+      if (index !== -1) {
+        scrollRef.current.scrollTo({
+          y: index * itemHeight,
+          animated: false
+        });
+      }
+    }
+  }, [value, scrolling]);
 
   const handleScroll = (event: any) => {
-    const y = event.nativeEvent.contentOffset.y;
-    const selectedIndex = Math.round(y / itemHeight);
+    const scrollY = event.nativeEvent.contentOffset.y;
+    const selectedIndex = Math.round(scrollY / itemHeight);
     const selectedValue = numbers[selectedIndex];
     
     if (selectedValue !== undefined && selectedValue !== value) {
@@ -79,61 +52,140 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     }
   };
 
-  // Scroll zur aktuellen Position
-  React.useEffect(() => {
-    const index = numbers.indexOf(value);
-    if (index !== -1 && scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({
-        y: index * itemHeight,
-        animated: false,
-      });
-    }
-  }, [value]);
+  const handleScrollBeginDrag = () => {
+    setScrolling(true);
+  };
+
+  const handleScrollEndDrag = () => {
+    setScrolling(false);
+  };
+
+  const handleMomentumScrollEnd = () => {
+    setScrolling(false);
+  };
+
+  const getOpacity = (index: number) => {
+    const currentIndex = numbers.indexOf(value);
+    const distance = Math.abs(index - currentIndex);
+    
+    if (distance === 0) return 1;
+    if (distance === 1) return 0.6;
+    if (distance === 2) return 0.3;
+    return 0.15;
+  };
+
+  const getScale = (index: number) => {
+    const currentIndex = numbers.indexOf(value);
+    const distance = Math.abs(index - currentIndex);
+    
+    if (distance === 0) return 1;
+    if (distance === 1) return 0.85;
+    return 0.7;
+  };
+
+  const getFontSize = (index: number) => {
+    const currentIndex = numbers.indexOf(value);
+    const distance = Math.abs(index - currentIndex);
+    
+    if (distance === 0) return 23;
+    if (distance === 1) return 20;
+    return 17;
+  };
+
+  const getFontWeight = (index: number) => {
+    const currentIndex = numbers.indexOf(value);
+    return index === currentIndex ? '600' : '400';
+  };
+
+  const styles = StyleSheet.create({
+    container: {
+      width: width,
+      height: itemHeight * visibleItems,
+      overflow: 'hidden',
+    },
+    selectionIndicator: {
+      position: 'absolute',
+      top: itemHeight * 2,
+      left: 0,
+      right: 0,
+      height: itemHeight,
+      backgroundColor: `${colors.primary}20`,
+      borderRadius: 10,
+      zIndex: 1,
+    },
+    scrollView: {
+      width: '100%',
+      height: '100%',
+    },
+    paddingItem: {
+      height: itemHeight,
+    },
+    numberItem: {
+      height: itemHeight,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    numberText: {
+      color: colors.text,
+      letterSpacing: -0.3,
+      fontFamily: 'System',
+    },
+  });
 
   return (
     <View style={styles.container}>
-      {/* Auswahl-Indikator */}
+      {/* Selection Indicator */}
       <View style={styles.selectionIndicator} />
       
+      {/* Scrollable Container */}
       <ScrollView
-        ref={scrollViewRef}
+        ref={scrollRef}
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         snapToInterval={itemHeight}
         decelerationRate="fast"
         onScroll={handleScroll}
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
         scrollEventThrottle={16}
       >
-        {/* Leere Items für Padding */}
-        {Array.from({ length: 2 }).map((_, index) => (
-          <View key={`empty-${index}`} style={styles.numberItem}>
-            <Text style={[styles.numberText, { opacity: 0.3 }]}>
-              {index === 0 ? numbers[0] : numbers[numbers.length - 1]}
-            </Text>
-          </View>
+        {/* Top Padding */}
+        {Array.from({ length: paddingItems }).map((_, i) => (
+          <View
+            key={`padding-top-${i}`}
+            style={styles.paddingItem}
+          />
         ))}
-        
-        {/* Zahlen Items */}
+
+        {/* Number Items */}
         {numbers.map((number, index) => (
-          <View key={number} style={styles.numberItem}>
-            <Text 
+          <View
+            key={number}
+            style={styles.numberItem}
+          >
+            <Text
               style={[
                 styles.numberText,
-                number === value && styles.selectedNumberText
+                {
+                  fontSize: getFontSize(index),
+                  fontWeight: getFontWeight(index),
+                  opacity: getOpacity(index),
+                  transform: [{ scale: getScale(index) }],
+                }
               ]}
             >
-              {number.toString().padStart(2, '0')}{sufix}
+              {number.toString().padStart(2, '0')}{suffix}
             </Text>
           </View>
         ))}
-        
-        {/* Leere Items für Padding */}
-        {Array.from({ length: 2 }).map((_, index) => (
-          <View key={`empty-end-${index}`} style={styles.numberItem}>
-            <Text style={[styles.numberText, { opacity: 0.3 }]}>
-              {index === 0 ? numbers[0] : numbers[numbers.length - 1]}
-            </Text>
-          </View>
+
+        {/* Bottom Padding */}
+        {Array.from({ length: paddingItems }).map((_, i) => (
+          <View
+            key={`padding-bottom-${i}`}
+            style={styles.paddingItem}
+          />
         ))}
       </ScrollView>
     </View>
