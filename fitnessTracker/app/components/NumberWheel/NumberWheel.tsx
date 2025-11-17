@@ -24,7 +24,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
   const colors = useTheme();
   const scrollRef = useRef<ScrollView>(null);
   const [scrolling, setScrolling] = useState(false);
-  const itemHeight = 44;
+  const itemHeight = 35;
   const visibleItems = 5;
   
   const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
