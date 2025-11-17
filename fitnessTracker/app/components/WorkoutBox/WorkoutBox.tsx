@@ -16,7 +16,9 @@ const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
     const handlePress = () => {
         router.push({
             pathname: '/screens/WorkoutScreen', 
-            params: { id, name },
+            params: { 
+                workout: JSON.stringify(workout)
+            },
         });
     };
 

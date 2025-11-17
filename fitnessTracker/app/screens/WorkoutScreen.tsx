@@ -4,9 +4,14 @@ import { View,ScrollView, Text, StyleSheet } from 'react-native';
 
 
 export default function WorkoutScreen() {
-    const params = useSearchParams(); // Parameter aus URL
-    const workoutName = params.get('name') ?? 'Workout';
-    const workoutId = params.get('id');
+    const params = useSearchParams();
+    const workoutString = params.get('workout');
+    const workout = workoutString ? JSON.parse(workoutString) : null;
+    if (!workout) {
+        return <Text>Workout nicht gefunden</Text>;
+    }
+    const workoutName = workout.name;
+    const workoutId = workout.id;
     
     return (
         <View>
