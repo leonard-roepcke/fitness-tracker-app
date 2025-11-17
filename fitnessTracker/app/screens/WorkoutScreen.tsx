@@ -62,7 +62,7 @@ export default function WorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}></Text>
+            <Text style={styles.title}>{workout.name}</Text>
             <Text style={styles.subtitle}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
             <RepWeightPicker 
                 reps={reps}                    // Aktuelle Wiederholungen
