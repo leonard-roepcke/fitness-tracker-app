@@ -15,6 +15,7 @@ interface NumberWheelProps {
   value: number;
   onValueChange: (value: number) => void;
   width?: number;
+  sufix?: string;
 }
 
 export const NumberWheel: React.FC<NumberWheelProps> = ({
@@ -22,14 +23,15 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
   max = 59,
   value,
   onValueChange,
-  width = 80
+  width = 80,
+  sufix = ''
 }) => {
   const colors = useTheme();
   const scrollViewRef = useRef<ScrollView>(null);
   const itemHeight = 40;
   const visibleItems = 5;
 
-  const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
+  const numbers = Array.from({ length: max - min + 1 }, (_, i) => (i + min));
 
   const styles = StyleSheet.create({
     container: {
@@ -120,7 +122,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
                 number === value && styles.selectedNumberText
               ]}
             >
-              {number.toString().padStart(2, '0')}
+              {number.toString().padStart(2, '0')}{sufix}
             </Text>
           </View>
         ))}

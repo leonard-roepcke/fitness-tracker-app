@@ -1,11 +1,15 @@
 import { useSearchParams } from 'expo-router/build/hooks';
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
-import { SetRepPicker } from '../components/SetRepPicker';
+import { NumberWheel } from '../components/NumberWheel';
+import { RepWeightPicker } from '../components/RepWeightPicker';
 
 export default function WorkoutScreen() {
     const colors = useTheme();
+
+    const [sets, setSets] = useState(3);
+    const [reps, setReps] = useState(10);
 
     const params = useSearchParams();
     const workoutString = params.get('workout');
@@ -58,18 +62,13 @@ export default function WorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{i_exercise+1}/{workout.exercises.length} {workout.name} </Text>
+            <Text style={styles.title}></Text>
             <Text style={styles.subtitle}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
-           
-            <SetRepPicker
-                sets={workout.exercises[i_exercise].sets}
-                reps={workout.exercises[i_exercise].last_reps[i_set] || 10}
-                onSetsChange={(newSets) => {
-                    // Handle sets change
-                }}
-                onRepsChange={(newReps) => {
-                    // Handle reps change
-                }}
+            <RepWeightPicker 
+                reps={reps}                    // Aktuelle Wiederholungen
+                weight={sets}                    // Aktuelle Sätze
+                onSetsChange={setSets}         // Handler für Sätze-Änderung
+                onRepsChange={setReps}         // Handler für Reps-Änderung
             />
         </View>
     );
