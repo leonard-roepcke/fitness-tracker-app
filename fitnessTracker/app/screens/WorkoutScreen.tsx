@@ -27,22 +27,23 @@ export default function WorkoutScreen() {
             fontSize: 28,
             fontWeight: 'bold',
             textAlign: 'center',
-            marginBottom: 20,
+            marginBottom: 0,
             marginTop: 10,
             color: colors.text
         },
         content: {
             flex: 1,
         },
-        text: {  // ✅ NEUE Style für normalen Text
+        text: {  
             fontSize: 16,
             color: colors.text,
             marginBottom: 4,
         },
         subtitle: {
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: '600',
-            marginTop: 16,
+            textAlign: 'center',
+            marginTop: 12,
             marginBottom: 8,
             color: colors.text
         },
@@ -55,24 +56,11 @@ export default function WorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{workout.name} {i_exercise+1}/{workout.exercises.length} {workout.exercises[i_exercise]}</Text>
+            <Text style={styles.title}>{workout.name} </Text>
+            <Text style={styles.subtitle}>{i_exercise+1}/{workout.exercises.length} {workout.exercises[i_exercise]}</Text>
             <ScrollView style={styles.content}>
 
-                <Text style={styles.subtitle}>Workout Details</Text>
-                <Text style={styles.text}>ID: {workout.id}</Text>
-                <Text style={styles.text}>Anzahl Übungen: {workout.exercises.length}</Text>
                 
-                
-                {workout.exercises.length > 0 && (
-                    <>
-                        <Text style={styles.subtitle}>Übungen:</Text>
-                        {workout.exercises.map((exercise: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, index: React.Key | null | undefined) => (
-                            <Text key={index} style={[styles.exercise ,styles.text]}>
-                                • {exercise}
-                            </Text>
-                        ))}
-                    </>
-                )}
             </ScrollView>
         </View>
     );
