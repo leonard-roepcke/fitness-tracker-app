@@ -12,7 +12,7 @@ export const Colors = {
     textSecondary: '#8E8E93',
     border: '#C6C6C8',
     
-    // Dunkles Theme (optional)
+    // Dark Theme Colors
     dark: {
         background: '#000000',
         card: '#1C1C1E',
