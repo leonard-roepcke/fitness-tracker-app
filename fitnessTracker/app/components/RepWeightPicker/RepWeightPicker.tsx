@@ -24,11 +24,11 @@ export const RepWeightPicker: React.FC<RepWeightPicker> = ({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: 20,
+      paddingVertical: 0,
     },
     wheelContainer: {
       alignItems: 'center',
-      marginHorizontal: 15,
+      marginHorizontal: 0,
     },
     label: {
       fontSize: 16,
@@ -37,7 +37,7 @@ export const RepWeightPicker: React.FC<RepWeightPicker> = ({
     },
     separator: {
       fontSize: 18,
-      color: colors.text,
+      color: 'color.text',
       marginTop: 40,
     },
   });

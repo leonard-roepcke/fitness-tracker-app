@@ -54,7 +54,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     selectedNumberText: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: colors.primary,
+      color: colors.text,
     },
     selectionIndicator: {
       position: 'absolute',
