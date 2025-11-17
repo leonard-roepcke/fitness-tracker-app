@@ -9,6 +9,8 @@ export default function WorkoutScreen() {
     const params = useSearchParams();
     const workoutString = params.get('workout');
     const workout = workoutString ? JSON.parse(workoutString) : null;
+
+    let i_exercise = 0;
     
     if (!workout) {
         return <Text>Workout nicht gefunden</Text>;
@@ -53,7 +55,7 @@ export default function WorkoutScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{workout.name}</Text>
+            <Text style={styles.title}>{workout.name} {i_exercise+1}/{workout.exercises.length} {workout.exercises[i_exercise]}</Text>
             <ScrollView style={styles.content}>
 
                 <Text style={styles.subtitle}>Workout Details</Text>
