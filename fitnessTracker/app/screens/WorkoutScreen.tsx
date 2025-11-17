@@ -58,10 +58,7 @@ export default function WorkoutScreen() {
         <View style={styles.container}>
             <Text style={styles.title}>{workout.name} </Text>
             <Text style={styles.subtitle}>{i_exercise+1}/{workout.exercises.length} {workout.exercises[i_exercise]}</Text>
-            <ScrollView style={styles.content}>
-
-                
-            </ScrollView>
+            
         </View>
     );
 }
