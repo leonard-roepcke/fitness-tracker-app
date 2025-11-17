@@ -14,6 +14,12 @@ export const Colors = {
     
     // Dark Theme Colors
     dark: {
+        primary: '#007AFF',
+        secondary: '#5856D6',
+        success: '#34C759',
+        danger: '#FF3B30',
+        warning: '#FF9500',
+        
         background: '#000000',
         card: '#1C1C1E',
         text: '#FFFFFF',

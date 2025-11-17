@@ -4,6 +4,7 @@ import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import { NumberWheel } from '../components/NumberWheel';
 import { RepWeightPicker } from '../components/RepWeightPicker';
+import { Button } from '../components/Button';
 
 export default function WorkoutScreen() {
     const colors = useTheme();
@@ -15,8 +16,8 @@ export default function WorkoutScreen() {
     const workoutString = params.get('workout');
     const workout = workoutString ? JSON.parse(workoutString) : null;
 
-    let i_exercise = 0;
-    let i_set = 0;
+    const [i_exercise, setI_exercise] = useState(0);
+    const [i_set, setI_set] = useState(0);
     
     if (!workout) {
         return <Text>Workout nicht gefunden</Text>;
@@ -60,6 +61,23 @@ export default function WorkoutScreen() {
         },
     });
 
+    const [loading, setLoading] = useState(false);
+
+    const handlePress = () => {
+        if (i_set < workout.exercises[i_exercise].sets - 1) {
+            // ✅ Nächster Satz - mit State Update
+            setI_set(i_set + 1);
+        } else if (i_exercise < workout.exercises.length - 1) {
+            // ✅ Nächste Übung - mit State Update
+            setI_exercise(i_exercise + 1);
+            setI_set(0);
+        } else {
+            // Workout abgeschlossen
+            console.log('Workout abgeschlossen!');
+            // Hier könntest du zur Übersicht zurücknavigieren
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{i_exercise+1}/{workout.exercises.length} {workout.name}</Text>
@@ -69,6 +87,11 @@ export default function WorkoutScreen() {
                 weight={sets}                    // Aktuelle Sätze
                 onSetsChange={setSets}         // Handler für Sätze-Änderung
                 onRepsChange={setReps}         // Handler für Reps-Änderung
+            />
+            <Button 
+                title="Next Set" 
+                onPress={handlePress}
+                variant="primary"
             />
         </View>
     );
