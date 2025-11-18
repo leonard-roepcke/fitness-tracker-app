@@ -1,6 +1,6 @@
 // components/ui/SetRepPicker.tsx
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { NumberWheel } from '../NumberWheel';
 
@@ -45,7 +45,17 @@ export const RepWeightPicker: React.FC<RepWeightPickerProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.wheelContainer}>
-        <Text style={styles.label}>Gewicht</Text>
+        <NumberWheel
+          min={0}
+          max={30}
+          value={reps}
+          onValueChange={onRepsChange}
+          width={90}
+          suffix=' Reps'
+        />
+      </View>
+
+      <View style={styles.wheelContainer}>
         <NumberWheel
           min={0}
           max={300}
@@ -56,17 +66,6 @@ export const RepWeightPicker: React.FC<RepWeightPickerProps> = ({
         />
       </View>
 
-      <View style={styles.wheelContainer}>
-        <Text style={styles.label}>Wdh.</Text>
-        <NumberWheel
-          min={1}
-          max={30}
-          value={reps}
-          onValueChange={onRepsChange}
-          width={90}
-          suffix=' Reps'
-        />
-      </View>
     </View>
   );
 };

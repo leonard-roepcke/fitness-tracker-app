@@ -26,18 +26,8 @@ export default function WorkoutScreen() {
         workout ? (workout.exercises[i_exercise].last_reps?.[i_set] ?? 0) : 0
     );
 
-    // Wenn sich die aktuelle Übung oder der Satz ändert, die Wheels auf die
-    // gespeicherten last_weight / last_reps für den neuen Index setzen.
-    React.useEffect(() => {
-        if (!workout) return;
-
-        const exercise = workout.exercises[i_exercise];
-        const newWeight = exercise.last_weight?.[i_set] ?? 0;
-        const newReps = exercise.last_reps?.[i_set] ?? 0;
-
-        setWeight(newWeight);
-        setReps(newReps);
-    }, [i_exercise, i_set, workout]);
+    // Removed automatic syncing on index changes. Wheels will update only when
+    // the user presses the "Next Set" button.
 
     if (!workout) {
         return <Text>Workout nicht gefunden</Text>;
@@ -84,13 +74,30 @@ export default function WorkoutScreen() {
     const [loading, setLoading] = useState(false);
 
     const handlePress = () => {
+        // Wenn noch ein weiterer Satz in derselben Übung vorhanden ist,
+        // inkrementiere den Satzindex und setze die Wheels auf die gespeicherten Werte
         if (i_set < workout.exercises[i_exercise].sets - 1) {
-            //  Nächster Satz - mit State Update
-            setI_set(i_set + 1);
+            const nextSet = i_set + 1;
+            setI_set(nextSet);
+
+            const exercise = workout.exercises[i_exercise];
+            const newWeight = exercise.last_weight?.[nextSet] ?? 0;
+            const newReps = exercise.last_reps?.[nextSet] ?? 0;
+            setWeight(newWeight);
+            setReps(newReps);
         } else if (i_exercise < workout.exercises.length - 1) {
-            //  Nächste Übung - mit State Update
-            setI_exercise(i_exercise + 1);
-            setI_set(0);
+            // Nächste Übung
+            const nextExercise = i_exercise + 1;
+            const nextSet = 0;
+
+            setI_exercise(nextExercise);
+            setI_set(nextSet);
+
+            const exercise = workout.exercises[nextExercise];
+            const newWeight = exercise.last_weight?.[nextSet] ?? 0;
+            const newReps = exercise.last_reps?.[nextSet] ?? 0;
+            setWeight(newWeight);
+            setReps(newReps);
         } else {
             // Workout abgeschlossen
             router.push('/screens/OverviewScreen');
