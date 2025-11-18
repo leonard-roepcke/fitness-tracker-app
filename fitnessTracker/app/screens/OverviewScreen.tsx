@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View,ScrollView, Text, StyleSheet } from 'react-native';
-import { WorkoutBox } from '../components/WorkoutBox';
-import { CreateBox } from '../components/CreateBox';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Workout } from "../../types/workout";
+import { CreateBox } from '../components/CreateBox';
+import { WorkoutBox } from '../components/WorkoutBox';
 import { useTheme } from '../hooks/useTheme';
 
 export default function OverviewScreen() {
@@ -38,8 +38,8 @@ export default function OverviewScreen() {
             id: 0, 
             name: "Push", 
             exercises: [
-                { name: "Bench Press", sets: 3, last_reps: [10,4], last_weight: [20,18] },
-                { name: "Dips", sets: 4, last_reps: [], last_weight: [] }
+                { name: "Bench Press", sets: 3, last_reps: [10,4,0], last_weight: [20,18,0] },
+                { name: "Dips", sets: 4, last_reps: [0,0,0,0], last_weight: [0,0,0,0] }
             ],
             createdAt: Date.now()
         },
@@ -47,8 +47,8 @@ export default function OverviewScreen() {
             id: 0, 
             name: "Pull", 
             exercises: [
-                { name: "Klimzüge", sets: 3, last_reps: [10,4], last_weight: [20,18] },
-                { name: "zusammen dinger :)", sets: 3, last_reps: [1], last_weight: [2] }
+                { name: "Klimzüge", sets: 3, last_reps: [10,4,10], last_weight: [20,18,10] },
+                { name: "zusammen dinger :)", sets: 3, last_reps: [1,0,0], last_weight: [2,0,0] }
             ],
             createdAt: Date.now()
         },

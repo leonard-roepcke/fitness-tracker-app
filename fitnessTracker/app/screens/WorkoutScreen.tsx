@@ -1,24 +1,44 @@
+import { useRouter } from 'expo-router';
 import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useState } from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../hooks/useTheme';
-import { NumberWheel } from '../components/NumberWheel';
-import { RepWeightPicker } from '../components/RepWeightPicker';
+import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../components/Button';
+import { RepWeightPicker } from '../components/RepWeightPicker';
+import { useTheme } from '../hooks/useTheme';
 
 export default function WorkoutScreen() {
     const colors = useTheme();
+    const router = useRouter();
 
-    const [sets, setSets] = useState(3);
-    const [reps, setReps] = useState(10);
-
+    
     const params = useSearchParams();
     const workoutString = params.get('workout');
     const workout = workoutString ? JSON.parse(workoutString) : null;
-
+    
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
     
+    // weight und reps als lokale Zustände (frühere `sets`-Variable war verwirrend)
+    const [weight, setWeight] = useState<number>(() =>
+        workout ? (workout.exercises[i_exercise].last_weight?.[i_set] ?? 0) : 0
+    );
+    const [reps, setReps] = useState<number>(() =>
+        workout ? (workout.exercises[i_exercise].last_reps?.[i_set] ?? 0) : 0
+    );
+
+    // Wenn sich die aktuelle Übung oder der Satz ändert, die Wheels auf die
+    // gespeicherten last_weight / last_reps für den neuen Index setzen.
+    React.useEffect(() => {
+        if (!workout) return;
+
+        const exercise = workout.exercises[i_exercise];
+        const newWeight = exercise.last_weight?.[i_set] ?? 0;
+        const newReps = exercise.last_reps?.[i_set] ?? 0;
+
+        setWeight(newWeight);
+        setReps(newReps);
+    }, [i_exercise, i_set, workout]);
+
     if (!workout) {
         return <Text>Workout nicht gefunden</Text>;
     }
@@ -65,16 +85,15 @@ export default function WorkoutScreen() {
 
     const handlePress = () => {
         if (i_set < workout.exercises[i_exercise].sets - 1) {
-            // ✅ Nächster Satz - mit State Update
+            //  Nächster Satz - mit State Update
             setI_set(i_set + 1);
         } else if (i_exercise < workout.exercises.length - 1) {
-            // ✅ Nächste Übung - mit State Update
+            //  Nächste Übung - mit State Update
             setI_exercise(i_exercise + 1);
             setI_set(0);
         } else {
             // Workout abgeschlossen
-            console.log('Workout abgeschlossen!');
-            // Hier könntest du zur Übersicht zurücknavigieren
+            router.push('/screens/OverviewScreen');
         }
     };
 
@@ -84,9 +103,9 @@ export default function WorkoutScreen() {
             <Text style={styles.subtitle}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
             <RepWeightPicker 
                 reps={reps}                    // Aktuelle Wiederholungen
-                weight={sets}                    // Aktuelle Sätze
-                onSetsChange={setSets}         // Handler für Sätze-Änderung
-                onRepsChange={setReps}         // Handler für Reps-Änderung
+                weight={weight}                // Aktuelles Gewicht (vorher `sets` genannt)
+                onWeightChange={setWeight}     // Handler für Gewicht
+                onRepsChange={setReps}         // Handler für Reps
             />
             <Button 
                 title="Next Set" 

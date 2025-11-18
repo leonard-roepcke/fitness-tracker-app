@@ -1,20 +1,20 @@
 // components/ui/SetRepPicker.tsx
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { NumberWheel } from '../NumberWheel';
 
-interface RepWeightPicker {
+interface RepWeightPickerProps {
   reps: number;
   weight: number;
-  onSetsChange: (sets: number) => void;
+  onWeightChange: (weight: number) => void;
   onRepsChange: (reps: number) => void;
 }
 
-export const RepWeightPicker: React.FC<RepWeightPicker> = ({
+export const RepWeightPicker: React.FC<RepWeightPickerProps> = ({
   reps,
   weight,
-  onSetsChange,
+  onWeightChange,
   onRepsChange
 }) => {
   const colors = useTheme();
@@ -37,7 +37,7 @@ export const RepWeightPicker: React.FC<RepWeightPicker> = ({
     },
     separator: {
       fontSize: 18,
-      color: 'color.text',
+      color: colors.text,
       marginTop: 40,
     },
   });
@@ -45,28 +45,26 @@ export const RepWeightPicker: React.FC<RepWeightPicker> = ({
   return (
     <View style={styles.container}>
       <View style={styles.wheelContainer}>
-        <Text style={styles.label}></Text>
+        <Text style={styles.label}>Gewicht</Text>
         <NumberWheel
-          min={1}
-          max={10}
+          min={0}
+          max={300}
           value={weight}
-          onValueChange={onSetsChange}
+          onValueChange={onWeightChange}
           width={90}
-          suffix=' Reps'
+          suffix=' kg'
         />
       </View>
-      
-      
-      
+
       <View style={styles.wheelContainer}>
-        <Text style={styles.label}></Text>
+        <Text style={styles.label}>Wdh.</Text>
         <NumberWheel
           min={1}
           max={30}
           value={reps}
           onValueChange={onRepsChange}
           width={90}
-          suffix=' kg'
+          suffix=' Reps'
         />
       </View>
     </View>
