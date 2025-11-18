@@ -74,6 +74,10 @@ export default function WorkoutScreen() {
     const [loading, setLoading] = useState(false);
 
     const handlePress = () => {
+        //Die sind nur lokal ich muss es über sowas wie context oder redux speichern
+        const exercise = workout.exercises[i_exercise];
+        exercise.last_weight[i_set] = weight;
+        exercise.last_reps[i_set] = reps;
         // Wenn noch ein weiterer Satz in derselben Übung vorhanden ist,
         // inkrementiere den Satzindex und setze die Wheels auf die gespeicherten Werte
         if (i_set < workout.exercises[i_exercise].sets - 1) {
