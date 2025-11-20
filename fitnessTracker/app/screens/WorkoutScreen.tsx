@@ -74,7 +74,7 @@ export default function WorkoutScreen() {
     const [loading, setLoading] = useState(false);
 
     const handlePress = () => {
-        //Die sind nur lokal ich muss es über sowas wie context oder redux speichern
+        //Die sind nur lokal ich muss es über sowas wie context oder redux speichern siehe ai
         const exercise = workout.exercises[i_exercise];
         exercise.last_weight[i_set] = weight;
         exercise.last_reps[i_set] = reps;
