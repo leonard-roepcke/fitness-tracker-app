@@ -57,7 +57,7 @@ export default function OverviewScreen() {
         const newWorkout: Workout = {
             id: workouts.length,
             name: "Neuer Workout",
-            exercises: [],
+            exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10] }],
         };
 
         setWorkouts([...workouts, newWorkout]);
