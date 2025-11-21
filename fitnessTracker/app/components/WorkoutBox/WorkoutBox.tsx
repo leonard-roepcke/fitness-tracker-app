@@ -1,7 +1,7 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Workout } from '../../../../types/workout';
 import { useTheme } from "../../hooks/useTheme";
 
@@ -42,11 +42,20 @@ const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
         });
     };
 
+    const handleEditPress = () => {
+        router.push({
+            pathname: '/screens/WorkoutEditScreen', 
+            params: { 
+                workout: JSON.stringify(workout)
+            },
+        });
+    };
+
     return (
         <TouchableOpacity style={styles.box} onPress={handlePress}>
             <View style={styles.content}>
                 <Text style={styles.text}>{name}</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleEditPress}>
                     <Ionicons name="create-outline" size={24} color={colors.text} />
                 </TouchableOpacity>
             </View>
