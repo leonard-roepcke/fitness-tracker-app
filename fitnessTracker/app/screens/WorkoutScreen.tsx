@@ -104,7 +104,7 @@ export default function WorkoutScreen() {
             setReps(newReps);
         } else {
             // Workout abgeschlossen
-            router.push('/screens/OverviewScreen');
+            router.back();
         }
     };
 
