@@ -4,6 +4,7 @@ import { useWorkouts } from '../../context/WorkoutContext';
 import { useTheme } from '../hooks/useTheme';
 import { CreateBox } from '../components/CreateBox';
 import { useRouter } from 'expo-router';
+import { NumberWheel } from '../components/NumberWheel';
 
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
@@ -40,6 +41,9 @@ export default function WorkoutEditScreen({ route }: any) {
       padding: 12,
       borderRadius: 8,
       backgroundColor: colors.card,
+      flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     exerciseTitle: {
       fontSize: 16,
@@ -126,6 +130,11 @@ export default function WorkoutEditScreen({ route }: any) {
     router.back();
   };
 
+  const addWorkout = () => {
+    const updated = [...workouts];
+    updated[index].exercises.push({ name: 'New Exercise', sets: 3, last_reps: [0, 0, 0], last_weight: [0, 0, 0] });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.content}>
@@ -156,36 +165,26 @@ export default function WorkoutEditScreen({ route }: any) {
               placeholderTextColor={colors.textSecondary}
             />
 
-            <TextInput
-              style={styles.input}
-              value={exercise.sets.toString()}
-              onChangeText={(text) => handleExerciseChange(exIndex, 'sets', text)}
-              placeholder="Sets"
-              placeholderTextColor={colors.textSecondary}
-              keyboardType="numeric"
+            <View>
+            <NumberWheel
+                      min={1}
+                      max={30}
+                      value={3}
+                      onValueChange={back}
+                      width={90}
+                      suffix=' Sets'
             />
 
-            {/* Last reps & weights */}
-            {Array.from({ length: exercise.sets }).map((_, setIndex) => (
-              <View key={setIndex} style={styles.exerciseRow}>
-                <Text style={styles.label}>Set {setIndex + 1}:</Text>
-                <TextInput
-                  style={styles.smallInput}
-                  value={exercise.last_reps[setIndex]?.toString() || '0'}
-                  onChangeText={(text) => handleRepChange(exIndex, setIndex, text)}
-                  keyboardType="numeric"
-                />
-                <Text style={styles.label}>kg</Text>
-                <TextInput
-                  style={styles.smallInput}
-                  value={exercise.last_weight?.[setIndex]?.toString() || '0'}
-                  onChangeText={(text) => handleWeightChange(exIndex, setIndex, text)}
-                  keyboardType="numeric"
-                />
-              </View>
-            ))}
+            </View>
+
+            <CreateBox  onPress={back} iconName='trash'/>
+
+            
+            
           </View>
         ))}
+
+        <CreateBox  onPress={addWorkout} iconName='add' text='Add workout'/>
       </ScrollView>
     </View>
   );
