@@ -10,6 +10,6 @@ npm start -- --tunnel
 
 build
 eas login
-//die daten sind in bitworden unter expo
+//die daten sind in bitworden unter expos
 eas build -p android --profile preview
 
