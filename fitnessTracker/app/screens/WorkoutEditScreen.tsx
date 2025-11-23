@@ -173,6 +173,7 @@ export default function WorkoutEditScreen({ route }: any) {
                       onValueChange={back}
                       width={90}
                       suffix=' Sets'
+                      visibleItems={3}
             />
 
             </View>

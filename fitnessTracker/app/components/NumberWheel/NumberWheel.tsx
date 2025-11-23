@@ -3,7 +3,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
-
 interface NumberWheelProps {
   min?: number;
   max?: number;
@@ -11,6 +10,7 @@ interface NumberWheelProps {
   onValueChange: (value: number) => void;
   width?: number;
   suffix?: string;
+  visibleItems?: number;
 }
 
 export const NumberWheel: React.FC<NumberWheelProps> = ({
@@ -19,16 +19,19 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
   value,
   onValueChange,
   width = 80,
-  suffix = ''
+  suffix = '',
+  visibleItems = 5,
 }) => {
   const colors = useTheme();
   const scrollRef = useRef<ScrollView>(null);
   const [scrolling, setScrolling] = useState(false);
   const itemHeight = 35;
-  const visibleItems = 5;
   
   const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
-  const paddingItems = 2;
+  
+  // Berechne die Anzahl der Padding-Items basierend auf visibleItems
+  // Bei geraden Zahlen runden wir ab, um eine klare Mitte zu haben
+  const paddingItems = Math.floor(visibleItems / 2);
 
   useEffect(() => {
     if (scrollRef.current && !scrolling) {
@@ -105,7 +108,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     },
     selectionIndicator: {
       position: 'absolute',
-      top: itemHeight * 2,
+      top: itemHeight * paddingItems,
       left: 0,
       right: 0,
       height: itemHeight,
