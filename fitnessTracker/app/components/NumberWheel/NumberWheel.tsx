@@ -115,6 +115,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
       backgroundColor: `${colors.primary}20`,
       borderRadius: 10,
       zIndex: 1,
+      pointerEvents: 'none',
     },
     scrollView: {
       width: '100%',
