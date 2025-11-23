@@ -51,7 +51,6 @@ export default function WorkoutEditScreen({ route }: any) {
       backgroundColor: colors.card,
       flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
     },
     exerciseTitle: {
       fontSize: 16,
@@ -179,7 +178,7 @@ export default function WorkoutEditScreen({ route }: any) {
         {workout.exercises.map((exercise, exIndex) => (
           <View key={exIndex} style={styles.exerciseBox}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, {flex: 1, marginRight:8}]}
               value={exercise.name}
               onChangeText={(text) => handleExerciseChange(exIndex, 'name', text)}
               placeholder="Exercise Name"
