@@ -132,7 +132,11 @@ export default function WorkoutEditScreen({ route }: any) {
 
   const addWorkout = () => {
     const updated = [...workouts];
-    updated[index].exercises.push({ name: 'New Exercise', sets: 3, last_reps: [0, 0, 0], last_weight: [0, 0, 0] });
+    const newExercise = { name: 'New Exercise', sets: 3, last_reps: [0, 0, 0], last_weight: [0, 0, 0] };
+    // create a new exercises array and replace the workout object immutably
+    const newExercises = [...updated[index].exercises, newExercise];
+    updated[index] = { ...updated[index], exercises: newExercises };
+    setWorkouts(updated);
   };
 
   return (
