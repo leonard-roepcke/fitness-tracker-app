@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Workout } from '../../../../types/workout';
+import { Workout } from '../../types/workout';
 import { useTheme } from "../../hooks/useTheme";
 
 const WorkoutBox = ({ workout }: { workout: Workout | string }) => {

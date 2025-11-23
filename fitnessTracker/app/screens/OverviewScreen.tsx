@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Workout } from "../../types/workout";
+import { Workout } from "../types/workout";
 import { CreateBox } from '../components/CreateBox';
 import { WorkoutBox } from '../components/WorkoutBox';
 import { useTheme } from '../hooks/useTheme';
