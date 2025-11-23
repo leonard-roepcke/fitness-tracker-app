@@ -130,6 +130,13 @@ export default function WorkoutEditScreen({ route }: any) {
     router.back();
   };
 
+  const delExercise = (exerciseIndex: number) => {
+    const updated = [...workouts];
+    const newExercises = updated[index].exercises.filter((_, idx) => idx !== exerciseIndex);
+    updated[index] = { ...updated[index], exercises: newExercises };
+    setWorkouts(updated);
+};
+
   const addWorkout = () => {
     const updated = [...workouts];
     const newExercise = { name: 'New Exercise', sets: 3, last_reps: [0, 0, 0], last_weight: [0, 0, 0] };
@@ -182,7 +189,8 @@ export default function WorkoutEditScreen({ route }: any) {
 
             </View>
 
-            <CreateBox  onPress={back} iconName='trash'/>
+            <CreateBox  onPress={() => delExercise(exIndex)} iconName='trash'/>
+
 
             
             
