@@ -5,15 +5,22 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '../components/Button';
 import { RepWeightPicker } from '../components/RepWeightPicker';
 import { useTheme } from '../hooks/useTheme';
+import { useWorkouts } from '../../context/WorkoutContext';
+
 
 export default function WorkoutScreen() {
     const colors = useTheme();
     const router = useRouter();
+    const [workouts, setWorkouts] = useWorkouts();
+
 
     
     const params = useSearchParams();
-    const workoutString = params.get('workout');
-    const workout = workoutString ? JSON.parse(workoutString) : null;
+    //const workoutString = params.get('workout');
+    //const workout = workoutString ? JSON.parse(workoutString) : null;
+
+    const workoutId = (params as any).get ? (params as any).get('workoutId') : (params as any).workoutId; // z. B. ?workoutId=0
+    const workout = workouts?.find(w => w.id === Number(workoutId));
     
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
@@ -74,40 +81,55 @@ export default function WorkoutScreen() {
     const [loading, setLoading] = useState(false);
 
     const handlePress = () => {
-        //Die sind nur lokal ich muss es über sowas wie context oder redux speichern siehe ai
-        const exercise = workout.exercises[i_exercise];
-        exercise.last_weight[i_set] = weight;
-        exercise.last_reps[i_set] = reps;
-        // Wenn noch ein weiterer Satz in derselben Übung vorhanden ist,
-        // inkrementiere den Satzindex und setze die Wheels auf die gespeicherten Werte
-        if (i_set < workout.exercises[i_exercise].sets - 1) {
-            const nextSet = i_set + 1;
-            setI_set(nextSet);
+        if (!workout || !workouts) return;
+        
+        const updatedWorkouts = workouts.map(w => {
+    if (w.id !== workout.id) return w;
 
-            const exercise = workout.exercises[i_exercise];
-            const newWeight = exercise.last_weight?.[nextSet] ?? 0;
-            const newReps = exercise.last_reps?.[nextSet] ?? 0;
-            setWeight(newWeight);
-            setReps(newReps);
-        } else if (i_exercise < workout.exercises.length - 1) {
-            // Nächste Übung
-            const nextExercise = i_exercise + 1;
-            const nextSet = 0;
+    // Das Workout updaten
+    const updatedExercises = w.exercises.map((ex, idx) => {
+      if (idx !== i_exercise) return ex;
 
-            setI_exercise(nextExercise);
-            setI_set(nextSet);
+      // aktuelle Übung updaten
+      const newLastWeight = [...ex.last_weight];
+      const newLastReps = [...ex.last_reps];
 
-            const exercise = workout.exercises[nextExercise];
-            const newWeight = exercise.last_weight?.[nextSet] ?? 0;
-            const newReps = exercise.last_reps?.[nextSet] ?? 0;
-            setWeight(newWeight);
-            setReps(newReps);
-        } else {
-            // Workout abgeschlossen
-            router.back();
-        }
+      newLastWeight[i_set] = weight;
+      newLastReps[i_set] = reps;
+
+      return {
+        ...ex,
+        last_weight: newLastWeight,
+        last_reps: newLastReps,
+      };
+    });
+
+    return {
+      ...w,
+      exercises: updatedExercises,
     };
-
+ });
+ // State global updaten
+ setWorkouts(updatedWorkouts);
+ // Nächster Satz / nächste Übung wie gehabt
+ if (i_set < workout.exercises[i_exercise].sets - 1) {
+   const nextSet = i_set + 1;
+   setI_set(nextSet);
+   const exercise = workout.exercises[i_exercise];
+   setWeight(exercise.last_weight?.[nextSet] ?? 0);
+   setReps(exercise.last_reps?.[nextSet] ?? 0);
+ } else if (i_exercise < workout.exercises.length - 1) {
+   const nextExercise = i_exercise + 1;
+   setI_exercise(nextExercise);
+   setI_set(0);
+   const exercise = workout.exercises[nextExercise];
+   setWeight(exercise.last_weight?.[0] ?? 0);
+   setReps(exercise.last_reps?.[0] ?? 0);
+ } else {
+   // Workout abgeschlossen
+   router.back();
+ }
+   };
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{i_exercise+1}/{workout.exercises.length} {workout.name}</Text>
