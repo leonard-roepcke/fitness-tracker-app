@@ -23,6 +23,14 @@ export default function WorkoutEditScreen({ route }: any) {
       flex: 1,
       backgroundColor: colors.background,
     },
+    title: {
+            fontSize: 28,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            marginBottom: 0,
+            marginTop: 10,
+            color: colors.text,
+    },
     content: {
       padding: 16,
     },
@@ -148,13 +156,15 @@ export default function WorkoutEditScreen({ route }: any) {
 
   return (
     <View style={styles.container}>
+        <Text style={styles.title}></Text>
+        
       <ScrollView style={styles.content}>
         {/* Workout Name */}
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-<CreateBox  onPress={back} iconName='arrow-back'/>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+        <CreateBox  onPress={back} iconName='arrow-back'/>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { flex: 1, marginHorizontal: 12 , height:50, marginTop:12}]}
           value={workout.name}
           onChangeText={handleWorkoutNameChange}
           placeholder="Workout Name"

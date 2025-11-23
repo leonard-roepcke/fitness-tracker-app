@@ -52,6 +52,7 @@ export default function OverviewScreen() {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}></Text>
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}></Text>
                 
