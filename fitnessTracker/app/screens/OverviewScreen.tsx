@@ -53,7 +53,7 @@ export default function OverviewScreen() {
     return (
         <View style={styles.container}>
             <ScrollView style={styles.scrollView}>
-                <Text style={styles.subtitle}>Klick auf ein Workout um es zu starten</Text>
+                <Text style={styles.subtitle}></Text>
                 
                 {workouts?.map((w: Workout, index: number) => (<WorkoutBox key={index} workout={w} />))}
 

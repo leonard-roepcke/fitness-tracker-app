@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <Stack.Navigator initialRouteName="Overview">
+    <Stack.Navigator initialRouteName="Overview" screenOptions={{headerShown: false}}>
       <Stack.Screen name="Overview" component={OverviewScreen} />
       <Stack.Screen name="Workout" component={WorkoutScreen} />
       <Stack.Screen name="WorkoutEdit" component={WorkoutEditScreen} />

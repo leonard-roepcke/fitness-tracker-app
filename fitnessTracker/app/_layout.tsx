@@ -4,7 +4,7 @@ import { WorkoutProvider } from "../context/WorkoutContext";
 export default function RootLayout() {
   return (
     <WorkoutProvider>
-      <Stack />
+      <Stack screenOptions={{headerShown: false}}/>
     </WorkoutProvider>
   );
 }
