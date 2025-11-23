@@ -39,8 +39,9 @@ export default function OverviewScreen() {
 
     const addWorkout = () => {
         if (!workouts) return;
+        const newId = workouts.length > 0 ? Math.max(...workouts.map(w => w.id ?? 0)) + 1 : 0;
         const newWorkout: Workout = {
-            id: workouts.length,
+            id: newId,
             name: "Neuer Workout",
             exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10] }],
             createdAt: Date.now(),

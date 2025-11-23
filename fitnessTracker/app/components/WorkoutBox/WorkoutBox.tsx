@@ -41,7 +41,7 @@ const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
 
     const handleEditPress = () => {
         if (id === null || id === undefined) return;
-        navigation.navigate('WorkoutEdit', { workoutIndex: id });
+        navigation.navigate('WorkoutEdit', { workoutId: id });
     };
 
     return (

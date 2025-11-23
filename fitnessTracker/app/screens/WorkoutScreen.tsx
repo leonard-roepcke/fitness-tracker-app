@@ -8,19 +8,17 @@ import { useTheme } from '../hooks/useTheme';
 import { useWorkouts } from '../../context/WorkoutContext';
 
 
-export default function WorkoutScreen() {
+export default function WorkoutScreen({ route, navigation }: any) {
     const colors = useTheme();
     const router = useRouter();
+    const nav = navigation;
     const [workouts, setWorkouts] = useWorkouts();
 
-
-    
     const params = useSearchParams();
-    //const workoutString = params.get('workout');
-    //const workout = workoutString ? JSON.parse(workoutString) : null;
-
-    const workoutId = (params as any).get ? (params as any).get('workoutId') : (params as any).workoutId; // z. B. ?workoutId=0
-    const workout = workouts?.find(w => w.id === Number(workoutId));
+    // Try react-navigation route params first, otherwise fall back to expo-router search params
+    const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
+    const workoutId = Number(rawId);
+    const workout = workouts?.find(w => w.id === workoutId);
     
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
@@ -126,8 +124,9 @@ export default function WorkoutScreen() {
    setWeight(exercise.last_weight?.[0] ?? 0);
    setReps(exercise.last_reps?.[0] ?? 0);
  } else {
-   // Workout abgeschlossen
-   router.back();
+     // Workout abgeschlossen
+     if (nav && typeof nav.goBack === 'function') nav.goBack();
+     else router.back();
  }
    };
     return (

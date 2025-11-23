@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import { View, ScrollView, Text, TextInput, StyleSheet } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { useTheme } from '../hooks/useTheme';
+import { CreateBox } from '../components/CreateBox';
+import { useRouter } from 'expo-router';
 
 export default function WorkoutEditScreen({ route }: any) {
-  const workoutIndex = route?.params?.workoutIndex ?? 0;
+  const workoutId = route?.params?.workoutId;
   const colors = useTheme();
   const [workouts, setWorkouts] = useWorkouts();
+  const router = useRouter();
 
   if (!workouts) return null;
 
-  const workout = workouts[workoutIndex];
-  if (!workout) return null;
+  const index = workoutId !== undefined ? workouts.findIndex((w) => w.id === workoutId) : -1;
+  if (index === -1) return null;
+  const workout = workouts[index];
 
   const styles = StyleSheet.create({
     container: {
@@ -67,7 +71,7 @@ export default function WorkoutEditScreen({ route }: any) {
 
   const handleWorkoutNameChange = (text: string) => {
     const updated = [...workouts];
-    updated[workoutIndex] = { ...updated[workoutIndex], name: text };
+    updated[index] = { ...updated[index], name: text };
     setWorkouts(updated);
   };
 
@@ -77,7 +81,7 @@ export default function WorkoutEditScreen({ route }: any) {
     value: string
   ) => {
     const updated = [...workouts];
-    const ex = updated[workoutIndex].exercises[exerciseIndex];
+    const ex = updated[index].exercises[exerciseIndex];
 
     if (field === 'name') {
       ex.name = value;
@@ -98,22 +102,37 @@ export default function WorkoutEditScreen({ route }: any) {
 
   const handleRepChange = (exerciseIndex: number, setIndex: number, value: string) => {
     const updated = [...workouts];
-    updated[workoutIndex].exercises[exerciseIndex].last_reps[setIndex] = parseInt(value) || 0;
+    if (!updated[index].exercises[exerciseIndex].last_reps) updated[index].exercises[exerciseIndex].last_reps = [];
+    updated[index].exercises[exerciseIndex].last_reps[setIndex] = parseInt(value) || 0;
     setWorkouts(updated);
   };
 
   const handleWeightChange = (exerciseIndex: number, setIndex: number, value: string) => {
     const updated = [...workouts];
-    const ex = updated[workoutIndex].exercises[exerciseIndex];
+    const ex = updated[index].exercises[exerciseIndex];
     if (!ex.last_weight) ex.last_weight = [];
     ex.last_weight[setIndex] = parseInt(value) || 0;
     setWorkouts(updated);
+  };
+
+  const back = () => {
+    router.back();
+  };
+
+  const del = () => {
+    if (workoutId === undefined) return;
+    const updated = workouts.filter((w) => w.id !== workoutId);
+    setWorkouts(updated);
+    router.back();
   };
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.content}>
         {/* Workout Name */}
+
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+<CreateBox  onPress={back} iconName='arrow-back'/>
         <TextInput
           style={styles.input}
           value={workout.name}
@@ -121,6 +140,10 @@ export default function WorkoutEditScreen({ route }: any) {
           placeholder="Workout Name"
           placeholderTextColor={colors.textSecondary}
         />
+        <CreateBox  onPress={del} iconName='trash'/>
+        </View>
+        
+        
 
         {/* Exercises */}
         {workout.exercises.map((exercise, exIndex) => (
