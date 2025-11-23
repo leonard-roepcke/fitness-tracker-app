@@ -6,6 +6,7 @@ import { Button } from '../components/Button';
 import { RepWeightPicker } from '../components/RepWeightPicker';
 import { useTheme } from '../hooks/useTheme';
 import { useWorkouts } from '../../context/WorkoutContext';
+import { CreateBox } from '../components/CreateBox';
 
 
 export default function WorkoutScreen({ route, navigation }: any) {
@@ -129,18 +130,36 @@ export default function WorkoutScreen({ route, navigation }: any) {
      else router.back();
  }
    };
+
+   const back = () => {
+      router.back();
+   };
     return (
         <View style={styles.container}>
-                        <Text style={styles.title}></Text>
+            <Text style={styles.title}></Text>
+
+            <View style={{ height: 50, justifyContent: 'center' }}>
+              {/* Absolute Title */}
+              <Text style={[styles.title, { position: 'absolute', left: 0, right: 0, textAlign: 'center' }]}>
+                {i_exercise + 1}/{workout.exercises.length} {workout.name}
+              </Text>
             
-            <Text style={styles.title}>{i_exercise+1}/{workout.exercises.length} {workout.name}</Text>
+              {/* Back Button */}
+              <View style={{ position: 'absolute', left: 0 }}>
+                <CreateBox onPress={back} iconName='arrow-back' />
+              </View>
+            </View>
+
+            <Text/>
             <Text style={styles.subtitle}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
+            <Text style={styles.title}></Text>
             <RepWeightPicker 
                 reps={reps}                    // Aktuelle Wiederholungen
                 weight={weight}                // Aktuelles Gewicht (vorher `sets` genannt)
                 onWeightChange={setWeight}     // Handler für Gewicht
                 onRepsChange={setReps}         // Handler für Reps
             />
+            <Text style={styles.title}></Text>
             <Button 
                 title="Next Set" 
                 onPress={handlePress}
