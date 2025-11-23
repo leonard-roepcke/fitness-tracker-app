@@ -15,3 +15,4 @@ export interface Workout {
   // Some places set `createdAt`, others omit it when creating new items.
   createdAt?: number;
 }
+

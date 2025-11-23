@@ -56,7 +56,7 @@ export default function OverviewScreen() {
                 
                 {workouts?.map((w: Workout, index: number) => (<WorkoutBox key={index} workout={w} />))}
 
-                <CreateBox  onCreate={addWorkout}/>
+                <CreateBox  onPress={addWorkout} iconName='add' text='create workout'/>
             </ScrollView>
         </View>
     );

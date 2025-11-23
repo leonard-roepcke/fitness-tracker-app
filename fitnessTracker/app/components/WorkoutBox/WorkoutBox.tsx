@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Workout } from '../../types/workout';
 import { useTheme } from "../../hooks/useTheme";
+import { useNavigation } from '@react-navigation/native';
 
 const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
     const colors = useTheme();
@@ -32,23 +32,16 @@ const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
     const name = isString ? workout : workout.name;
     const id = isString ? null : workout.id;
 
+    const navigation: any = useNavigation();
 
     const handlePress = () => {
-        router.push({
-            pathname: '/screens/WorkoutScreen', 
-            params: { 
-                workout: JSON.stringify(workout)
-            },
-        });
+        if (id === null || id === undefined) return;
+        navigation.navigate('Workout', { workoutId: id });
     };
 
     const handleEditPress = () => {
-        router.push({
-            pathname: '/screens/WorkoutEditScreen', 
-            params: { 
-                workout: JSON.stringify(workout)
-            },
-        });
+        if (id === null || id === undefined) return;
+        navigation.navigate('WorkoutEdit', { workoutIndex: id });
     };
 
     return (

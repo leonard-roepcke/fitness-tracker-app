@@ -91,8 +91,8 @@ export default function WorkoutScreen() {
       if (idx !== i_exercise) return ex;
 
       // aktuelle Übung updaten
-      const newLastWeight = [...ex.last_weight];
-      const newLastReps = [...ex.last_reps];
+      const newLastWeight = [...(ex.last_weight ?? [])];
+      const newLastReps = [...(ex.last_reps ?? [])];
 
       newLastWeight[i_set] = weight;
       newLastReps[i_set] = reps;
