@@ -178,7 +178,7 @@ export default function WorkoutEditScreen({ route }: any) {
         {workout.exercises.map((exercise, exIndex) => (
           <View key={exIndex} style={styles.exerciseBox}>
             <TextInput
-              style={[styles.input, {flex: 1, marginRight:8}]}
+              style={[styles.input, {flex: 1, marginRight:8, }]}
               value={exercise.name}
               onChangeText={(text) => handleExerciseChange(exIndex, 'name', text)}
               placeholder="Exercise Name"
@@ -207,6 +207,8 @@ export default function WorkoutEditScreen({ route }: any) {
         ))}
 
         <CreateBox  onPress={addWorkout} iconName='add' text='Add workout'/>
+        <Text style={styles.title}/>
+        <Text style={styles.title}/>
       </ScrollView>
     </View>
   );

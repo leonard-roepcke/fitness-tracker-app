@@ -138,20 +138,20 @@ export default function WorkoutScreen({ route, navigation }: any) {
         <View style={styles.container}>
             <Text style={styles.title}></Text>
 
-            <View style={{ height: 50, justifyContent: 'center' }}>
+            <View style={{ height: 60, justifyContent: 'center' }}>
               {/* Absolute Title */}
-              <Text style={[styles.title, { position: 'absolute', left: 0, right: 0, textAlign: 'center' }]}>
+              <Text style={[styles.title, { position: 'absolute', left: 0, right: 0, textAlign: 'center' , height:60, paddingTop:18,}]}>
                 {i_exercise + 1}/{workout.exercises.length} {workout.name}
               </Text>
             
               {/* Back Button */}
-              <View style={{ position: 'absolute', left: 0 }}>
+              <View style={{ position: 'absolute', left: 0 , top: 0}}>
                 <CreateBox onPress={back} iconName='arrow-back' />
               </View>
             </View>
 
             <Text/>
-            <Text style={styles.subtitle}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
+            <Text style={[styles.subtitle, {backgroundColor:colors.card, height:50, marginTop:5, paddingTop:8,borderRadius: 8,}]}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
             <Text style={styles.title}></Text>
             <RepWeightPicker 
                 reps={reps}                    // Aktuelle Wiederholungen
