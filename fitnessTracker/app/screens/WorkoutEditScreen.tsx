@@ -153,6 +153,34 @@ export default function WorkoutEditScreen({ route }: any) {
     setWorkouts(updated);
   };
 
+  const changeSets = (exerciseIndex: number, value: number) => {
+  const updated = [...workouts];
+  const ex = updated[index].exercises[exerciseIndex];
+  
+  // Setze die neue Anzahl der Sets
+  ex.sets = value;
+  
+  // Passe last_reps an
+  if (!ex.last_reps) ex.last_reps = [];
+  while (ex.last_reps.length < value) {
+    ex.last_reps.push(0);
+  }
+  if (ex.last_reps.length > value) {
+    ex.last_reps = ex.last_reps.slice(0, value);
+  }
+  
+  // Passe last_weight an
+  if (!ex.last_weight) ex.last_weight = [];
+  while (ex.last_weight.length < value) {
+    ex.last_weight.push(0);
+  }
+  if (ex.last_weight.length > value) {
+    ex.last_weight = ex.last_weight.slice(0, value);
+  }
+  
+  setWorkouts(updated);
+};
+
   return (
     <View style={styles.container}>
         <Text style={styles.title}></Text>
@@ -189,8 +217,10 @@ export default function WorkoutEditScreen({ route }: any) {
             <NumberWheel
                       min={1}
                       max={30}
-                      value={3}
-                      onValueChange={back}
+                      value={exercise.sets
+                      
+                      }
+                      onValueChange={(value) => changeSets(exIndex, value)}
                       width={90}
                       suffix=' Sets'
                       visibleItems={3}
@@ -199,8 +229,6 @@ export default function WorkoutEditScreen({ route }: any) {
             </View>
 
             <CreateBox  onPress={() => delExercise(exIndex)} iconName='trash'/>
-
-
             
             
           </View>
