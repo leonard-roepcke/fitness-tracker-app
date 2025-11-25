@@ -164,10 +164,10 @@ export default function WorkoutScreen({ route, navigation }: any) {
             <Text style={[styles.subtitle, {backgroundColor:colors.card, height:50, marginTop:5, paddingTop:8,borderRadius: 8,}]}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
             <Text style={styles.title}></Text>
             <RepWeightPicker 
-                reps={reps}                    // Aktuelle Wiederholungen
-                weight={weight}                // Aktuelles Gewicht (vorher `sets` genannt)
-                onWeightChange={setWeight}     // Handler für Gewicht
-                onRepsChange={setReps}         // Handler für Reps
+                reps={reps}                    
+                weight={weight}                
+                onWeightChange={setWeight}     
+                onRepsChange={setReps}         
             />
             <Text style={styles.title}></Text>
             <Button 
