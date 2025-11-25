@@ -11,6 +11,7 @@ export default function WorkoutEditScreen({ route }: any) {
   const colors = useTheme();
   const [workouts, setWorkouts] = useWorkouts();
   const router = useRouter();
+  const [scrollEnabled, setScrollEnabled] = useState(true);
 
   if (!workouts) return null;
 
@@ -185,7 +186,7 @@ export default function WorkoutEditScreen({ route }: any) {
     <View style={styles.container}>
         <Text style={styles.title}></Text>
         
-      <ScrollView style={styles.content}>
+      <ScrollView style={styles.content} scrollEnabled={scrollEnabled}>
         {/* Workout Name */}
 
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
@@ -214,6 +215,11 @@ export default function WorkoutEditScreen({ route }: any) {
             />
 
             <View>
+
+              <View
+                onTouchStart={() => setScrollEnabled(false)} 
+              onTouchEnd={() => setScrollEnabled(true)}     
+              >
             <NumberWheel
                       min={1}
                       max={30}
@@ -225,6 +231,8 @@ export default function WorkoutEditScreen({ route }: any) {
                       suffix=' Sets'
                       visibleItems={3}
             />
+
+              </View>
 
             </View>
 

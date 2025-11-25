@@ -134,6 +134,12 @@ export default function WorkoutScreen({ route, navigation }: any) {
    const back = () => {
       router.back();
    };
+   const handleEditPress = (id:number) => {
+        if (id === null || id === undefined) return;
+        navigation.navigate('WorkoutEdit', { workoutId: id });
+    };
+
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}></Text>
@@ -147,6 +153,10 @@ export default function WorkoutScreen({ route, navigation }: any) {
               {/* Back Button */}
               <View style={{ position: 'absolute', left: 0 , top: 0}}>
                 <CreateBox onPress={back} iconName='arrow-back' />
+              </View>
+
+              <View style={{ position: 'absolute', right: 0 , top: 0}}>
+                <CreateBox onPress={()=>handleEditPress(i_exercise-1)} iconName='create-outline' />
               </View>
             </View>
 

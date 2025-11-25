@@ -120,6 +120,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     scrollView: {
       width: '100%',
       height: '100%',
+      zIndex: 10,
     },
     paddingItem: {
       height: itemHeight,
@@ -153,6 +154,8 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
         onScrollEndDrag={handleScrollEndDrag}
         onMomentumScrollEnd={handleMomentumScrollEnd}
         scrollEventThrottle={16}
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => e.stopPropagation()}
       >
         {/* Top Padding */}
         {Array.from({ length: paddingItems }).map((_, i) => (
