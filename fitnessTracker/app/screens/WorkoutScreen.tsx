@@ -156,7 +156,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
               </View>
 
               <View style={{ position: 'absolute', right: 0 , top: 0}}>
-                <CreateBox onPress={()=>handleEditPress(i_exercise-1)} iconName='create-outline' />
+                <CreateBox onPress={()=>handleEditPress(workout.id)} iconName='create-outline' />
               </View>
             </View>
 
