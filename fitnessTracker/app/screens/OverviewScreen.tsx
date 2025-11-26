@@ -6,10 +6,12 @@ import { WorkoutBox } from '../components/WorkoutBox';
 import { useTheme } from '../hooks/useTheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useWorkouts } from '../../context/WorkoutContext';
+import { useNavigation } from 'expo-router';
 
 export default function OverviewScreen() {
     const [workouts, setWorkouts] = useWorkouts();
     const colors = useTheme();
+    const navigation: any = useNavigation();
 
     const styles = StyleSheet.create({
         container: {
@@ -50,9 +52,19 @@ export default function OverviewScreen() {
         setWorkouts([...workouts, newWorkout]);
     };
 
+    const settings = () => {
+        navigation.navigate('Settings');
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}></Text>
+            <Text style={styles.title}></Text>
+
+              <View style={{ position: 'absolute', right: 20 , top: 20}}>
+                <CreateBox onPress={settings} iconName='settings' />
+              </View>
+
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}></Text>
                 
