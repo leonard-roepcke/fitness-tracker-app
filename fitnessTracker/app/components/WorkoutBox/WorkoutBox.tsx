@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Workout } from '../../types/workout';
 import { useTheme } from "../../hooks/useTheme";
 import { useNavigation } from '@react-navigation/native';
+import { CreateBox } from '../CreateBox';
 
 const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
     const colors = useTheme();
@@ -12,8 +13,9 @@ const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
         box: {
             marginVertical: 8,
             backgroundColor: colors.card,
-            borderRadius: 5,
-            padding: 16,
+            borderTopLeftRadius: 5,
+            borderBottomLeftRadius: 5,
+            padding: 18.5,
             width: '100%',
         },
         content: {
@@ -45,14 +47,15 @@ const WorkoutBox = ({ workout }: { workout: Workout | string }) => {
     };
 
     return (
-        <TouchableOpacity style={styles.box} onPress={handlePress}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+        <TouchableOpacity style={[styles.box, { flex: 1 }]} onPress={handlePress}>
             <View style={styles.content}>
                 <Text style={styles.text}>{name}</Text>
-                <TouchableOpacity onPress={handleEditPress}>
-                    <Ionicons name="create-outline" size={24} color={colors.text} />
-                </TouchableOpacity>
+                
             </View>
         </TouchableOpacity>
+        <CreateBox  onPress={handleEditPress} iconName='create-outline' borderBottomLeftRadius={0} borderTopLeftRadius={0}/>
+        </View>
     );
 }
 
