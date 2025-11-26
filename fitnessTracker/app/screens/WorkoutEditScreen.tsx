@@ -5,6 +5,8 @@ import { useTheme } from '../hooks/useTheme';
 import { CreateBox } from '../components/CreateBox';
 import { useRouter } from 'expo-router';
 import { NumberWheel } from '../components/NumberWheel';
+import { KeyboardAvoidingView, Platform } from 'react-native';
+
 
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
@@ -183,14 +185,20 @@ export default function WorkoutEditScreen({ route }: any) {
 };
 
   return (
-    <View style={styles.container}>
-        <Text style={styles.title}></Text>
-        
-      <ScrollView style={styles.content} scrollEnabled={scrollEnabled}>
-        {/* Workout Name */}
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-        <CreateBox  onPress={back} iconName='arrow-back'/>
+  <KeyboardAvoidingView
+    style={{ flex: 1, backgroundColor: colors.background }}
+    behavior={Platform.OS === "ios" ? "padding" : undefined}
+    keyboardVerticalOffset={0}
+  >
+    <ScrollView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      contentContainerStyle={{ padding: 16, paddingBottom: 60,paddingTop: 20,}}
+      scrollEnabled={scrollEnabled}
+      keyboardShouldPersistTaps="handled"
+    >
+      {/* Workout Name */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+        <CreateBox onPress={back} iconName='arrow-back'/>
         <TextInput
           style={[styles.input, { flex: 1, marginHorizontal: 12 , height:50, marginTop:12}]}
           value={workout.name}
@@ -198,54 +206,44 @@ export default function WorkoutEditScreen({ route }: any) {
           placeholder="Workout Name"
           placeholderTextColor={colors.textSecondary}
         />
-        <CreateBox  onPress={del} iconName='trash'/>
-        </View>
-        
-        
+        <CreateBox onPress={del} iconName='trash'/>
+      </View>
 
-        {/* Exercises */}
-        {workout.exercises.map((exercise, exIndex) => (
-          <View key={exIndex} style={styles.exerciseBox}>
-            <TextInput
-              style={[styles.input, {flex: 1, marginRight:8, }]}
-              value={exercise.name}
-              onChangeText={(text) => handleExerciseChange(exIndex, 'name', text)}
-              placeholder="Exercise Name"
-              placeholderTextColor={colors.textSecondary}
-            />
+      {/* Exercises */}
+      {workout.exercises.map((exercise, exIndex) => (
+        <View key={exIndex} style={styles.exerciseBox}>
 
-            <View>
+          <TextInput
+            style={[styles.input, {flex: 1, marginRight:8}]}
+            value={exercise.name}
+            onChangeText={(text) => handleExerciseChange(exIndex, 'name', text)}
+            placeholder="Exercise Name"
+            placeholderTextColor={colors.textSecondary}
+          />
 
-              <View
-                onTouchStart={() => setScrollEnabled(false)} 
-              onTouchEnd={() => setScrollEnabled(true)}     
-              >
+          {/* Wheel: Scroll deaktivieren während Drag */}
+          <View
+            onTouchStart={() => setScrollEnabled(false)}
+            onTouchEnd={() => setScrollEnabled(true)}
+          >
             <NumberWheel
-                      min={1}
-                      max={30}
-                      value={exercise.sets
-                      
-                      }
-                      onValueChange={(value) => changeSets(exIndex, value)}
-                      width={90}
-                      suffix=' Sets'
-                      visibleItems={3}
+              min={1}
+              max={30}
+              value={exercise.sets}
+              onValueChange={(value) => changeSets(exIndex, value)}
+              width={90}
+              suffix=' Sets'
+              visibleItems={3}
             />
-
-              </View>
-
-            </View>
-
-            <CreateBox  onPress={() => delExercise(exIndex)} iconName='trash'/>
-            
-            
           </View>
-        ))}
 
-        <CreateBox  onPress={addWorkout} iconName='add' text='Add workout'/>
-        <Text style={styles.title}/>
-        <Text style={styles.title}/>
-      </ScrollView>
-    </View>
-  );
+          <CreateBox onPress={() => delExercise(exIndex)} iconName='trash'/>
+        </View>
+      ))}
+
+      <CreateBox onPress={addWorkout} iconName='add' text='Add workout'/>
+    </ScrollView>
+  </KeyboardAvoidingView>
+);
+
 }
