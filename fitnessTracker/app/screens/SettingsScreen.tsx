@@ -1,73 +1,69 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { SettingsBox } from '../components/SettingsBox/SettinsBox';
-import { useTheme } from '../hooks/useTheme';
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { ThemeContext } from "../../context/ThemeContext";
+import { useTheme } from "../hooks/useTheme";
+import { SettingsBox } from "../components/SettingsBox/SettinsBox";
+import { CreateBox } from "../components/CreateBox";
+import { useRouter } from "expo-router";
 
 export default function SettingsScreen() {
+  const { isDark, toggleTheme } = useContext(ThemeContext);
   const colors = useTheme();
-
-  const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
-  const [location, setLocation] = useState(true);
-  const [autoplay, setAutoplay] = useState(false);
+  const router = useRouter();
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.header, { color: colors.text }]}>Einstellungen</Text>
-
-      {/* App-Einstellungen Sektion */}
-      <View style={[styles.section, { backgroundColor: colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-          APP-EINSTELLUNGEN
-        </Text>
-
-        <SettingsBox
-          title="Dunkelmodus"
-          subtitle="Darkmode aktivieren"
-          value={darkMode}
-          onValueChange={setDarkMode}
-        />
-        <SettingsBox
-          title="Benachrichtigungen"
-          subtitle="Push-Benachrichtigungen erhalten"
-          value={notifications}
-          onValueChange={setNotifications}
-        />
-        <SettingsBox
-          title="Standort"
-          subtitle="Standortzugriff erlauben"
-          value={location}
-          onValueChange={setLocation}
-        />
-        <SettingsBox
-          title="Autoplay"
-          subtitle="Videos automatisch abspielen"
-          value={autoplay}
-          onValueChange={setAutoplay}
-        />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      
+      {/* Header mit Back-Button */}
+      <View style={styles.headerContainer}>
+        <View style={styles.backButtonWrapper} pointerEvents="box-none">
+          <CreateBox onPress={() => router.back()} iconName="arrow-back" />
+        </View>
+        <Text style={[styles.header, { color: colors.text }]}>Einstellungen</Text>
       </View>
 
-      {/* Weitere Optionen Sektion */}
-      <View style={[styles.section, { backgroundColor: colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-          WEITERE OPTIONEN
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+
+        {/* App-Einstellungen */}
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+            APP-EINSTELLUNGEN
+          </Text>
+
+          <SettingsBox
+            title="Dunkelmodus"
+            subtitle="Darkmode aktivieren"
+            value={isDark}
+            onValueChange={toggleTheme}
+          />
+        </View>
+
+        {/* Weitere Optionen */}
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+            WEITERE OPTIONEN
+          </Text>
+
+          <TouchableOpacity style={styles.button}>
+            <Text style={[styles.buttonText, { color: colors.primary }]}>Datenschutz</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button}>
+            <Text style={[styles.buttonText, { color: colors.primary }]}>Nutzungsbedingungen</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button}>
+            <Text style={[styles.buttonText, { color: colors.primary }]}>Hilfe & Support</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Footer */}
+        <Text style={[styles.version, { color: colors.textSecondary }]}>
+          Version 1.0.0
         </Text>
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={[styles.buttonText, { color: colors.primary }]}>Datenschutz</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Text style={[styles.buttonText, { color: colors.primary }]}>Nutzungsbedingungen</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Text style={[styles.buttonText, { color: colors.primary }]}>Hilfe & Support</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={[styles.version, { color: colors.textSecondary }]}>Version 1.0.0</Text>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -75,36 +71,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+
+  headerContainer: {
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  backButtonWrapper: {
+    position: "absolute",
+    left: 20,
+    top: 40,
+    zIndex: 10,
+  },
+
   header: {
     fontSize: 32,
-    fontWeight: 'bold',
-    padding: 20,
-    paddingTop: 40,
+    fontWeight: "bold",
+    marginTop: 35,
   },
+
+  scrollContent: {
+    paddingBottom: 40,
+  },
+
   section: {
     marginTop: 20,
     paddingVertical: 10,
   },
+
   sectionTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
+
   button: {
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#C6C6C8', // optional, kann dynamisch gemacht werden
+    borderBottomColor: "#C6C6C8",
   },
+
   buttonText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
+
   version: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 14,
     paddingVertical: 30,
   },
