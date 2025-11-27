@@ -10,7 +10,8 @@ import * as Application from 'expo-application';
 
 
 export default function SettingsScreen() {
-  const { isDark, toggleTheme } = useContext(ThemeContext);
+  const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker } = useContext(ThemeContext);
+
   const colors = useTheme();
   const router = useRouter();
 
@@ -41,6 +42,13 @@ export default function SettingsScreen() {
             subtitle="Darkmode aktivieren"
             value={isDark}
             onValueChange={toggleTheme}
+          />
+
+          <SettingsBox
+            title="Gewicht Tracker"
+            subtitle="Gewicht Tracking im Overview anzeigen"
+            value={isWTrackerEnabled}
+            onValueChange={toggleWTracker}
           />
         </View>
 

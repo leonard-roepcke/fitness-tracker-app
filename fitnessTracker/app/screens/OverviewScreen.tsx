@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Workout } from "../types/workout";
 import { CreateBox } from '../components/CreateBox';
@@ -7,11 +7,19 @@ import { useTheme } from '../hooks/useTheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { useNavigation } from 'expo-router';
+import WStats from '../components/WStats';
+import { ThemeContext } from '@/context/ThemeContext';
+
 
 export default function OverviewScreen() {
     const [workouts, setWorkouts] = useWorkouts();
     const colors = useTheme();
     const navigation: any = useNavigation();
+    const { isWTrackerEnabled } = useContext(ThemeContext);
+    
+
+    
+
 
     const styles = StyleSheet.create({
         container: {
@@ -60,6 +68,8 @@ export default function OverviewScreen() {
         <View style={styles.container}>
             <Text style={styles.title}></Text>
             <Text style={styles.title}></Text>
+
+            {isWTrackerEnabled && <WStats />}
 
               <View style={{ position: 'absolute', right: 20 , top: 20}}>
                 <CreateBox onPress={settings} iconName='settings' />
