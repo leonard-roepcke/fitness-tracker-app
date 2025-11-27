@@ -5,11 +5,17 @@ import { useTheme } from "../hooks/useTheme";
 import { SettingsBox } from "../components/SettingsBox/SettinsBox";
 import { CreateBox } from "../components/CreateBox";
 import { useRouter } from "expo-router";
+import * as Application from 'expo-application';
+
+
 
 export default function SettingsScreen() {
   const { isDark, toggleTheme } = useContext(ThemeContext);
   const colors = useTheme();
   const router = useRouter();
+
+  const version = Application.nativeApplicationVersion;
+  const build = Application.nativeBuildVersion;  
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -21,15 +27,15 @@ export default function SettingsScreen() {
         </View>
         <Text style={[styles.header, { color: colors.text }]}>Einstellungen</Text>
       </View>
-
+ 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-
+ 
         {/* App-Einstellungen */}
         <View style={[styles.section, { backgroundColor: colors.card }]}>
           <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
             APP-EINSTELLUNGEN
           </Text>
-
+                                           
           <SettingsBox
             title="Dunkelmodus"
             subtitle="Darkmode aktivieren"
@@ -59,7 +65,7 @@ export default function SettingsScreen() {
 
         {/* Footer */}
         <Text style={[styles.version, { color: colors.textSecondary }]}>
-          Version 1.0.0
+          Version $1.0.0.0
         </Text>
 
       </ScrollView>
@@ -78,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  backButtonWrapper: {
+  backButtonWrapper: { 
     position: "absolute",
     left: 20,
     top: 40,
