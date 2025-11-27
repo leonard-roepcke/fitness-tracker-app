@@ -26,7 +26,20 @@ export default function WStats() {
     const average = weightValues.reduce((a, b) => a + b, 0) / weightValues.length;
     const change = weightValues.length > 1 ? current - weightValues[0] : 0;
 
-    return { current, highest, lowest, average, change, weightValues };
+    // Durchschnitt der letzten Woche berechnen
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    const lastWeekWeights = weights.filter(w => {
+      const entryDate = new Date(w.date);
+      return entryDate >= oneWeekAgo;
+    });
+    
+    const weekAverage = lastWeekWeights.length > 0
+      ? lastWeekWeights.reduce((sum, w) => sum + w.weight, 0) / lastWeekWeights.length
+      : current;
+
+    return { current, highest, lowest, average, change, weightValues, weekAverage };
   };
 
   const handleAddWeight = async () => {
@@ -149,15 +162,15 @@ export default function WStats() {
         </View>
       )}
 
-      {/* Hauptwert */}
-      <View style={styles.mainValue}>
-        <Text style={[styles.currentWeight, { color: colors.primary }]}>
-          {stats.current.toFixed(1)}
+      {/* Kompakte Statistik */}
+      <View style={styles.compactStats}>
+        <Text style={[styles.compactText, { color: colors.text }]}>
+          Ø {stats.weekAverage.toFixed(1)}kg
         </Text>
-        <Text style={[styles.unit, { color: colors.text }]}>kg</Text>
+        <Text style={[styles.compactText, { color: changeColor }]}>
+          {stats.change > 0 ? '+' : ''}{stats.change.toFixed(1)}kg
+        </Text>
       </View>
-
-      
 
       {/* Chart */}
       <View style={styles.chartContainer}>
@@ -221,8 +234,6 @@ export default function WStats() {
           })}
         </Svg>
       </View>
-
-      
     </View>
   );
 }
@@ -297,53 +308,19 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'white',
   },
-  mainValue: {
+  compactStats: {
     flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  currentWeight: {
-    fontSize: 56,
-    fontWeight: '700',
-  },
-  unit: {
-    fontSize: 24,
-    fontWeight: '500',
-    opacity: 0.6,
-    marginLeft: 8,
-  },
-  changeContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    justifyContent: 'center',
+    gap: 12,
+    marginBottom: 20,
   },
-  changeText: {
-    fontSize: 20,
+  compactText: {
+    fontSize: 18,
     fontWeight: '600',
-  },
-  changeLabel: {
-    fontSize: 12,
-    opacity: 0.6,
-    marginTop: 2,
   },
   chartContainer: {
     marginBottom: 20,
     alignItems: 'center',
-  },
-  miniStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  miniStat: {
-    alignItems: 'center',
-  },
-  miniStatLabel: {
-    fontSize: 12,
-    opacity: 0.6,
-    marginBottom: 4,
-  },
-  miniStatValue: {
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
