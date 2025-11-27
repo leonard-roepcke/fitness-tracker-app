@@ -7,7 +7,7 @@ import Svg, { Line, Circle, Polyline } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
 const CHART_WIDTH = width - 48;
-const CHART_HEIGHT = 180;
+const CHART_HEIGHT = 120;
 
 export default function WStats() {
   const colors = useTheme();
@@ -123,7 +123,17 @@ export default function WStats() {
   return (
     <View style={[styles.container, { backgroundColor: colors.card }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>Gewicht</Text>
+        <View style={styles.headerLeft}>
+          <Text style={[styles.title, { color: colors.text }]}>Gewicht</Text>
+          <View style={styles.compactStats}>
+            <Text style={[styles.compactText, { color: colors.text }]}>
+              Ø {stats.weekAverage.toFixed(1)}kg
+            </Text>
+            <Text style={[styles.compactText, { color: changeColor }]}>
+              {stats.change > 0 ? '+' : ''}{stats.change.toFixed(1)}kg
+            </Text>
+          </View>
+        </View>
         <TouchableOpacity
           style={[styles.addButtonSmall, { backgroundColor: colors.primary }]}
           onPress={() => setShowInput(!showInput)}
@@ -147,7 +157,7 @@ export default function WStats() {
               style={[styles.saveButton, { backgroundColor: colors.primary }]}
               onPress={handleAddWeight}
             >
-              <Text style={styles.buttonText}>Speichern</Text>
+              <Text style={styles.buttonText}>OK</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cancelButton, { borderColor: colors.text }]}
@@ -156,61 +166,22 @@ export default function WStats() {
                 setNewWeight('');
               }}
             >
-              <Text style={[styles.buttonText, { color: colors.text }]}>Abbrechen</Text>
+              <Text style={[styles.buttonText, { color: colors.text }]}>X</Text>
             </TouchableOpacity>
           </View>
         </View>
       )}
 
-      {/* Kompakte Statistik */}
-      <View style={styles.compactStats}>
-        <Text style={[styles.compactText, { color: colors.text }]}>
-          Ø {stats.weekAverage.toFixed(1)}kg
-        </Text>
-        <Text style={[styles.compactText, { color: changeColor }]}>
-          {stats.change > 0 ? '+' : ''}{stats.change.toFixed(1)}kg
-        </Text>
-      </View>
-
       {/* Chart */}
       <View style={styles.chartContainer}>
         <Svg width={CHART_WIDTH} height={CHART_HEIGHT}>
-          {/* Grid Linien */}
-          <Line
-            x1="0"
-            y1={CHART_HEIGHT}
-            x2={CHART_WIDTH}
-            y2={CHART_HEIGHT}
-            stroke={colors.text}
-            strokeWidth="1"
-            opacity="0.1"
-          />
-          <Line
-            x1="0"
-            y1={CHART_HEIGHT / 2}
-            x2={CHART_WIDTH}
-            y2={CHART_HEIGHT / 2}
-            stroke={colors.text}
-            strokeWidth="1"
-            opacity="0.1"
-          />
-          <Line
-            x1="0"
-            y1="0"
-            x2={CHART_WIDTH}
-            y2="0"
-            stroke={colors.text}
-            strokeWidth="1"
-            opacity="0.1"
-          />
-
           {/* Linie */}
           {points && (
             <Polyline
               points={points}
               fill="none"
               stroke={colors.primary}
-              strokeWidth="3"
+              strokeWidth="2"
             />
           )}
 
@@ -227,7 +198,7 @@ export default function WStats() {
                 key={index}
                 cx={x}
                 cy={y}
-                r="5"
+                r="4"
                 fill={colors.primary}
               />
             );
@@ -241,18 +212,22 @@ export default function WStats() {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
     marginVertical: 8,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
+  },
+  headerLeft: {
+    flex: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
+    marginBottom: 4,
   },
   addButton: {
     paddingVertical: 12,
@@ -261,30 +236,30 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   addButtonSmall: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 35,
+    height: 35,
+    borderRadius: 13,
     justifyContent: 'center',
     alignItems: 'center',
   },
   addButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '600',                                                                             
   },
   emptyText: {
     opacity: 0.6,
     marginBottom: 8,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 12,
   },
   input: {
     borderWidth: 2,
     borderRadius: 12,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 12,
+    padding: 10,
+    fontSize: 14,
+    marginBottom: 8,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -292,35 +267,32 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 10,
     borderRadius: 12,
     alignItems: 'center',
   },
   cancelButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: 'white',
   },
   compactStats: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-    marginBottom: 20,
+    gap: 8,
   },
   compactText: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
   },
   chartContainer: {
-    marginBottom: 20,
     alignItems: 'center',
   },
 });
