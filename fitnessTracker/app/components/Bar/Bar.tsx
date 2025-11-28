@@ -1,10 +1,14 @@
-import { View, TouchableOpacity, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, TouchableOpacity } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/app/hooks/useTheme";
 
 export const Bar = () => {
     const colors = useTheme();
     const navigation: any = useNavigation();
+    const route = useRoute(); // aktueller Screen
+
+    const current = route.name; // z.B. "Overview", "Settings"
 
     return (
         <View
@@ -16,26 +20,32 @@ export const Bar = () => {
                 flexDirection: "row",
                 justifyContent: "space-evenly",
                 alignItems: "center",
-                padding: 12,
+                padding: 14,
                 backgroundColor: colors.card,
-                borderRadius: 20,
+                borderRadius: 30,
                 marginHorizontal: 40,
                 shadowColor: "#000",
                 shadowOpacity: 0.15,
-                shadowRadius: 8,
+                shadowRadius: 10,
                 elevation: 5,
             }}
         >
-            <TouchableOpacity
-                onPress={() => navigation.navigate("Overview")}
-            >
-                <Text style={{ color: colors.text }}>Home</Text>
+            {/* Home */}
+            <TouchableOpacity onPress={() => navigation.navigate("Overview")}>
+                <Ionicons
+                    name={current === "Overview" ? "home" : "home-outline"}
+                    size={28}
+                    color={colors.text}
+                />
             </TouchableOpacity>
 
-            <TouchableOpacity
-                onPress={() => navigation.navigate("Settings")}
-            >
-                <Text style={{ color: colors.text }}>Settings</Text>
+            {/* Settings */}
+            <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+                <Ionicons
+                    name={current === "Settings" ? "settings" : "settings-outline"}
+                    size={28}
+                    color={colors.text}
+                />
             </TouchableOpacity>
         </View>
     );

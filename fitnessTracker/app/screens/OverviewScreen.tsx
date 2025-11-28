@@ -71,11 +71,6 @@ export default function OverviewScreen() {
             <Text style={styles.title}></Text>
             <Text style={styles.title}></Text>
 
-
-              <View style={{ position: 'absolute', right: 20 , top: 20}}>
-                <CreateBox onPress={settings} iconName='settings' />
-              </View>
-
             <ScrollView style={styles.scrollView}>
                 {isWTrackerEnabled && <WStats />}
                 <Text style={styles.subtitle}></Text>
