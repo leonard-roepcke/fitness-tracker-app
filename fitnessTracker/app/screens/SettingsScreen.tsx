@@ -24,9 +24,7 @@ export default function SettingsScreen() {
       
       {/* Header mit Back-Button */}
       <View style={styles.headerContainer}>
-        <View style={styles.backButtonWrapper} pointerEvents="box-none">
-          <CreateBox onPress={() => router.back()} iconName="arrow-back" />
-        </View>
+        
         <Text style={[styles.header, { color: colors.text }]}>Einstellungen</Text>
       </View>
  
