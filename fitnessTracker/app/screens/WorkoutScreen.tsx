@@ -7,6 +7,7 @@ import { RepWeightPicker } from '../components/RepWeightPicker';
 import { useTheme } from '../hooks/useTheme';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { CreateBox } from '../components/CreateBox';
+import Bar from '../components/Bar';
 
 
 export default function WorkoutScreen({ route, navigation }: any) {
@@ -175,6 +176,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
                 onPress={handlePress}
                 variant="primary"
             />
+            <Bar/>
         </View>
     );
 }

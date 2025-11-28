@@ -10,7 +10,7 @@ export default function RootLayout() {
     <ThemeProvider>
     <WorkoutProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack screenOptions={{headerShown: false}}/>
+        <Stack screenOptions={{headerShown: false, animation: "none",}}/>
       </GestureHandlerRootView>
     </WorkoutProvider>
     </ThemeProvider>

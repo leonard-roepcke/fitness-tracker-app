@@ -6,6 +6,7 @@ import { CreateBox } from '../components/CreateBox';
 import { useRouter } from 'expo-router';
 import { NumberWheel } from '../components/NumberWheel';
 import { KeyboardAvoidingView, Platform } from 'react-native';
+import Bar from '../components/Bar';
 
 
 export default function WorkoutEditScreen({ route }: any) {
@@ -242,8 +243,12 @@ export default function WorkoutEditScreen({ route }: any) {
       ))}
 
       <CreateBox onPress={addWorkout} iconName='add' text='Add workout'/>
+      <Text style={styles.title}/>
+      <Text style={styles.title}/>
     </ScrollView>
+    <Bar/>
   </KeyboardAvoidingView>
+  
 );
 
 }
