@@ -77,9 +77,9 @@ export default function SettingsScreen() {
           Version $1.0.0.0
         </Text>
 
-        <Bar/>
 
       </ScrollView>
+        <Bar/>
     </View>
   );
 }
