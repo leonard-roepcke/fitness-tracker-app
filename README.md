@@ -12,4 +12,4 @@ build
 eas login
 //die daten sind in bitworden unter expos
 eas build -p android --profile preview
-
+ 

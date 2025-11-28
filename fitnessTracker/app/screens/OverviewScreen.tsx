@@ -9,6 +9,7 @@ import { useWorkouts } from '../../context/WorkoutContext';
 import { useNavigation } from 'expo-router';
 import WStats from '../components/WStats';
 import { ThemeContext } from '@/context/ThemeContext';
+import Bar from '../components/Bar';
 
 
 export default function OverviewScreen() {
@@ -66,6 +67,7 @@ export default function OverviewScreen() {
 
     return (
         <View style={styles.container}>
+
             <Text style={styles.title}></Text>
             <Text style={styles.title}></Text>
 
@@ -84,6 +86,7 @@ export default function OverviewScreen() {
                 <Text style={styles.title}/>
                         <Text style={styles.title}/>
             </ScrollView>
+            <Bar/>
         </View>
     );
 }

@@ -6,6 +6,7 @@ import { SettingsBox } from "../components/SettingsBox/SettinsBox";
 import { CreateBox } from "../components/CreateBox";
 import { useRouter } from "expo-router";
 import * as Application from 'expo-application';
+import Bar from "../components/Bar";
 
 
 
@@ -75,6 +76,8 @@ export default function SettingsScreen() {
         <Text style={[styles.version, { color: colors.textSecondary }]}>
           Version $1.0.0.0
         </Text>
+
+        <Bar/>
 
       </ScrollView>
     </View>
