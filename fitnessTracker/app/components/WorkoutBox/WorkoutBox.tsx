@@ -34,7 +34,6 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             color: colors.text,
             fontSize: 16,
             fontWeight: '500',
-            numberOfLines: 1,
         },
         actionsRow: {
             flexDirection: 'row',
