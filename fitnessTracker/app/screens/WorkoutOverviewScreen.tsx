@@ -74,7 +74,7 @@ export default function WorkoutOverview() {
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}></Text>
                 
-                {workouts?.map((w: Workout, index: number) => (<WorkoutBox key={index} workout={w} />))}
+                {workouts?.map((w: Workout, index: number) => (<WorkoutBox variant='default' key={index} workout={w} />))}
 
                 <CreateBox  onPress={addWorkout} iconName='add' text='create workout'/>
                 <Text style={styles.title}/>

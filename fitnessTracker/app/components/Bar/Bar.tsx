@@ -12,8 +12,8 @@ export const Bar = () => {
     const current = route.name;
 
     // aktive vs. inaktive Größe
-    const activeSize = 30;
-    const inactiveSize = 24;
+    const activeSize = 24;
+    const inactiveSize = 18;
 
     return (
         <View
