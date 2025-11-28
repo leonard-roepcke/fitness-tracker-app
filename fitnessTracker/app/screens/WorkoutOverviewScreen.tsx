@@ -12,7 +12,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 import Bar from '../components/Bar';
 
 
-export default function OverviewScreen() {
+export default function WorkoutOverview() {
     const [workouts, setWorkouts] = useWorkouts();
     const colors = useTheme();
     const navigation: any = useNavigation();
@@ -72,9 +72,13 @@ export default function OverviewScreen() {
             <Text style={styles.title}></Text>
 
             <ScrollView style={styles.scrollView}>
-                {isWTrackerEnabled && <WStats />}
                 <Text style={styles.subtitle}></Text>
                 
+                {workouts?.map((w: Workout, index: number) => (<WorkoutBox key={index} workout={w} />))}
+
+                <CreateBox  onPress={addWorkout} iconName='add' text='create workout'/>
+                <Text style={styles.title}/>
+                        <Text style={styles.title}/>
             </ScrollView>
             <Bar/>
         </View>

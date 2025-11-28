@@ -2,13 +2,18 @@ import { View, TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/app/hooks/useTheme";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export const Bar = () => {
     const colors = useTheme();
     const navigation: any = useNavigation();
-    const route = useRoute(); // aktueller Screen
+    const route = useRoute();
 
-    const current = route.name; // z.B. "Overview", "Settings"
+    const current = route.name;
+
+    // aktive vs. inaktive Größe
+    const activeSize = 30;
+    const inactiveSize = 24;
 
     return (
         <View
@@ -33,8 +38,17 @@ export const Bar = () => {
             {/* Home */}
             <TouchableOpacity onPress={() => navigation.navigate("Overview")}>
                 <Ionicons
-                    name={current === "Overview" ? "home" : "home-outline"}
-                    size={28}
+                    name="home"
+                    size={current === "Overview" ? activeSize : inactiveSize}
+                    color={colors.text}
+                />
+            </TouchableOpacity>
+
+            {/* Workouts */}
+            <TouchableOpacity onPress={() => navigation.navigate("WorkoutOverview")}>
+                <FontAwesome5
+                    name="dumbbell"
+                    size={current === "WorkoutOverview" ? activeSize : inactiveSize}
                     color={colors.text}
                 />
             </TouchableOpacity>
@@ -42,8 +56,8 @@ export const Bar = () => {
             {/* Settings */}
             <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
                 <Ionicons
-                    name={current === "Settings" ? "settings" : "settings-outline"}
-                    size={28}
+                    name="settings"
+                    size={current === "Settings" ? activeSize : inactiveSize}
                     color={colors.text}
                 />
             </TouchableOpacity>
