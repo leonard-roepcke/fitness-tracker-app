@@ -88,7 +88,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
 
                 {/* STAR LEFT */}
                 <TouchableOpacity style={styles.stripButton} onPress={handleStarPress}>
-                    <CreateBox iconName="star" onPress={handleStarPress}/>
+                    <CreateBox iconName="star-outline" onPress={handleStarPress}/>
                 </TouchableOpacity>
 
                 {/* CENTER BOX */}
@@ -100,7 +100,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
 
                 {/* EDIT RIGHT */}
                 <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress}>
-                    <CreateBox iconName="cube" onPress={handleEditPress}/>
+                    <CreateBox iconName="create-outline" onPress={handleEditPress}/>
                 </TouchableOpacity>
 
             </View>
