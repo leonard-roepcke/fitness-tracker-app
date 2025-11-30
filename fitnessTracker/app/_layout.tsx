@@ -1,8 +1,8 @@
+import { WeightProvider } from '@/context/WeightContext';
 import { Stack } from 'expo-router';
-import { WorkoutProvider } from "../context/WorkoutContext";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from "../context/ThemeContext";
-import { WeightProvider } from '@/context/WeightContext';
+import { WorkoutProvider } from "../context/WorkoutContext";
 
 export default function RootLayout() {
   return (
@@ -10,7 +10,7 @@ export default function RootLayout() {
     <ThemeProvider>
     <WorkoutProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack screenOptions={{headerShown: false, animation: "none",}}/>
+        <Stack screenOptions={{headerShown: false}}/>
       </GestureHandlerRootView>
     </WorkoutProvider>
     </ThemeProvider>
