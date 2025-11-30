@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
-import { View, ScrollView, Text, TextInput, StyleSheet } from 'react-native';
-import { useWorkouts } from '../../context/WorkoutContext';
-import { useTheme } from '../hooks/useTheme';
-import { CreateBox } from '../components/CreateBox';
 import { useRouter } from 'expo-router';
-import { NumberWheel } from '../components/NumberWheel';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
+import { CreateBox } from '../components/CreateBox';
+import { NumberWheel } from '../components/NumberWheel';
+import { useTheme } from '../hooks/useTheme';
 
 
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
   const colors = useTheme();
-  const [workouts, setWorkouts] = useWorkouts();
+  const {workouts, updateWorkout} = useWorkouts();
   const router = useRouter();
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
@@ -87,7 +86,7 @@ export default function WorkoutEditScreen({ route }: any) {
   const handleWorkoutNameChange = (text: string) => {
     const updated = [...workouts];
     updated[index] = { ...updated[index], name: text };
-    setWorkouts(updated);
+    updateWorkout(updated);
   };
 
   const handleExerciseChange = (
@@ -112,14 +111,14 @@ export default function WorkoutEditScreen({ route }: any) {
       if (ex.last_weight.length > newSets) ex.last_weight = ex.last_weight.slice(0, newSets);
     }
 
-    setWorkouts(updated);
+    updateWorkout(updated);
   };
 
   const handleRepChange = (exerciseIndex: number, setIndex: number, value: string) => {
     const updated = [...workouts];
     if (!updated[index].exercises[exerciseIndex].last_reps) updated[index].exercises[exerciseIndex].last_reps = [];
     updated[index].exercises[exerciseIndex].last_reps[setIndex] = parseInt(value) || 0;
-    setWorkouts(updated);
+    updateWorkout(updated);
   };
 
   const handleWeightChange = (exerciseIndex: number, setIndex: number, value: string) => {
@@ -127,7 +126,7 @@ export default function WorkoutEditScreen({ route }: any) {
     const ex = updated[index].exercises[exerciseIndex];
     if (!ex.last_weight) ex.last_weight = [];
     ex.last_weight[setIndex] = parseInt(value) || 0;
-    setWorkouts(updated);
+    updateWorkout(updated);
   };
 
   const back = () => {
@@ -137,7 +136,7 @@ export default function WorkoutEditScreen({ route }: any) {
   const del = () => {
     if (workoutId === undefined) return;
     const updated = workouts.filter((w) => w.id !== workoutId);
-    setWorkouts(updated);
+    updateWorkout(updated);
     router.back();
   };
 
@@ -145,7 +144,7 @@ export default function WorkoutEditScreen({ route }: any) {
     const updated = [...workouts];
     const newExercises = updated[index].exercises.filter((_, idx) => idx !== exerciseIndex);
     updated[index] = { ...updated[index], exercises: newExercises };
-    setWorkouts(updated);
+    updateWorkout(updated);
 };
 
   const addWorkout = () => {
@@ -154,7 +153,7 @@ export default function WorkoutEditScreen({ route }: any) {
     // create a new exercises array and replace the workout object immutably
     const newExercises = [...updated[index].exercises, newExercise];
     updated[index] = { ...updated[index], exercises: newExercises };
-    setWorkouts(updated);
+    updateWorkout(updated);
   };
 
   const changeSets = (exerciseIndex: number, value: number) => {
@@ -182,7 +181,7 @@ export default function WorkoutEditScreen({ route }: any) {
     ex.last_weight = ex.last_weight.slice(0, value);
   }
   
-  setWorkouts(updated);
+  updateWorkout(updated);
 };
 
   return (

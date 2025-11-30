@@ -29,6 +29,12 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
         if(id) toggleFavorite(id)
     };
 
+    const starIcon = typeof workout === "string" 
+    ? "star-outline" 
+    : workout.isFavorite 
+        ? "star"     
+        : "star-outline"; 
+
     const styles = StyleSheet.create({
         stripContainer: {
             width: "100%",
@@ -92,7 +98,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
 
                 {/* STAR LEFT */}
                 <TouchableOpacity style={styles.stripButton} onPress={handleStarPress}>
-                    <CreateBox iconName="star-outline" onPress={handleStarPress}/>
+                    <CreateBox iconName={starIcon} onPress={handleStarPress}/>
                 </TouchableOpacity>
 
                 {/* CENTER BOX */}

@@ -67,27 +67,25 @@ export default function OverviewScreen() {
 
                 {
     workouts
-        ?.reduce((rows: Workout[][], item: Workout, index: number) => {
-            if (index % 2 === 0) rows.push([item]);
-            else rows[rows.length - 1].push(item);
-            return rows;
-        }, [])
-        .map((row, rowIndex) => (
-            <View
-                key={rowIndex}
-                style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}
-            >
-                {row.map((w, i) => (
-                    <View key={i} style={{ flex: 1, marginHorizontal: 4 }}>
-                        <WorkoutBox variant="box" workout={w} />
-                    </View>
-                ))}
-
-                {row.length === 1 && (
-                    <View style={{ flex: 1, marginHorizontal: 4 }} />
-                )}
-            </View>
-        ))
+  ?.filter(w => w.isFavorite)   // nur favorisierte Workouts
+  ?.reduce((rows: Workout[][], item: Workout, index: number) => {
+      if (index % 2 === 0) rows.push([item]);
+      else rows[rows.length - 1].push(item);
+      return rows;
+  }, [])
+  .map((row, rowIndex) => (
+      <View
+          key={rowIndex}
+          style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}
+      >
+          {row.map((w, i) => (
+              <View key={i} style={{ flex: 1, marginHorizontal: 4 }}>
+                  <WorkoutBox variant="box" workout={w} />
+              </View>
+          ))}
+          {row.length === 1 && <View style={{ flex: 1, marginHorizontal: 4 }} />}
+      </View>
+  ))
 }
 
                 
