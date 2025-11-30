@@ -11,7 +11,7 @@ import { Workout } from "../types/workout";
 
 
 export default function OverviewScreen() {
-    const {workouts, addWorkouts} = useWorkouts();
+    const {workouts} = useWorkouts();
     const colors = useTheme();
     const navigation: any = useNavigation();
     const { isWTrackerEnabled } = useContext(ThemeContext);
@@ -65,31 +65,39 @@ export default function OverviewScreen() {
                 {isWTrackerEnabled && <WStats />}
                 <Text style={styles.subtitle}></Text>
 
-                {
-    workouts
-  ?.filter(w => w.isFavorite)   // nur favorisierte Workouts
-  ?.reduce((rows: Workout[][], item: Workout, index: number) => {
-      if (index % 2 === 0) rows.push([item]);
-      else rows[rows.length - 1].push(item);
-      return rows;
-  }, [])
-  .map((row, rowIndex) => (
-      <View
-          key={rowIndex}
-          style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}
-      >
-          {row.map((w, i) => (
-              <View key={i} style={{ flex: 1, marginHorizontal: 4 }}>
-                  <WorkoutBox variant="box" workout={w} />
-              </View>
-          ))}
-          {row.length === 1 && <View style={{ flex: 1, marginHorizontal: 4 }} />}
-      </View>
-  ))
-}
+                {workouts
+                    ?.filter(w => w.isFavorite)
+                    ?.reduce((rows: Workout[][], item: Workout, index: number) => {
+                    if (index % 2 === 0) rows.push([item]);
+                    else rows[rows.length - 1].push(item);
+                    return rows;
+                    }, [])
+                    .map((row, rowIndex) => (
+                    <View
+                        key={rowIndex}
+                        style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginBottom: 10,
+                        }}
+                    >
+                        {row.map((w, i) => (
+                        <View
+                            key={i}
+                            style={{
+                            flex: 1,
+                            // Nur innerer Abstand zwischen Workouts, nicht zum Rand
+                            marginLeft: i === 0 ? 0 : 8,
+                            marginRight: i === row.length - 1 ? 0 : 8,
+                            }}
+                        >
+                            <WorkoutBox variant="box" workout={w} />
+                        </View>
+                        ))}
+                    </View>
+                    ))}
+                </ScrollView>
 
-                
-            </ScrollView>
             <Bar/>
         </View>
     );
