@@ -1,19 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Workout } from "../types/workout";
-import { CreateBox } from '../components/CreateBox';
-import { WorkoutBox } from '../components/WorkoutBox';
-import { useTheme } from '../hooks/useTheme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWorkouts } from '../../context/WorkoutContext';
-import { useNavigation } from 'expo-router';
-import WStats from '../components/WStats';
 import { ThemeContext } from '@/context/ThemeContext';
+import { useNavigation } from 'expo-router';
+import React, { useContext } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
+import { WorkoutBox } from '../components/WorkoutBox';
+import WStats from '../components/WStats';
+import { useTheme } from '../hooks/useTheme';
+import { Workout } from "../types/workout";
 
 
 export default function OverviewScreen() {
-    const [workouts, setWorkouts] = useWorkouts();
+    const {workouts, addWorkouts} = useWorkouts();
     const colors = useTheme();
     const navigation: any = useNavigation();
     const { isWTrackerEnabled } = useContext(ThemeContext);
@@ -50,15 +48,7 @@ export default function OverviewScreen() {
 
     const addWorkout = () => {
         if (!workouts) return;
-        const newId = workouts.length > 0 ? Math.max(...workouts.map(w => w.id ?? 0)) + 1 : 0;
-        const newWorkout: Workout = {
-            id: newId,
-            name: "Neuer Workout",
-            exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10] }],
-            createdAt: Date.now(),
-        };
-
-        setWorkouts([...workouts, newWorkout]);
+        addWorkout();
     };
 
     const settings = () => {

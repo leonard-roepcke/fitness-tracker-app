@@ -1,9 +1,11 @@
+import { useWorkouts } from '@/context/WorkoutContext';
 import { useNavigation } from '@react-navigation/native';
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import { Workout } from '../../types/workout';
 import { CreateBox } from '../CreateBox';
+
 
 const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
     const colors = useTheme();
@@ -12,6 +14,8 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     const isString = typeof workout === "string";
     const name = isString ? workout : workout.name;
     const id = isString ? null : workout.id;
+    const { toggleFavorite } = useWorkouts();
+
 
     const handlePress = () => {
         if (id) navigation.navigate('Workout', { workoutId: id });
@@ -22,7 +26,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     };
 
     const handleStarPress = () => {
-        // star action
+        if(id) toggleFavorite(id)
     };
 
     const styles = StyleSheet.create({

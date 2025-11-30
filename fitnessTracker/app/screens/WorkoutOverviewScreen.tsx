@@ -11,7 +11,7 @@ import { Workout } from "../types/workout";
 
 
 export default function WorkoutOverview() {
-    const [workouts, setWorkouts] = useWorkouts();
+    const {workouts, updateWorkout} = useWorkouts();
     const colors = useTheme();
     const navigation: any = useNavigation();
     const { isWTrackerEnabled } = useContext(ThemeContext);
@@ -52,11 +52,12 @@ export default function WorkoutOverview() {
         const newWorkout: Workout = {
             id: newId,
             name: "Neuer Workout",
-            exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10] }],
+            exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10]}],
             createdAt: Date.now(),
+            isFavorite: false,
         };
 
-        setWorkouts([...workouts, newWorkout]);
+        updateWorkout([...workouts, newWorkout]);
     };
 
     const settings = () => {

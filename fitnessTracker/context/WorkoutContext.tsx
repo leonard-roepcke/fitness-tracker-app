@@ -1,54 +1,89 @@
-import { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Workout } from "../app/types/workout";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Workout } from "../types/workout";
 
 type WorkoutContextType = {
-  workouts: Workout[] | null;
-  setWorkouts: React.Dispatch<React.SetStateAction<Workout[] | null>>;
+    workouts: Workout[] | null;
+    addWorkout: (workout: Workout) => void;
+    updateWorkout: (workouts: Workout[]) => void;
+    deleteWorkout: (id: number) => void;
+    toggleFavorite: (id: number) => void;
 };
 
-const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
+const WorkoutContext = createContext<WorkoutContextType>({
+    workouts: null,
+    addWorkout: () => {},
+    updateWorkout: () => {},
+    deleteWorkout: () => {},
+    toggleFavorite: () => {},
+});
 
-export function WorkoutProvider({ children }: any) {
-  const [workouts, setWorkouts] = useState<Workout[] | null>(null);
+export const WorkoutProvider = ({ children }: any) => {
+    const [workouts, setWorkouts] = useState<Workout[] | null>(null);
 
-  useEffect(() => {
-    const load = async () => {
-      const json = await AsyncStorage.getItem("workouts");
-      if (json) {
-        setWorkouts(JSON.parse(json));
-      } else {
-        setWorkouts([
-          {
-            id: 0,
-            name: "Push",
-            exercises: [
-              { name: "Bench Press", sets: 3, last_reps: [10,4,0], last_weight: [20,18,0] }
-            ],
-            createdAt: Date.now(),
-          },
-        ]);
-      }
+    // ---------- Laden ----------
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = await AsyncStorage.getItem("workouts");
+                if (data) setWorkouts(JSON.parse(data));
+                else setWorkouts([]);
+            } catch (err) {
+                setWorkouts([]);
+            }
+        })();
+    }, []);
+
+    // ---------- Speichern ----------
+    const save = async (ws: Workout[]) => {
+        setWorkouts(ws);
+        await AsyncStorage.setItem("workouts", JSON.stringify(ws));
     };
 
-    load();
-  }, []);
+    // ---------- Workout hinzufügen ----------
+    const addWorkout = (workout: Workout) => {
+        if (!workouts) return;
+        const updated = [...workouts, workout];
+        save(updated);
+    };
 
-  useEffect(() => {
-    if (workouts !== null) {
-      AsyncStorage.setItem("workouts", JSON.stringify(workouts));
-    }
-  }, [workouts]);
+    // ---------- Liste komplett ersetzen ----------
+    const updateWorkout = (ws: Workout[]) => {
+        save(ws);
+    };
 
-  return (
-    <WorkoutContext.Provider value={{ workouts, setWorkouts }}>
-      {children}
-    </WorkoutContext.Provider>
-  );
-}
+    // ---------- Workout löschen ----------
+    const deleteWorkout = (id: number) => {
+        if (!workouts) return;
+        const updated = workouts.filter(w => w.id !== id);
+        save(updated);
+    };
 
-export function useWorkouts() {
-  const ctx = useContext(WorkoutContext);
-  if (!ctx) throw new Error("useWorkouts must be used inside WorkoutProvider");
-  return [ctx.workouts, ctx.setWorkouts] as const;
-}
+    // ---------- Favoriten togglen ----------
+    const toggleFavorite = (id: number) => {
+        if (!workouts) return;
+
+        const updated = workouts.map(w =>
+            w.id === id ? { ...w, isFavorite: !w.isFavorite } : w
+        );
+
+        save(updated);
+    };
+
+    return (
+        <WorkoutContext.Provider
+            value={{
+                workouts,
+                addWorkout,
+                updateWorkout,
+                deleteWorkout,
+                toggleFavorite,
+            }}
+        >
+            {children}
+        </WorkoutContext.Provider>
+    );
+};
+
+// ---------- Export Hook ----------
+export const useWorkouts = () => useContext(WorkoutContext);

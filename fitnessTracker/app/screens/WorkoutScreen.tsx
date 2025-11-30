@@ -2,19 +2,19 @@ import { useRouter } from 'expo-router';
 import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useWorkouts } from '../../context/WorkoutContext';
+import Bar from '../components/Bar';
 import { Button } from '../components/Button';
+import { CreateBox } from '../components/CreateBox';
 import { RepWeightPicker } from '../components/RepWeightPicker';
 import { useTheme } from '../hooks/useTheme';
-import { useWorkouts } from '../../context/WorkoutContext';
-import { CreateBox } from '../components/CreateBox';
-import Bar from '../components/Bar';
 
 
 export default function WorkoutScreen({ route, navigation }: any) {
     const colors = useTheme();
     const router = useRouter();
     const nav = navigation;
-    const [workouts, setWorkouts] = useWorkouts();
+    const {workouts, updateWorkout} = useWorkouts();
 
     const params = useSearchParams();
     // Try react-navigation route params first, otherwise fall back to expo-router search params
@@ -110,7 +110,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
     };
  });
  // State global updaten
- setWorkouts(updatedWorkouts);
+ updateWorkout(updatedWorkouts);
  // Nächster Satz / nächste Übung wie gehabt
  if (i_set < workout.exercises[i_exercise].sets - 1) {
    const nextSet = i_set + 1;
