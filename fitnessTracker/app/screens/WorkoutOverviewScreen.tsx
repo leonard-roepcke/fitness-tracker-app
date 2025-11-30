@@ -42,6 +42,12 @@ export default function WorkoutOverview() {
         scrollView: {
             width: '100%',
         },
+        header: {
+            fontSize: 32,
+            fontWeight: "bold",
+            marginTop: 35,
+            color: colors.text,
+        },
     });
 
 
@@ -68,7 +74,8 @@ export default function WorkoutOverview() {
         <View style={styles.container}>
 
             <Text style={styles.title}></Text>
-            <Text style={styles.title}></Text>
+                        <Text style={styles.header}>Trainings</Text>
+                        <Text style={styles.title}></Text>
 
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}></Text>

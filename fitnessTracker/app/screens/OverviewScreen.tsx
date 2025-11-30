@@ -42,6 +42,12 @@ export default function OverviewScreen() {
         scrollView: {
             width: '100%',
         },
+        header: {
+            fontSize: 32,
+            fontWeight: "bold",
+            marginTop: 35,
+            color: colors.text,
+        },
     });
 
 
@@ -59,6 +65,7 @@ export default function OverviewScreen() {
         <View style={styles.container}>
 
             <Text style={styles.title}></Text>
+            <Text style={styles.header}>Übersicht</Text>
             <Text style={styles.title}></Text>
 
             <ScrollView style={styles.scrollView}>
