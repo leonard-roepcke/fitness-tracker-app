@@ -112,6 +112,33 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     return 0.15;
   };
 
+  const getTranslateY = (index: number) => {
+    const currentIndex = numbers.indexOf(value);
+    const distance = index - currentIndex;
+    
+    if (distance === 0) return 0;
+    
+    // Kompression des Abstands für entfernte Elemente
+    const absDistance = Math.abs(distance);
+    const sign = distance > 0 ? 1 : -1;
+    
+    // Progressive Kompression: weiter weg = stärker komprimiert
+    const compression = Math.pow(absDistance, 0.7);
+    
+    return sign * compression * itemHeight - distance * itemHeight;
+  };
+
+  const getRotation = (index: number) => {
+    const currentIndex = numbers.indexOf(value);
+    const distance = index - currentIndex;
+    
+    // Rotation um X-Achse (wie ein Rad)
+    const maxRotation = 75;
+    const rotation = (distance * maxRotation) / visibleItems;
+    
+    return rotation;
+  };
+
   const getScale = (index: number) => {
     const currentIndex = numbers.indexOf(value);
     const distance = Math.abs(index - currentIndex);
@@ -130,7 +157,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     return 17;
   };
 
-  const getFontWeight = (index: number) => {
+  const getFontWeight = (index: number): '600' | '400' => {
     const currentIndex = numbers.indexOf(value);
     return index === currentIndex ? '600' : '400';
   };
@@ -140,6 +167,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
       width: width,
       height: itemHeight * visibleItems,
       overflow: 'hidden',
+      perspective: 1000,
     },
     selectionIndicator: {
       position: 'absolute',
@@ -214,7 +242,12 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
                   fontSize: getFontSize(index),
                   fontWeight: getFontWeight(index),
                   opacity: getOpacity(index),
-                  transform: [{ scale: getScale(index) }],
+                  transform: [
+                    { translateY: getTranslateY(index) },
+                    { scale: getScale(index) },
+                    { rotateX: `${getRotation(index)}deg` },
+                    { perspective: 1000 }
+                  ],
                 }
               ]}
             >
