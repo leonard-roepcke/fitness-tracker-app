@@ -102,8 +102,10 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     setScrolling(false);
   };
 
-  const getOpacity = (index: number) => {
-    const currentIndex = numbers.indexOf(value);
+  const getOpacity = (index: number, scrollY?: number) => {
+    const currentIndex = scrollY !== undefined 
+      ? Math.round(scrollY / itemHeight)
+      : numbers.indexOf(value);
     const distance = Math.abs(index - currentIndex);
     
     if (distance === 0) return 1;
@@ -112,8 +114,10 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     return 0.15;
   };
 
-  const getTranslateY = (index: number) => {
-    const currentIndex = numbers.indexOf(value);
+  const getTranslateY = (index: number, scrollY?: number) => {
+    const currentIndex = scrollY !== undefined 
+      ? Math.round(scrollY / itemHeight)
+      : numbers.indexOf(value);
     const distance = index - currentIndex;
     
     if (distance === 0) return 0;
@@ -128,8 +132,10 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     return sign * compression * itemHeight - distance * itemHeight;
   };
 
-  const getRotation = (index: number) => {
-    const currentIndex = numbers.indexOf(value);
+  const getRotation = (index: number, scrollY?: number) => {
+    const currentIndex = scrollY !== undefined 
+      ? Math.round(scrollY / itemHeight)
+      : numbers.indexOf(value);
     const distance = index - currentIndex;
     
     // Rotation um X-Achse (wie ein Rad)
@@ -139,8 +145,10 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     return rotation;
   };
 
-  const getScale = (index: number) => {
-    const currentIndex = numbers.indexOf(value);
+  const getScale = (index: number, scrollY?: number) => {
+    const currentIndex = scrollY !== undefined 
+      ? Math.round(scrollY / itemHeight)
+      : numbers.indexOf(value);
     const distance = Math.abs(index - currentIndex);
     
     if (distance === 0) return 1;
@@ -148,8 +156,10 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     return 0.7;
   };
 
-  const getFontSize = (index: number) => {
-    const currentIndex = numbers.indexOf(value);
+  const getFontSize = (index: number, scrollY?: number) => {
+    const currentIndex = scrollY !== undefined 
+      ? Math.round(scrollY / itemHeight)
+      : numbers.indexOf(value);
     const distance = Math.abs(index - currentIndex);
     
     if (distance === 0) return 23;
@@ -157,8 +167,10 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     return 17;
   };
 
-  const getFontWeight = (index: number): '600' | '400' => {
-    const currentIndex = numbers.indexOf(value);
+  const getFontWeight = (index: number, scrollY?: number): '600' | '400' => {
+    const currentIndex = scrollY !== undefined 
+      ? Math.round(scrollY / itemHeight)
+      : numbers.indexOf(value);
     return index === currentIndex ? '600' : '400';
   };
 
@@ -230,31 +242,35 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
         ))}
 
         {/* Number Items */}
-        {numbers.map((number, index) => (
-          <View
-            key={number}
-            style={styles.numberItem}
-          >
-            <Text
-              style={[
-                styles.numberText,
-                {
-                  fontSize: getFontSize(index),
-                  fontWeight: getFontWeight(index),
-                  opacity: getOpacity(index),
-                  transform: [
-                    { translateY: getTranslateY(index) },
-                    { scale: getScale(index) },
-                    { rotateX: `${getRotation(index)}deg` },
-                    { perspective: 1000 }
-                  ],
-                }
-              ]}
+        {numbers.map((number, index) => {
+          const initialScrollY = numbers.indexOf(value) * itemHeight;
+          
+          return (
+            <View
+              key={number}
+              style={styles.numberItem}
             >
-              {number.toString().padStart(2, '0')}{suffix}
-            </Text>
-          </View>
-        ))}
+              <Text
+                style={[
+                  styles.numberText,
+                  {
+                    fontSize: getFontSize(index, initialScrollY),
+                    fontWeight: getFontWeight(index, initialScrollY),
+                    opacity: getOpacity(index, initialScrollY),
+                    transform: [
+                      { translateY: getTranslateY(index, initialScrollY) },
+                      { scale: getScale(index, initialScrollY) },
+                      { rotateX: `${getRotation(index, initialScrollY)}deg` },
+                      { perspective: 1000 }
+                    ],
+                  }
+                ]}
+              >
+                {number.toString().padStart(2, '0')}{suffix}
+              </Text>
+            </View>
+          );
+        })}
 
         {/* Bottom Padding */}
         {Array.from({ length: paddingItems }).map((_, i) => (
