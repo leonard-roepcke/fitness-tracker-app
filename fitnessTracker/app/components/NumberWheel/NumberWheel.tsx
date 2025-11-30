@@ -1,6 +1,6 @@
 // components/ui/NumberWheel.tsx
-import React, { useRef, useState, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
 interface NumberWheelProps {
@@ -28,9 +28,6 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
   const itemHeight = 35;
   
   const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
-  
-  // Berechne die Anzahl der Padding-Items basierend auf visibleItems
-  // Bei geraden Zahlen runden wir ab, um eine klare Mitte zu haben
   const paddingItems = Math.floor(visibleItems / 2);
 
   useEffect(() => {
@@ -45,10 +42,38 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     }
   }, [value, scrolling]);
 
+  const snapToValue = (scrollY: number) => {
+    const rawIndex = scrollY / itemHeight;
+    let targetIndex = Math.round(rawIndex);
+    
+    // Begrenze den Index auf gültige Werte
+    targetIndex = Math.max(0, Math.min(targetIndex, numbers.length - 1));
+    
+    const targetY = targetIndex * itemHeight;
+    const selectedValue = numbers[targetIndex];
+    
+    // Scrolle zur korrekten Position
+    scrollRef.current?.scrollTo({
+      y: targetY,
+      animated: true
+    });
+    
+    // Update den Wert
+    if (selectedValue !== undefined && selectedValue !== value) {
+      onValueChange(selectedValue);
+    }
+  };
+
   const handleScroll = (event: any) => {
+    if (!scrolling) return;
+    
     const scrollY = event.nativeEvent.contentOffset.y;
-    const selectedIndex = Math.round(scrollY / itemHeight);
-    const selectedValue = numbers[selectedIndex];
+    const rawIndex = scrollY / itemHeight;
+    const selectedIndex = Math.round(rawIndex);
+    
+    // Begrenze den Index
+    const clampedIndex = Math.max(0, Math.min(selectedIndex, numbers.length - 1));
+    const selectedValue = numbers[clampedIndex];
     
     if (selectedValue !== undefined && selectedValue !== value) {
       onValueChange(selectedValue);
@@ -59,11 +84,21 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
     setScrolling(true);
   };
 
-  const handleScrollEndDrag = () => {
-    setScrolling(false);
+  const handleScrollEndDrag = (event: any) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    const velocity = event.nativeEvent.velocity?.y || 0;
+    
+    // Wenn keine Geschwindigkeit, sofort einrasten
+    if (Math.abs(velocity) < 0.1) {
+      snapToValue(scrollY);
+      setScrolling(false);
+    }
+    // Sonst weiter gleiten lassen (handleMomentumScrollEnd kümmert sich darum)
   };
 
-  const handleMomentumScrollEnd = () => {
+  const handleMomentumScrollEnd = (event: any) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    snapToValue(scrollY);
     setScrolling(false);
   };
 
@@ -148,7 +183,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         snapToInterval={itemHeight}
-        decelerationRate="fast"
+        decelerationRate={0.98}
         onScroll={handleScroll}
         onScrollBeginDrag={handleScrollBeginDrag}
         onScrollEndDrag={handleScrollEndDrag}
@@ -156,6 +191,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
         scrollEventThrottle={16}
         onTouchStart={(e) => e.stopPropagation()}
         onTouchEnd={(e) => e.stopPropagation()}
+        bounces={false}
       >
         {/* Top Padding */}
         {Array.from({ length: paddingItems }).map((_, i) => (
