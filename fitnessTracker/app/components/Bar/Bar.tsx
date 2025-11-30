@@ -25,18 +25,20 @@ export const Bar = () => {
                 flexDirection: "row",
                 justifyContent: "space-evenly",
                 alignItems: "center",
-                padding: 14,
+                padding: 5,
                 backgroundColor: colors.card,
                 borderRadius: 30,
                 marginHorizontal: 40,
                 shadowColor: "#000",
                 shadowOpacity: 0.15,
-                shadowRadius: 10,
+                shadowRadius: 20,
                 elevation: 5,
             }}
         >
-            {/* Home */}
-            <TouchableOpacity onPress={() => navigation.navigate("Overview")}>
+            <TouchableOpacity
+                onPress={() => navigation.navigate("Overview")}
+                style={{ padding: 12 }}
+            >
                 <Ionicons
                     name="home"
                     size={current === "Overview" ? activeSize : inactiveSize}
@@ -44,8 +46,10 @@ export const Bar = () => {
                 />
             </TouchableOpacity>
 
-            {/* Workouts */}
-            <TouchableOpacity onPress={() => navigation.navigate("WorkoutOverview")}>
+            <TouchableOpacity
+                onPress={() => navigation.navigate("WorkoutOverview")}
+                style={{ padding: 12 }}
+            >
                 <FontAwesome5
                     name="dumbbell"
                     size={current === "WorkoutOverview" ? activeSize : inactiveSize}
@@ -53,14 +57,17 @@ export const Bar = () => {
                 />
             </TouchableOpacity>
 
-            {/* Settings */}
-            <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+            <TouchableOpacity
+                onPress={() => navigation.navigate("Settings")}
+                style={{ padding: 12 }}
+            >
                 <Ionicons
                     name="settings"
                     size={current === "Settings" ? activeSize : inactiveSize}
                     color={colors.text}
                 />
             </TouchableOpacity>
+
         </View>
     );
 };
