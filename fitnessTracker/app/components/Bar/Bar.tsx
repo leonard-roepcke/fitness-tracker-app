@@ -1,8 +1,8 @@
-import { View, TouchableOpacity } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/app/hooks/useTheme";
+import { Ionicons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { TouchableOpacity, View } from "react-native";
 
 export const Bar = () => {
     const colors = useTheme();

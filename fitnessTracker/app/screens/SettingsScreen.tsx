@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { ThemeContext } from "../../context/ThemeContext";
-import { useTheme } from "../hooks/useTheme";
-import { SettingsBox } from "../components/SettingsBox/SettinsBox";
-import { CreateBox } from "../components/CreateBox";
-import { useRouter } from "expo-router";
 import * as Application from 'expo-application';
+import { useRouter } from "expo-router";
+import React, { useContext } from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ThemeContext } from "../../context/ThemeContext";
 import Bar from "../components/Bar";
+import { SettingsBox } from "../components/SettingsBox/SettinsBox";
+import { useTheme } from "../hooks/useTheme";
 
 
 
@@ -72,7 +71,7 @@ export default function SettingsScreen() {
 
         {/* Footer */}
         <Text style={[styles.version, { color: colors.textSecondary }]}>
-          Version $1.0.0.0
+          Version $1.0.1.0
         </Text>
 
 

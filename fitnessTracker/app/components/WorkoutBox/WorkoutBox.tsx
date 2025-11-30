@@ -1,105 +1,122 @@
-import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Workout } from '../../types/workout';
 import { useTheme } from "../../hooks/useTheme";
-import { useNavigation } from '@react-navigation/native';
+import { Workout } from '../../types/workout';
 import { CreateBox } from '../CreateBox';
 
 const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
     const colors = useTheme();
-    
-    const styles = StyleSheet.create({
-        container: {
-            width: '100%',
-            marginVertical: 8,
-        },
-        box: {
-            backgroundColor: colors.card,
-            paddingHorizontal: 20,
-            borderRadius: 8,
-            height: 120,
-            justifyContent: 'center',
-        },
-        boxWithActions: {
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-        },
-        content: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-        },
-        text: {
-            color: colors.text,
-            fontSize: 16,
-            fontWeight: '500',
-        },
-        actionsRow: {
-            flexDirection: 'row',
-            alignItems: 'center',
-        },
-        actionButton: {
-            width: 50,
-            height: '100%',
-            backgroundColor: colors.card,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderColor: colors.border || 'rgba(0,0,0,0.1)',
-            borderWidth: 0.5,
-        },
-        starButton: {
-            borderTopLeftRadius: 8,
-            borderBottomLeftRadius: 8,
-            borderRightWidth: 0,
-        },
-        editButton: {
-            borderTopRightRadius: 8,
-            borderBottomRightRadius: 8,
-            borderLeftWidth: 0,
-        }
-    });
+    const navigation: any = useNavigation();
 
     const isString = typeof workout === "string";
     const name = isString ? workout : workout.name;
     const id = isString ? null : workout.id;
-    const navigation: any = useNavigation();
 
     const handlePress = () => {
-        if (id === null || id === undefined) return;
-        navigation.navigate('Workout', { workoutId: id });
+        if (id) navigation.navigate('Workout', { workoutId: id });
     };
 
     const handleEditPress = () => {
-        if (id === null || id === undefined) return;
-        navigation.navigate('WorkoutEdit', { workoutId: id });
+        if (id) navigation.navigate('WorkoutEdit', { workoutId: id });
     };
 
     const handleStarPress = () => {
-        // Star functionality
+        // star action
     };
 
+    const styles = StyleSheet.create({
+        stripContainer: {
+            width: "100%",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: colors.card,
+            borderRadius: 12,
+            marginVertical: 8,
+            overflow: "hidden",
+            height: 70
+        },
+        stripButton: {
+            width: 60,
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRightWidth: 0.5,
+            borderColor: colors.card
+        },
+        stripButtonRight: {
+            borderRightWidth: 0,
+            borderLeftWidth: 0.5,
+        },
+        stripCenter: {
+            flex: 1,
+            justifyContent: "center",
+            paddingHorizontal: 20,
+        },
+        stripText: {
+            color: colors.text,
+            fontSize: 16,
+            fontWeight: "500",
+        },
+
+        // BOX VARIANT
+        boxContainer: {
+            width: "100%",
+            marginVertical: 8,
+        },
+        box: {
+            backgroundColor: colors.card,
+            borderRadius: 12,
+            paddingTop: 16,
+            paddingLeft: 16,
+            paddingRight: 16,
+            paddingBottom: 12,
+            height: 120,
+            justifyContent: "flex-start",
+        },
+        boxText: {
+            color: colors.text,
+            fontSize: 18,
+            fontWeight: "500",
+        }
+    });
+
+    // VARIANTE: default → Strip
     if (variant === "default") {
         return (
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.box} onPress={handlePress}>
-                    <View style={styles.content}>
-                        <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
-                    </View>
+            <View style={styles.stripContainer}>
+
+                {/* STAR LEFT */}
+                <TouchableOpacity style={styles.stripButton} onPress={handleStarPress}>
+                    <CreateBox iconName="star" onPress={handleStarPress}/>
                 </TouchableOpacity>
-            </View>
-        );
-    } else if (variant === "box") {
-        return (
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.box} onPress={handlePress}>
-                    <View style={styles.content}>
-                        <Text style={styles.text}>{name}</Text>
-                    </View>
+
+                {/* CENTER BOX */}
+                <TouchableOpacity style={styles.stripCenter} onPress={handlePress}>
+                    <Text style={styles.stripText} numberOfLines={1}>
+                        {name}
+                    </Text>
                 </TouchableOpacity>
+
+                {/* EDIT RIGHT */}
+                <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress}>
+                    <CreateBox iconName="cube" onPress={handleEditPress}/>
+                </TouchableOpacity>
+
             </View>
         );
     }
+
+    // VARIANTE: box → klassische Box
+    return (
+        <View style={styles.boxContainer}>
+            <TouchableOpacity style={styles.box} onPress={handlePress}>
+                <Text style={styles.boxText} numberOfLines={1}>
+                    {name}
+                </Text>
+            </TouchableOpacity>
+        </View>
+    );
 };
 
 export default WorkoutBox;
