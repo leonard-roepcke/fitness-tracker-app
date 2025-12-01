@@ -29,7 +29,7 @@ export default function OverviewScreen() {
             backgroundColor: colors.background,
         },
         title: {
-            fontSize: 24,
+            fontSize: 10,
             fontWeight: '600',
             marginBottom: 8,
             color: colors.text,
@@ -61,11 +61,23 @@ export default function OverviewScreen() {
         navigation.navigate('Settings');
     };
 
+    const messages = [
+        "Willkommen zurück.",
+        "Gut, dass du wieder da bist.",
+        "Schön, dich wieder zu sehen.",
+        "Zurück im Flow.",
+        "Weiter geht’s.",
+        "Los geht’s.",
+        "Bleib dran.",
+        "Eine Runde reicht für Fortschritt."
+    ];
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
     return (
         <View style={styles.container}>
 
             <Text style={styles.title}></Text>
-            <Text style={styles.header}>Übersicht</Text>
+            <Text style={styles.header}>{randomMessage}</Text>
             <Text style={styles.title}></Text>
 
             <ScrollView style={styles.scrollView}>
