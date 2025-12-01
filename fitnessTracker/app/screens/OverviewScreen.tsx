@@ -33,6 +33,8 @@ export default function OverviewScreen() {
             fontWeight: '600',
             marginBottom: 8,
             color: colors.text,
+            justifyContent: 'center',
+            alignItems: 'center',
 
         },
         subtitle: {
