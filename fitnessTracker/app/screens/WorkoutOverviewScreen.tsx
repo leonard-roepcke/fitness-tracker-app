@@ -80,7 +80,10 @@ export default function WorkoutOverview() {
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}></Text>
                 
-                {workouts?.map((w: Workout, index: number) => (<WorkoutBox key={index} workout={w} />))}
+                {workouts
+                ?.slice()
+                .sort((a, b) => Number(b.isFavorite) - Number(a.isFavorite))
+                .map((w: Workout, index: number) => (<WorkoutBox key={index} workout={w} />))}
 
                 <CreateBox  onPress={addWorkout} iconName='add' text='create workout'/>
                 <Text style={styles.title}/>
