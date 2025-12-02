@@ -1,6 +1,7 @@
 // components/ui/Button.tsx
+import Layouts from "@/app/constants/Layouts";
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
 interface ButtonProps {
@@ -20,12 +21,13 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const colors = useTheme();
   const [pressed, setPressed] = useState(false);
+  const layouts = Layouts;
 
   const styles = StyleSheet.create({
     button: {
       paddingVertical: 12,
       paddingHorizontal: 24,
-      borderRadius: 10,
+      borderRadius: layouts.borderRadius,
       minWidth: 200,
       alignItems: 'center',
       shadowColor: colors.text,

@@ -1,3 +1,4 @@
+import Layouts from "@/app/constants/Layouts";
 import { useWorkouts } from '@/context/WorkoutContext';
 import { useNavigation } from '@react-navigation/native';
 import React from "react";
@@ -6,10 +7,10 @@ import { useTheme } from "../../hooks/useTheme";
 import { Workout } from '../../types/workout';
 import { CreateBox } from '../CreateBox';
 
-
 const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
     const colors = useTheme();
     const navigation: any = useNavigation();
+    const layouts = Layouts;
 
     const isString = typeof workout === "string";
     const name = isString ? workout : workout.name;
@@ -41,7 +42,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             flexDirection: "row",
             alignItems: "center",
             backgroundColor: colors.card,
-            borderRadius: 12,
+            borderRadius: layouts.borderRadius,
             marginVertical: 8,
             overflow: "hidden",
             height: 70
@@ -76,7 +77,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
         },
         box: {
             backgroundColor: colors.card,
-            borderRadius: 12,
+            borderRadius: layouts.borderRadius,
             paddingTop: 16,
             paddingLeft: 16,
             paddingRight: 16,

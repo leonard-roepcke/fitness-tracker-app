@@ -1,3 +1,4 @@
+import Layouts from "@/app/constants/Layouts";
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -7,10 +8,10 @@ import { CreateBox } from '../components/CreateBox';
 import { NumberWheel } from '../components/NumberWheel';
 import { useTheme } from '../hooks/useTheme';
 
-
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
   const colors = useTheme();
+  const layouts = Layouts;
   const {workouts, updateWorkout} = useWorkouts();
   const router = useRouter();
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -41,7 +42,7 @@ export default function WorkoutEditScreen({ route }: any) {
       padding: 8,
       borderWidth: 1,
       borderColor: colors.textSecondary,
-      borderRadius: 6,
+      borderRadius: layouts.borderRadius,
       marginBottom: 12,
       backgroundColor: colors.card,
       color: colors.text,
@@ -50,7 +51,7 @@ export default function WorkoutEditScreen({ route }: any) {
     exerciseBox: {
       marginBottom: 16,
       padding: 12,
-      borderRadius: 8,
+      borderRadius: layouts.borderRadius,
       backgroundColor: colors.card,
       flexDirection: 'row',
         alignItems: 'center',
@@ -75,7 +76,7 @@ export default function WorkoutEditScreen({ route }: any) {
       padding: 4,
       borderWidth: 1,
       borderColor: colors.textSecondary,
-      borderRadius: 4,
+      borderRadius: layouts.borderRadius,
       marginRight: 8,
       backgroundColor: colors.background,
       color: colors.text,

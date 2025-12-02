@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, Dimensions } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Layouts from "@/app/constants/Layouts";
 import { useTheme } from '@/app/hooks/useTheme';
 import { useWeights } from '@/context/WeightContext';
-import Svg, { Line, Circle, Polyline } from 'react-native-svg';
+import React, { useState } from 'react';
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Svg, { Circle, Polyline } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
 const CHART_WIDTH = width - 48;
 const CHART_HEIGHT = 120;
+const layouts = Layouts;
 
 export default function WStats() {
   const colors = useTheme();
@@ -211,7 +212,7 @@ export default function WStats() {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 16,
+    borderRadius: layouts.borderRadius,
     padding: 16,
     marginVertical: 8,
   },
@@ -232,13 +233,13 @@ const styles = StyleSheet.create({
   addButton: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 12,
+    borderRadius: layouts.borderRadius,
     marginTop: 16,
   },
   addButtonSmall: {
     width: 35,
     height: 35,
-    borderRadius: 13,
+    borderRadius: layouts.borderRadius,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 2,
-    borderRadius: 12,
+    borderRadius: layouts.borderRadius,
     padding: 10,
     fontSize: 14,
     marginBottom: 8,
@@ -268,13 +269,13 @@ const styles = StyleSheet.create({
   saveButton: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: layouts.borderRadius,
     alignItems: 'center',
   },
   cancelButton: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: layouts.borderRadius,
     borderWidth: 1,
     alignItems: 'center',
   },

@@ -1,4 +1,4 @@
 const Layouts = {
-    borderRadius: 8,
+    borderRadius: 15,
 }
 export default Layouts;

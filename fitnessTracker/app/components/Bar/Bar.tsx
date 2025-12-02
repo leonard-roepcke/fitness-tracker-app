@@ -1,3 +1,4 @@
+import Layouts from "@/app/constants/Layouts";
 import { useTheme } from "@/app/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -10,6 +11,7 @@ export const Bar = () => {
     const route = useRoute();
 
     const current = route.name;
+    const layouts = Layouts;
 
     // aktive vs. inaktive Größe
     const activeSize = 24;
@@ -27,7 +29,7 @@ export const Bar = () => {
                 alignItems: "center",
                 padding: 5,
                 backgroundColor: colors.card,
-                borderRadius: 30,
+                borderRadius: layouts.borderRadius,
                 marginHorizontal: 40,
                 shadowColor: "#000",
                 shadowOpacity: 0.15,

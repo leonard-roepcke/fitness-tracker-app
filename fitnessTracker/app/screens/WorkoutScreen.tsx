@@ -1,3 +1,4 @@
+import Layouts from "@/app/constants/Layouts";
 import { useRouter } from 'expo-router';
 import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useState } from 'react';
@@ -9,10 +10,10 @@ import { CreateBox } from '../components/CreateBox';
 import { RepWeightPicker } from '../components/RepWeightPicker';
 import { useTheme } from '../hooks/useTheme';
 
-
 export default function WorkoutScreen({ route, navigation }: any) {
     const colors = useTheme();
     const router = useRouter();
+    const layouts = Layouts;
     const nav = navigation;
     const {workouts, updateWorkout} = useWorkouts();
 
@@ -162,7 +163,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
             </View>
 
             <Text/>
-            <Text style={[styles.subtitle, {backgroundColor:colors.card, height:50, marginTop:5, paddingTop:8,borderRadius: 8,}]}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
+            <Text style={[styles.subtitle, {backgroundColor:colors.card, height:50, marginTop:5, paddingTop:8,borderRadius: layouts.borderRadius,}]}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
             <Text style={styles.title}></Text>
             <RepWeightPicker 
                 reps={reps}                    

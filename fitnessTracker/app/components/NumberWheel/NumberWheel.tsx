@@ -1,4 +1,5 @@
 // components/ui/NumberWheel.tsx
+import Layouts from "@/app/constants/Layouts";
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
@@ -26,6 +27,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
   const scrollRef = useRef<ScrollView>(null);
   const [scrolling, setScrolling] = useState(false);
   const itemHeight = 35;
+  const layouts = Layouts;
   
   const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
   const paddingItems = Math.floor(visibleItems / 2);
@@ -188,7 +190,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
       right: 0,
       height: itemHeight,
       backgroundColor: `${colors.primary}20`,
-      borderRadius: 10,
+      borderRadius: layouts.borderRadius,
       zIndex: 1,
       pointerEvents: 'none',
     },
