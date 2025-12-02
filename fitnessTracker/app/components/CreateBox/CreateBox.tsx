@@ -1,6 +1,7 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import Layout from '../../constants/Layouts';
 import { useTheme } from "../../hooks/useTheme";
 
 type CreateBoxProps = {
@@ -46,14 +47,13 @@ export const CreateBox = ({
     borderBottomRightRadius,
 }: CreateBoxProps) => {
     const colors = useTheme();
-    
-    const defaultRadius = 5;
+    const layout = Layout;
 
     const styles = StyleSheet.create({
         box: {
             marginVertical: 8,
             backgroundColor: colors.card,
-            borderRadius: 5,
+            borderRadius: layout.borderRadius,
 
             // Standard-Padding → 16
             padding: padding ?? 16,
@@ -64,10 +64,10 @@ export const CreateBox = ({
             paddingTop,
             paddingBottom,
 
-            borderTopLeftRadius: borderTopLeftRadius ?? defaultRadius,
-            borderTopRightRadius: borderTopRightRadius ?? defaultRadius,
-            borderBottomLeftRadius: borderBottomLeftRadius ?? defaultRadius,
-            borderBottomRightRadius: borderBottomRightRadius ?? defaultRadius,
+            borderTopLeftRadius: borderTopLeftRadius ?? layout.borderRadius,
+            borderTopRightRadius: borderTopRightRadius ?? layout.borderRadius,
+            borderBottomLeftRadius: borderBottomLeftRadius ?? layout.borderRadius,
+            borderBottomRightRadius: borderBottomRightRadius ?? layout.borderRadius,
 
             flexDirection: 'row',
             alignItems: 'center',
