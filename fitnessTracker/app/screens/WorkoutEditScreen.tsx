@@ -1,10 +1,11 @@
 import Layouts from "@/app/constants/Layouts";
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
 import { CreateBox } from '../components/CreateBox';
+import CustomModal from "../components/CustomModal";
 import { NumberWheel } from '../components/NumberWheel';
 import { useTheme } from '../hooks/useTheme';
 
@@ -15,6 +16,7 @@ export default function WorkoutEditScreen({ route }: any) {
   const {workouts, updateWorkout} = useWorkouts();
   const router = useRouter();
   const [scrollEnabled, setScrollEnabled] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   if (!workouts) return null;
 
@@ -227,15 +229,23 @@ export default function WorkoutEditScreen({ route }: any) {
             onTouchStart={() => setScrollEnabled(false)}
             onTouchEnd={() => setScrollEnabled(true)}
           >
-            <NumberWheel
-              min={1}
-              max={30}
-              value={exercise.sets}
-              onValueChange={(value) => changeSets(exIndex, value)}
-              width={90}
-              suffix=' Sets'
-              visibleItems={3}
-            />
+
+            <View style={{ flex: 1, padding: 20 }}>
+              <Button title="Popup öffnen" onPress={() => setShowModal(true)} />
+
+              <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
+                <NumberWheel
+                  min={1}
+                  max={30}
+                  value={exercise.sets}
+                  onValueChange={(value) => changeSets(exIndex, value)}
+                  width={90}
+                  suffix=' Sets'
+                  visibleItems={3}
+                />
+              </CustomModal>
+            </View>
+            
           </View>
 
           <CreateBox onPress={() => delExercise(exIndex)} iconName='trash'/>
