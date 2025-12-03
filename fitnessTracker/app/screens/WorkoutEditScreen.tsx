@@ -1,7 +1,16 @@
 import Layouts from "@/app/constants/Layouts";
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Button,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
+} from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
 import { CreateBox } from '../components/CreateBox';
@@ -13,10 +22,12 @@ export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
   const colors = useTheme();
   const layouts = Layouts;
-  const {workouts, updateWorkout} = useWorkouts();
+  const { workouts, updateWorkout } = useWorkouts();
   const router = useRouter();
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+
+  // Modal für eine bestimmte Exercise
+  const [modalExerciseIndex, setModalExerciseIndex] = useState<number | null>(null);
 
   if (!workouts) return null;
 
@@ -30,12 +41,12 @@ export default function WorkoutEditScreen({ route }: any) {
       backgroundColor: colors.background,
     },
     title: {
-            fontSize: 28,
-            fontWeight: 'bold',
-            textAlign: 'center',
-            marginBottom: 0,
-            marginTop: 10,
-            color: colors.text,
+      fontSize: 28,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 0,
+      marginTop: 10,
+      color: colors.text,
     },
     content: {
       padding: 16,
@@ -56,7 +67,7 @@ export default function WorkoutEditScreen({ route }: any) {
       borderRadius: layouts.borderRadius,
       backgroundColor: colors.card,
       flexDirection: 'row',
-        alignItems: 'center',
+      alignItems: 'center',
     },
     exerciseTitle: {
       fontSize: 16,
@@ -106,7 +117,6 @@ export default function WorkoutEditScreen({ route }: any) {
       const newSets = Math.max(1, parseInt(value) || 1);
       ex.sets = newSets;
 
-      // Wenn last_reps oder last_weight zu kurz ist, erweitern
       if (!ex.last_reps) ex.last_reps = [];
       while (ex.last_reps.length < newSets) ex.last_reps.push(0);
       if (!ex.last_weight) ex.last_weight = [];
@@ -119,7 +129,9 @@ export default function WorkoutEditScreen({ route }: any) {
 
   const handleRepChange = (exerciseIndex: number, setIndex: number, value: string) => {
     const updated = [...workouts];
-    if (!updated[index].exercises[exerciseIndex].last_reps) updated[index].exercises[exerciseIndex].last_reps = [];
+    if (!updated[index].exercises[exerciseIndex].last_reps)
+      updated[index].exercises[exerciseIndex].last_reps = [];
+
     updated[index].exercises[exerciseIndex].last_reps[setIndex] = parseInt(value) || 0;
     updateWorkout(updated);
   };
@@ -148,117 +160,114 @@ export default function WorkoutEditScreen({ route }: any) {
     const newExercises = updated[index].exercises.filter((_, idx) => idx !== exerciseIndex);
     updated[index] = { ...updated[index], exercises: newExercises };
     updateWorkout(updated);
-};
+  };
 
   const addWorkout = () => {
     const updated = [...workouts];
-    const newExercise = { name: 'New Exercise', sets: 3, last_reps: [0, 0, 0], last_weight: [0, 0, 0] };
-    // create a new exercises array and replace the workout object immutably
+    const newExercise = {
+      name: 'New Exercise',
+      sets: 3,
+      last_reps: [0, 0, 0],
+      last_weight: [0, 0, 0]
+    };
+
     const newExercises = [...updated[index].exercises, newExercise];
     updated[index] = { ...updated[index], exercises: newExercises };
     updateWorkout(updated);
   };
 
   const changeSets = (exerciseIndex: number, value: number) => {
-  const updated = [...workouts];
-  const ex = updated[index].exercises[exerciseIndex];
-  
-  // Setze die neue Anzahl der Sets
-  ex.sets = value;
-  
-  // Passe last_reps an
-  if (!ex.last_reps) ex.last_reps = [];
-  while (ex.last_reps.length < value) {
-    ex.last_reps.push(0);
-  }
-  if (ex.last_reps.length > value) {
-    ex.last_reps = ex.last_reps.slice(0, value);
-  }
-  
-  // Passe last_weight an
-  if (!ex.last_weight) ex.last_weight = [];
-  while (ex.last_weight.length < value) {
-    ex.last_weight.push(0);
-  }
-  if (ex.last_weight.length > value) {
-    ex.last_weight = ex.last_weight.slice(0, value);
-  }
-  
-  updateWorkout(updated);
-};
+    const updated = [...workouts];
+    const ex = updated[index].exercises[exerciseIndex];
+
+    ex.sets = value;
+
+    if (!ex.last_reps) ex.last_reps = [];
+    while (ex.last_reps.length < value) ex.last_reps.push(0);
+    if (ex.last_reps.length > value) ex.last_reps = ex.last_reps.slice(0, value);
+
+    if (!ex.last_weight) ex.last_weight = [];
+    while (ex.last_weight.length < value) ex.last_weight.push(0);
+    if (ex.last_weight.length > value) ex.last_weight = ex.last_weight.slice(0, value);
+
+    updateWorkout(updated);
+  };
 
   return (
-  <KeyboardAvoidingView
-    style={{ flex: 1, backgroundColor: colors.background }}
-    behavior={Platform.OS === "ios" ? "padding" : undefined}
-    keyboardVerticalOffset={0}
-  >
-    <ScrollView
+    <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: colors.background }}
-      contentContainerStyle={{ padding: 16, paddingBottom: 60,paddingTop: 20,}}
-      scrollEnabled={scrollEnabled}
-      keyboardShouldPersistTaps="handled"
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={0}
     >
-      {/* Workout Name */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-        <CreateBox onPress={back} iconName='arrow-back'/>
-        <TextInput
-          style={[styles.input, { flex: 1, marginHorizontal: 12 , height:50, marginTop:12}]}
-          value={workout.name}
-          onChangeText={handleWorkoutNameChange}
-          placeholder="Workout Name"
-          placeholderTextColor={colors.textSecondary}
-        />
-        <CreateBox onPress={del} iconName='trash'/>
-      </View>
-
-      {/* Exercises */}
-      {workout.exercises.map((exercise, exIndex) => (
-        <View key={exIndex} style={styles.exerciseBox}>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: colors.background }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 60, paddingTop: 20 }}
+        scrollEnabled={scrollEnabled}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Workout Name */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <CreateBox onPress={back} iconName='arrow-back' />
 
           <TextInput
-            style={[styles.input, {flex: 1, marginRight:8}]}
-            value={exercise.name}
-            onChangeText={(text) => handleExerciseChange(exIndex, 'name', text)}
-            placeholder="Exercise Name"
+            style={[styles.input, { flex: 1, marginHorizontal: 12, height: 50, marginTop: 12 }]}
+            value={workout.name}
+            onChangeText={handleWorkoutNameChange}
+            placeholder="Workout Name"
             placeholderTextColor={colors.textSecondary}
           />
 
-          {/* Wheel: Scroll deaktivieren während Drag */}
-          <View
-            onTouchStart={() => setScrollEnabled(false)}
-            onTouchEnd={() => setScrollEnabled(true)}
-          >
-
-            <View style={{ flex: 1, padding: 20 }}>
-              <Button title="Popup öffnen" onPress={() => setShowModal(true)} />
-
-              <CustomModal visible={showModal} onClose={() => setShowModal(false)}>
-                <NumberWheel
-                  min={1}
-                  max={30}
-                  value={exercise.sets}
-                  onValueChange={(value) => changeSets(exIndex, value)}
-                  width={90}
-                  suffix=' Sets'
-                  visibleItems={3}
-                />
-              </CustomModal>
-            </View>
-            
-          </View>
-
-          <CreateBox onPress={() => delExercise(exIndex)} iconName='trash'/>
+          <CreateBox onPress={del} iconName='trash' />
         </View>
-      ))}
 
-      <CreateBox onPress={addWorkout} iconName='add' text='Add workout'/>
-      <Text style={styles.title}/>
-      <Text style={styles.title}/>
-    </ScrollView>
-    <Bar/>
-  </KeyboardAvoidingView>
-  
-);
+        {/* Exercises */}
+        {workout.exercises.map((exercise, exIndex) => (
+          <View key={exIndex} style={styles.exerciseBox}>
 
+            <TextInput
+              style={[styles.input, { flex: 1, marginRight: 8 }]}
+              value={exercise.name}
+              onChangeText={(text) => handleExerciseChange(exIndex, 'name', text)}
+              placeholder="Exercise Name"
+              placeholderTextColor={colors.textSecondary}
+            />
+
+            {/* Wheel: Scroll während Drag deaktivieren */}
+            <View
+            >
+              <View style={{ flex: 1, padding: 20 }}>
+                <Button
+                title={exercise.sets.toString() + (exercise.sets > 1 ? " Sets" : " Set ")}
+                  onPress={() => setModalExerciseIndex(exIndex)}
+                />
+
+                <CustomModal
+                  visible={modalExerciseIndex === exIndex}
+                  onClose={() => setModalExerciseIndex(null)}
+                >
+                  <NumberWheel
+                    min={1}
+                    max={30}
+                    value={exercise.sets}
+                    onValueChange={(value) => changeSets(exIndex, value)}
+                    width={90}
+                    suffix=" Sets"
+                    visibleItems={3}
+                  />
+                </CustomModal>
+              </View>
+            </View>
+
+            <CreateBox onPress={() => delExercise(exIndex)} iconName='trash' />
+          </View>
+        ))}
+
+        <CreateBox onPress={addWorkout} iconName='add' text='Add workout' />
+        <Text style={styles.title} />
+        <Text style={styles.title} />
+      </ScrollView>
+
+      <Bar />
+    </KeyboardAvoidingView>
+  );
 }
