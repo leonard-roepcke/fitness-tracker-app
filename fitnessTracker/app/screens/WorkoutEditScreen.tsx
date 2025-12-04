@@ -245,15 +245,17 @@ export default function WorkoutEditScreen({ route }: any) {
                   visible={modalExerciseIndex === exIndex}
                   onClose={() => setModalExerciseIndex(null)}
                 >
-                  <NumberWheel
-                    min={1}
-                    max={30}
-                    value={exercise.sets}
-                    onValueChange={(value) => changeSets(exIndex, value)}
-                    width={90}
-                    suffix=" Sets"
-                    visibleItems={3}
-                  />
+                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <NumberWheel
+                      min={1}
+                      max={30}
+                      value={exercise.sets}
+                      onValueChange={(value) => changeSets(exIndex, value)}
+                      width={90}
+                      suffix=" Sets"
+                      visibleItems={3}
+                    />
+                </View>
                 </CustomModal>
               </View>
             </View>
