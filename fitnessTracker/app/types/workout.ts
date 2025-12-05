@@ -3,6 +3,7 @@ export interface Exercise {
   name: string;
   sets: number;
   last_reps: number[];
+  notes?: string;
 
   // Einheitliche interne Repräsentation
   weights?: number[];          // neues Feld, empfohlen
