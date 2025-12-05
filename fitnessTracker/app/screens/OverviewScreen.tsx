@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
+import { StreakFlame } from '../components/Streak';
 import { WorkoutBox } from '../components/WorkoutBox';
 import WStats from '../components/WStats';
 import { useTheme } from '../hooks/useTheme';
@@ -77,9 +78,16 @@ export default function OverviewScreen() {
 
     return (
         <View style={styles.container}>
+            <View style={{position: "absolute", top: 62, right: 10,}}>
+            <StreakFlame color={colors.warning} type={'weekly'}/>
+            </View>
+
+            <View style={{position: "absolute", top: 62, left: 10,}}>
+            <StreakFlame color={colors.primary} type={'daily'}/>
+            </View>
 
             <Text style={styles.title}></Text>
-            <Text style={styles.header}>{randomMessage}</Text>
+            <Text style={styles.header}>Übersicht</Text>
             <Text style={styles.title}></Text>
 
             <ScrollView style={styles.scrollView}>
