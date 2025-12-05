@@ -1,117 +1,149 @@
-// project/context/TrackerContext.tsx
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { WorkoutLogsByDate } from "../app/types/tracker";
+import { Workout } from "./WorkoutContext"; // Typ aus deinem WorkoutContext
 
-const STORAGE_KEY = "WORKOUT_LOGS_BY_DATE";
+const STORAGE_KEY = "@workout_logs_by_date";
 
-// ---------- TYPES FOR CONTEXT ----------
+// -------------------- TYPES --------------------
 type TrackerContextType = {
   workoutLogs: WorkoutLogsByDate;
-  logWorkout: (dateISO: string, workoutId: string, volume: number) => Promise<void>;
+  logWorkout: (workout: Workout) => Promise<void>;
   removeLog: (dateISO: string, index?: number) => Promise<void>;
   clearAllLogs: () => Promise<void>;
+  getDailyStreak: () => number;
+  getWeeklyStreak: () => number;
 };
 
-// ---------- DEFAULT VALUE ----------
+// -------------------- CONTEXT --------------------
 const TrackerContext = createContext<TrackerContextType | undefined>(undefined);
 
-// ---------- PROVIDER ----------
+// -------------------- PROVIDER --------------------
 export const TrackerProvider = ({ children }: { children: ReactNode }) => {
   const [workoutLogs, setWorkoutLogs] = useState<WorkoutLogsByDate>({});
 
-  // ------------------------------
-  // LOAD FROM ASYNC STORAGE
-  // ------------------------------
+  // --- Load Logs from AsyncStorage ---
   useEffect(() => {
-    const load = async () => {
+    const loadLogs = async () => {
       try {
         const json = await AsyncStorage.getItem(STORAGE_KEY);
-        if (json) {
-          setWorkoutLogs(JSON.parse(json));
-        }
+        if (json) setWorkoutLogs(JSON.parse(json));
       } catch (e) {
         console.error("Failed to load workout logs", e);
       }
     };
-
-    load();
+    loadLogs();
   }, []);
 
-  // ------------------------------
-  // SAVE TO STORAGE
-  // ------------------------------
-  const saveToStorage = async (data: WorkoutLogsByDate) => {
+  // --- Save Logs to AsyncStorage ---
+  const saveLogs = async (logs: WorkoutLogsByDate) => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
     } catch (e) {
       console.error("Failed to save workout logs", e);
     }
   };
 
-  // ------------------------------
-  // ADD WORKOUT LOG
-  // ------------------------------
-  const logWorkout = async (dateISO: string, workoutId: string, volume: number) => {
-    setWorkoutLogs((prev) => {
-      const existing = prev[dateISO] || { workoutIds: [], volumes: [] };
+  // --- Log a Workout ---
+  const logWorkout = async (workout: Workout) => {
+    const today = new Date().toISOString().split("T")[0];
 
-      const updated: WorkoutLogsByDate = {
-        ...prev,
-        [dateISO]: {
-          workoutIds: [...existing.workoutIds, workoutId],
-          volumes: [...existing.volumes, volume],
-        },
-      };
-
-      saveToStorage(updated);
-      return updated;
+    // Berechne Gesamtvolumen des Workouts
+    let totalVolume = 0;
+    workout.exercises.forEach(ex => {
+      if (ex.last_weight && ex.last_reps) {
+        ex.last_weight.forEach((w, i) => {
+          const r = ex.last_reps![i] ?? 0;
+          totalVolume += w * r;
+        });
+      }
     });
+
+    const updatedLogs = { ...workoutLogs };
+    if (!updatedLogs[today]) {
+      updatedLogs[today] = { workoutIds: [], volumes: [] };
+    }
+
+    updatedLogs[today].workoutIds.push(workout.id.toString());
+    updatedLogs[today].volumes.push(totalVolume);
+
+    setWorkoutLogs(updatedLogs);
+    await saveLogs(updatedLogs);
   };
 
-  // ------------------------------
-  // REMOVE A LOG (OPTIONAL INDEX)
-  // ------------------------------
+  // --- Remove a log (optionally by index) ---
   const removeLog = async (dateISO: string, index?: number) => {
-    setWorkoutLogs((prev) => {
+    setWorkoutLogs(prev => {
       const day = prev[dateISO];
       if (!day) return prev;
 
-      // If no index given → delete whole day
+      const updated = { ...prev };
+
       if (index === undefined) {
-        const updated = { ...prev };
         delete updated[dateISO];
-        saveToStorage(updated);
-        return updated;
+      } else {
+        updated[dateISO] = {
+          workoutIds: day.workoutIds.filter((_, i) => i !== index),
+          volumes: day.volumes.filter((_, i) => i !== index),
+        };
+        if (updated[dateISO].workoutIds.length === 0) {
+          delete updated[dateISO];
+        }
       }
 
-      // Remove specific entry
-      const newWorkoutIds = [...day.workoutIds];
-      const newVolumes = [...day.volumes];
-
-      newWorkoutIds.splice(index, 1);
-      newVolumes.splice(index, 1);
-
-      const updated = {
-        ...prev,
-        [dateISO]: {
-          workoutIds: newWorkoutIds,
-          volumes: newVolumes,
-        },
-      };
-
-      saveToStorage(updated);
+      saveLogs(updated);
       return updated;
     });
   };
 
-  // ------------------------------
-  // CLEAR ALL
-  // ------------------------------
+  // --- Clear all logs ---
   const clearAllLogs = async () => {
     await AsyncStorage.removeItem(STORAGE_KEY);
     setWorkoutLogs({});
+  };
+
+  // --- Daily Streak (consecutive days with workouts) ---
+  const getDailyStreak = (): number => {
+    const dates = Object.keys(workoutLogs).sort((a, b) => (a > b ? 1 : -1));
+    let streak = 0;
+    let current = new Date();
+    for (let i = dates.length - 1; i >= 0; i--) {
+      const logDate = new Date(dates[i]);
+      const diff = Math.floor((current.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (diff === streak) {
+        streak++;
+      } else if (diff > streak) {
+        break;
+      }
+    }
+    return streak;
+  };
+
+  // --- Weekly Streak (consecutive weeks with >=1 workout) ---
+  const getWeeklyStreak = (): number => {
+    const weeks: Set<string> = new Set();
+    Object.keys(workoutLogs).forEach(dateISO => {
+      const d = new Date(dateISO);
+      const year = d.getFullYear();
+      const week = Math.ceil(
+        ((d.getTime() - new Date(year, 0, 1).getTime()) / (1000 * 60 * 60 * 24) + 1) / 7
+      );
+      weeks.add(`${year}-${week}`);
+    });
+
+    // Zähle aufeinanderfolgende Wochen
+    const sortedWeeks = Array.from(weeks).sort();
+    let streak = 0;
+    let currentWeek = Math.ceil(
+      ((new Date().getTime() - new Date(new Date().getFullYear(), 0, 1).getTime()) / (1000 * 60 * 60 * 24) + 1) / 7
+    );
+    for (let i = sortedWeeks.length - 1; i >= 0; i--) {
+      const [year, weekStr] = sortedWeeks[i].split("-");
+      const weekNum = parseInt(weekStr, 10);
+      if (weekNum === currentWeek - streak) streak++;
+      else break;
+    }
+    return streak;
   };
 
   return (
@@ -121,6 +153,8 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
         logWorkout,
         removeLog,
         clearAllLogs,
+        getDailyStreak,
+        getWeeklyStreak,
       }}
     >
       {children}
@@ -128,7 +162,7 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// ---------- HOOK ----------
+// --- HOOK ---
 export const useTracker = () => {
   const ctx = useContext(TrackerContext);
   if (!ctx) throw new Error("useTracker must be used inside TrackerProvider");

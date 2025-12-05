@@ -1,4 +1,5 @@
 import Layouts from "@/app/constants/Layouts";
+import { useTracker } from "@/context/TrackerContext";
 import { useRouter } from 'expo-router';
 import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useState } from 'react';
@@ -16,6 +17,9 @@ export default function WorkoutScreen({ route, navigation }: any) {
     const layouts = Layouts;
     const nav = navigation;
     const {workouts, updateWorkout} = useWorkouts();
+    const { logWorkout, workoutLogs, getDailyStreak, getWeeklyStreak } = useTracker();
+    const today = new Date().toISOString().split('T')[0];
+
 
     const params = useSearchParams();
     // Try react-navigation route params first, otherwise fall back to expo-router search params
@@ -81,7 +85,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
 
     const [loading, setLoading] = useState(false);
 
-    const handlePress = () => {
+    const handlePress = async () => {
         if (!workout || !workouts) return;
         
         const updatedWorkouts = workouts.map(w => {
@@ -127,7 +131,9 @@ export default function WorkoutScreen({ route, navigation }: any) {
    setWeight(exercise.last_weight?.[0] ?? 0);
    setReps(exercise.last_reps?.[0] ?? 0);
  } else {
-     // Workout abgeschlossen
+     //Workout abgeschlossen
+
+    await logWorkout(workout);
      if (nav && typeof nav.goBack === 'function') nav.goBack();
      else router.back();
  }
