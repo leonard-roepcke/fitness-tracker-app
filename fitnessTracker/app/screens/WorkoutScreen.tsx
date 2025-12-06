@@ -185,7 +185,11 @@ export default function WorkoutScreen({ route, navigation }: any) {
     keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20} // optional: offset für Header
     
 >
-    <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView 
+        ref={scrollViewRef} 
+        contentContainerStyle={{ flexGrow: 1 }}
+        scrollEnabled={false} 
+      >
         <View style={styles.container}>
             <Text style={styles.title}></Text>
 
