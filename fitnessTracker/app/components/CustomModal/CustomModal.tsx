@@ -15,11 +15,23 @@ import {
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export default function CustomModal({ visible, onClose, children }: any) {
+interface CustomModalProps {
+  visible: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  showCloseButton?: boolean;
+}
+
+export default function CustomModal({ 
+  visible, 
+  onClose, 
+  children, 
+  showCloseButton = true 
+}: CustomModalProps) {
   const colors = useTheme();
   const layouts = Layouts;
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
-  
+
   const handlePanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -152,18 +164,19 @@ export default function CustomModal({ visible, onClose, children }: any) {
           >
             <View style={styles.handle} />
           </View>
-          
           <View style={styles.content}>
             {children}
-            <View style={styles.buttonWrapper}>
-              <TouchableOpacity 
-                onPress={closeModal} 
-                style={styles.closeBtn}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.closeText}>Schließen</Text>
-              </TouchableOpacity>
-            </View>
+            {showCloseButton && (
+              <View style={styles.buttonWrapper}>
+                <TouchableOpacity 
+                  onPress={closeModal} 
+                  style={styles.closeBtn}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.closeText}>Schließen</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </Animated.View>
       </View>

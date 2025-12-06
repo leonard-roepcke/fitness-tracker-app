@@ -1,8 +1,9 @@
 import Layouts from "@/app/constants/Layouts";
 import { useTheme } from '@/app/hooks/useTheme';
 import { useWeights } from '@/context/WeightContext';
+import CustomModal from '@/app/components/CustomModal'; // Pfad anpassen falls nötig
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle, Polyline } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
@@ -13,7 +14,7 @@ const layouts = Layouts;
 export default function WStats() {
   const colors = useTheme();
   const { weights, addWeight } = useWeights();
-  const [showInput, setShowInput] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [newWeight, setNewWeight] = useState('');
 
   // Statistiken berechnen
@@ -47,8 +48,22 @@ export default function WStats() {
     if (newWeight && !isNaN(parseFloat(newWeight))) {
       await addWeight(parseFloat(newWeight));
       setNewWeight('');
-      setShowInput(false);
+      setShowModal(false);
     }
+  };
+
+  const handleNumberPress = (num) => {
+    setNewWeight(prev => prev + num);
+  };
+
+  const handleCommaPress = () => {
+    if (!newWeight.includes('.')) {
+      setNewWeight(prev => prev + '.');
+    }
+  };
+
+  const handleBackspace = () => {
+    setNewWeight(prev => prev.slice(0, -1));
   };
 
   const stats = calculateStats();
@@ -71,6 +86,43 @@ export default function WStats() {
     return points;
   };
 
+  const renderNumPad = () => {
+    const numbers = [
+      ['7', '8', '9'],
+      ['4', '5', '6'],
+      ['1', '2', '3'],
+      [',', '0', '←']
+    ];
+
+    return (
+      <View style={styles.numPad}>
+        {numbers.map((row, rowIndex) => (
+          <View key={rowIndex} style={styles.numPadRow}>
+            {row.map((btn) => (
+              <TouchableOpacity
+                key={btn}
+                style={[styles.numButton, { backgroundColor: colors.background }]}
+                onPress={() => {
+                  if (btn === '←') {
+                    handleBackspace();
+                  } else if (btn === ',') {
+                    handleCommaPress();
+                  } else {
+                    handleNumberPress(btn);
+                  }
+                }}
+              >
+                <Text style={[styles.numButtonText, { color: colors.text }]}>
+                  {btn}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   if (!stats) {
     return (
       <View style={[styles.container, { backgroundColor: colors.card }]}>
@@ -80,21 +132,31 @@ export default function WStats() {
         </Text>
         <TouchableOpacity
           style={[styles.addButton, { backgroundColor: colors.primary }]}
-          onPress={() => setShowInput(true)}
+          onPress={() => setShowModal(true)}
         >
           <Text style={styles.addButtonText}>+ Gewicht hinzufügen</Text>
         </TouchableOpacity>
 
-        {showInput && (
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, { borderColor: colors.primary }]}
-              placeholder="z.B. 75.5"
-              placeholderTextColor="#9ca3af"
-              keyboardType="decimal-pad"
-              value={newWeight}
-              onChangeText={setNewWeight}
-            />
+        <CustomModal
+          visible={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setNewWeight('');
+          }}
+          showCloseButton={false}
+        >
+          <View style={styles.modalContent}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              Gewicht hinzufügen
+            </Text>
+            <View style={[styles.display, { borderColor: colors.primary }]}>
+              <Text style={[styles.displayText, { color: colors.text }]}>
+                {newWeight || '0'} kg
+              </Text>
+            </View>
+            
+            {renderNumPad()}
+
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={[styles.saveButton, { backgroundColor: colors.primary }]}
@@ -105,7 +167,7 @@ export default function WStats() {
               <TouchableOpacity
                 style={[styles.cancelButton, { borderColor: colors.text }]}
                 onPress={() => {
-                  setShowInput(false);
+                  setShowModal(false);
                   setNewWeight('');
                 }}
               >
@@ -113,7 +175,7 @@ export default function WStats() {
               </TouchableOpacity>
             </View>
           </View>
-        )}
+        </CustomModal>
       </View>
     );
   }
@@ -137,41 +199,51 @@ export default function WStats() {
         </View>
         <TouchableOpacity
           style={[styles.addButtonSmall, { backgroundColor: colors.primary }]}
-          onPress={() => setShowInput(!showInput)}
+          onPress={() => setShowModal(true)}
         >
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
 
-      {showInput && (
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={[styles.input, { borderColor: colors.primary, color: colors.text }]}
-            placeholder="Gewicht in kg"
-            placeholderTextColor="#9ca3af"
-            keyboardType="decimal-pad"
-            value={newWeight}
-            onChangeText={setNewWeight}
-          />
+      <CustomModal
+        visible={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setNewWeight('');
+        }}
+        showCloseButton={false}
+      >
+        <View style={styles.modalContent}>
+          <Text style={[styles.modalTitle, { color: colors.text }]}>
+            Gewicht hinzufügen
+          </Text>
+          <View style={[styles.display, { borderColor: colors.primary }]}>
+            <Text style={[styles.displayText, { color: colors.text }]}>
+              {newWeight || '0'} kg
+            </Text>
+          </View>
+          
+          {renderNumPad()}
+
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={[styles.saveButton, { backgroundColor: colors.primary }]}
               onPress={handleAddWeight}
             >
-              <Text style={styles.buttonText}>OK</Text>
+              <Text style={styles.buttonText}>Speichern</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cancelButton, { borderColor: colors.text }]}
               onPress={() => {
-                setShowInput(false);
+                setShowModal(false);
                 setNewWeight('');
               }}
             >
-              <Text style={[styles.buttonText, { color: colors.text }]}>X</Text>
+              <Text style={[styles.buttonText, { color: colors.text }]}>Abbrechen</Text>
             </TouchableOpacity>
           </View>
         </View>
-      )}
+      </CustomModal>
 
       {/* Chart */}
       <View style={styles.chartContainer}>
@@ -252,15 +324,44 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     marginBottom: 8,
   },
-  inputContainer: {
-    marginBottom: 12,
+  modalContent: {
+    padding: 4,
   },
-  input: {
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  display: {
     borderWidth: 2,
     borderRadius: layouts.borderRadius,
-    padding: 10,
-    fontSize: 14,
+    padding: 16,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  displayText: {
+    fontSize: 32,
+    fontWeight: '600',
+  },
+  numPad: {
+    marginBottom: 16,
+  },
+  numPadRow: {
+    flexDirection: 'row',
+    gap: 8,
     marginBottom: 8,
+  },
+  numButton: {
+    flex: 1,
+    aspectRatio: 1.5,
+    borderRadius: layouts.borderRadius,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  numButtonText: {
+    fontSize: 24,
+    fontWeight: '600',
   },
   buttonRow: {
     flexDirection: 'row',
@@ -268,13 +369,13 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: layouts.borderRadius,
     alignItems: 'center',
   },
   cancelButton: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderRadius: layouts.borderRadius,
     borderWidth: 1,
     alignItems: 'center',
