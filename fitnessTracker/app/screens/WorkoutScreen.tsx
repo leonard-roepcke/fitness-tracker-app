@@ -223,7 +223,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
             <TextInput
               style={styles.textBox}
               multiline={true}
-              placeholder="Schreibe hier..."
+              placeholder="Notizen: Schreibe hier..."
               placeholderTextColor={colors.border}
               value={workout.notes}
               onChangeText={(value) => {
