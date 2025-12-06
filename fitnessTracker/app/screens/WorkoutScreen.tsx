@@ -92,7 +92,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
           flex: 1, // TextInput füllt den gesamten Container aus
           textAlignVertical: "top", // Text beginnt oben
           borderWidth: 1,
-          borderColor: "#ccc",
+          borderColor: colors.border,
           borderRadius: layouts.borderRadius,
           padding: 10,
           fontSize: 16,
@@ -224,9 +224,15 @@ export default function WorkoutScreen({ route, navigation }: any) {
               style={styles.textBox}
               multiline={true}
               placeholder="Schreibe hier..."
-              value={text}
+              placeholderTextColor={colors.border}
+              value={workout.notes}
               onChangeText={(value) => {
-                setText(value);
+                if (!workout || !workouts) return;
+                const updatedWorkouts = workouts.map(w => {
+                    if (w.id !== workout.id) return w;
+                    return { ...w, notes: value };
+                });
+                updateWorkout(updatedWorkouts);
                 scrollViewRef.current?.scrollToEnd({ animated: true });
               }}
             />
