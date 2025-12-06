@@ -31,7 +31,7 @@ export const Bar = () => {
                 backgroundColor: colors.card,
                 borderRadius: layouts.borderRadius,
                 marginHorizontal: 40,
-                shadowColor: "#000",
+                shadowColor: colors.text,
                 shadowOpacity: 0.15,
                 shadowRadius: 20,
                 elevation: 5,
