@@ -3,13 +3,16 @@ import { useTracker } from "@/context/TrackerContext";
 import { useRouter } from 'expo-router';
 import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
 import { Button } from '../components/Button';
 import { CreateBox } from '../components/CreateBox';
 import { RepWeightPicker } from '../components/RepWeightPicker';
 import { useTheme } from '../hooks/useTheme';
+import { Keyboard,KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useRef, useEffect } from 'react';
+
 
 export default function WorkoutScreen({ route, navigation }: any) {
     const colors = useTheme();
@@ -20,6 +23,8 @@ export default function WorkoutScreen({ route, navigation }: any) {
     const { logWorkout, workoutLogs, getDailyStreak, getWeeklyStreak } = useTracker();
     const today = new Date().toISOString().split('T')[0];
 
+    
+    
 
     const params = useSearchParams();
     // Try react-navigation route params first, otherwise fall back to expo-router search params
@@ -27,6 +32,8 @@ export default function WorkoutScreen({ route, navigation }: any) {
     const workoutId = Number(rawId);
     const workout = workouts?.find(w => w.id === workoutId);
     
+    const [text, setText] = useState<string>(workout?.notes ?? "");
+
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
     
@@ -81,9 +88,32 @@ export default function WorkoutScreen({ route, navigation }: any) {
             marginLeft: 8,
             marginBottom: 4,
         },
+        textBox: {
+          flex: 1, // TextInput füllt den gesamten Container aus
+          textAlignVertical: "top", // Text beginnt oben
+          borderWidth: 1,
+          borderColor: "#ccc",
+          borderRadius: layouts.borderRadius,
+          padding: 10,
+          fontSize: 16,
+          color: colors.text,
+          marginTop: 20,
+          marginBottom: 70,
+        },
     });
 
     const [loading, setLoading] = useState(false);
+    const scrollViewRef = useRef<ScrollView>(null);
+
+    useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    });
+
+    return () => {
+      showSubscription.remove();
+    };
+  }, []);
 
     const handlePress = async () => {
         if (!workout || !workouts) return;
@@ -149,6 +179,13 @@ export default function WorkoutScreen({ route, navigation }: any) {
 
 
     return (
+      <KeyboardAvoidingView
+    style={{ flex: 1, backgroundColor: colors.background }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"} // iOS vs Android
+    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20} // optional: offset für Header
+    
+>
+    <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.container}>
             <Text style={styles.title}></Text>
 
@@ -183,7 +220,19 @@ export default function WorkoutScreen({ route, navigation }: any) {
                 onPress={handlePress}
                 variant="primary"
             />
+            <TextInput
+              style={styles.textBox}
+              multiline={true}
+              placeholder="Schreibe hier..."
+              value={text}
+              onChangeText={(value) => {
+                setText(value);
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+              }}
+            />
             <Bar/>
         </View>
+        </ScrollView>
+</KeyboardAvoidingView>
     );
 }
