@@ -11,13 +11,14 @@ import { useTheme } from '../hooks/useTheme';
 import { Workout } from "../types/workout";
 import CardBox from '../components/CardBox';
 import Layouts from '../constants/Layouts';
+import CStats from '../components/CStats';
 
 
 export default function OverviewScreen() {
     const {workouts} = useWorkouts();
     const colors = useTheme();
     const navigation: any = useNavigation();
-    const { isWTrackerEnabled } = useContext(ThemeContext);
+    const { isWTrackerEnabled, isCTrackerEnabled } = useContext(ThemeContext);
     
 
     
@@ -53,6 +54,9 @@ export default function OverviewScreen() {
             marginTop: 35,
             color: colors.text,
         },
+        spacing: {
+            height: Layouts.marginVertical*12,
+        }
     });
 
 
@@ -95,6 +99,7 @@ export default function OverviewScreen() {
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.subtitle}></Text>
                 {isWTrackerEnabled && <WStats />}
+                {isCTrackerEnabled && <CStats />}
                 <Text style={styles.subtitle}></Text>
 
                 {workouts
@@ -128,8 +133,10 @@ export default function OverviewScreen() {
                         ))}
                     </View>
                     ))}
+                    
+                <View style={styles.spacing}/>
                 </ScrollView>
-
+                
             <Bar/>
         </View>
     );

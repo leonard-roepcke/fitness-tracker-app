@@ -1,18 +1,39 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { WorkoutLogsByDate } from "../app/types/workoutLogs";
-import { Workout } from "./WorkoutContext"; // Typ aus deinem WorkoutContext
+import { Workout } from "./WorkoutContext";
 
-const STORAGE_KEY = "@workout_logs_by_date";
+const STORAGE_KEY_WORKOUTS = "@workout_logs_by_date";
+const STORAGE_KEY_CALORIES = "@calory_entries";
 
 // -------------------- TYPES --------------------
+export interface CaloryEntry {
+  id: number;
+  date: number; // timestamp
+  calorys: number;
+}
+
+type CalorysByDate = {
+  [dateISO: string]: CaloryEntry[];
+};
+
 type TrackerContextType = {
+  // Workouts
   workoutLogs: WorkoutLogsByDate;
   logWorkout: (workout: Workout) => Promise<void>;
   removeLog: (dateISO: string, index?: number) => Promise<void>;
   clearAllLogs: () => Promise<void>;
   getDailyStreak: () => number;
   getWeeklyStreak: () => number;
+  
+  // Calories
+  calorys: CalorysByDate;
+  addCaloryEntry: (entry: Omit<CaloryEntry, 'id'>) => Promise<void>;
+  updateCaloryEntry: (id: number, calorys: number) => Promise<void>;
+  removeCaloryEntry: (id: number) => Promise<void>;
+  getCaloriesForDate: (dateISO: string) => CaloryEntry[];
+  getTotalCaloriesForDate: (dateISO: string) => number;
+  clearAllCalories: () => Promise<void>;
 };
 
 // -------------------- CONTEXT --------------------
@@ -21,34 +42,49 @@ const TrackerContext = createContext<TrackerContextType | undefined>(undefined);
 // -------------------- PROVIDER --------------------
 export const TrackerProvider = ({ children }: { children: ReactNode }) => {
   const [workoutLogs, setWorkoutLogs] = useState<WorkoutLogsByDate>({});
+  const [calorys, setCalorys] = useState<CalorysByDate>({});
 
-  // --- Load Logs from AsyncStorage ---
+  // --- Load Data from AsyncStorage ---
   useEffect(() => {
-    const loadLogs = async () => {
+    const loadData = async () => {
       try {
-        const json = await AsyncStorage.getItem(STORAGE_KEY);
-        if (json) setWorkoutLogs(JSON.parse(json));
+        // Load workouts
+        const workoutJson = await AsyncStorage.getItem(STORAGE_KEY_WORKOUTS);
+        if (workoutJson) setWorkoutLogs(JSON.parse(workoutJson));
+
+        // Load calories
+        const caloriesJson = await AsyncStorage.getItem(STORAGE_KEY_CALORIES);
+        if (caloriesJson) setCalorys(JSON.parse(caloriesJson));
       } catch (e) {
-        console.error("Failed to load workout logs", e);
+        console.error("Failed to load data", e);
       }
     };
-    loadLogs();
+    loadData();
   }, []);
 
-  // --- Save Logs to AsyncStorage ---
-  const saveLogs = async (logs: WorkoutLogsByDate) => {
+  // --- Save Workouts to AsyncStorage ---
+  const saveWorkouts = async (logs: WorkoutLogsByDate) => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+      await AsyncStorage.setItem(STORAGE_KEY_WORKOUTS, JSON.stringify(logs));
     } catch (e) {
       console.error("Failed to save workout logs", e);
     }
   };
 
-  // --- Log a Workout ---
+  // --- Save Calories to AsyncStorage ---
+  const saveCalories = async (calories: CalorysByDate) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY_CALORIES, JSON.stringify(calories));
+    } catch (e) {
+      console.error("Failed to save calories", e);
+    }
+  };
+
+  // ==================== WORKOUT FUNCTIONS ====================
+
   const logWorkout = async (workout: Workout) => {
     const today = new Date().toISOString().split("T")[0];
 
-    // Berechne Gesamtvolumen des Workouts
     let totalVolume = 0;
     workout.exercises.forEach(ex => {
       if (ex.last_weight && ex.last_reps) {
@@ -68,10 +104,9 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
     updatedLogs[today].volumes.push(totalVolume);
 
     setWorkoutLogs(updatedLogs);
-    await saveLogs(updatedLogs);
+    await saveWorkouts(updatedLogs);
   };
 
-  // --- Remove a log (optionally by index) ---
   const removeLog = async (dateISO: string, index?: number) => {
     setWorkoutLogs(prev => {
       const day = prev[dateISO];
@@ -91,18 +126,16 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
         }
       }
 
-      saveLogs(updated);
+      saveWorkouts(updated);
       return updated;
     });
   };
 
-  // --- Clear all logs ---
   const clearAllLogs = async () => {
-    await AsyncStorage.removeItem(STORAGE_KEY);
+    await AsyncStorage.removeItem(STORAGE_KEY_WORKOUTS);
     setWorkoutLogs({});
   };
 
-  // --- Daily Streak (consecutive days with workouts) ---
   const getDailyStreak = (): number => {
     const dates = Object.keys(workoutLogs).sort((a, b) => (a > b ? 1 : -1));
     let streak = 0;
@@ -119,7 +152,6 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
     return streak;
   };
 
-  // --- Weekly Streak (consecutive weeks with >=1 workout) ---
   const getWeeklyStreak = (): number => {
     const weeks: Set<string> = new Set();
     Object.keys(workoutLogs).forEach(dateISO => {
@@ -131,7 +163,6 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
       weeks.add(`${year}-${week}`);
     });
 
-    // Zähle aufeinanderfolgende Wochen
     const sortedWeeks = Array.from(weeks).sort();
     let streak = 0;
     let currentWeek = Math.ceil(
@@ -146,15 +177,100 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
     return streak;
   };
 
+  // ==================== CALORIE FUNCTIONS ====================
+
+  const addCaloryEntry = async (entry: Omit<CaloryEntry, 'id'>) => {
+    const dateISO = new Date(entry.date).toISOString().split("T")[0];
+    const newId = Date.now(); // Einfache ID-Generierung
+    
+    const newEntry: CaloryEntry = {
+      ...entry,
+      id: newId,
+    };
+
+    const updatedCalories = { ...calorys };
+    if (!updatedCalories[dateISO]) {
+      updatedCalories[dateISO] = [];
+    }
+    updatedCalories[dateISO].push(newEntry);
+
+    setCalorys(updatedCalories);
+    await saveCalories(updatedCalories);
+  };
+
+  const updateCaloryEntry = async (id: number, newCalories: number) => {
+    const updatedCalories = { ...calorys };
+    let found = false;
+
+    for (const dateISO in updatedCalories) {
+      const entries = updatedCalories[dateISO];
+      const index = entries.findIndex(e => e.id === id);
+      if (index !== -1) {
+        updatedCalories[dateISO][index].calorys = newCalories;
+        found = true;
+        break;
+      }
+    }
+
+    if (found) {
+      setCalorys(updatedCalories);
+      await saveCalories(updatedCalories);
+    }
+  };
+
+  const removeCaloryEntry = async (id: number) => {
+    const updatedCalories = { ...calorys };
+
+    for (const dateISO in updatedCalories) {
+      const entries = updatedCalories[dateISO];
+      const filtered = entries.filter(e => e.id !== id);
+      
+      if (filtered.length !== entries.length) {
+        if (filtered.length === 0) {
+          delete updatedCalories[dateISO];
+        } else {
+          updatedCalories[dateISO] = filtered;
+        }
+        break;
+      }
+    }
+
+    setCalorys(updatedCalories);
+    await saveCalories(updatedCalories);
+  };
+
+  const getCaloriesForDate = (dateISO: string): CaloryEntry[] => {
+    return calorys[dateISO] || [];
+  };
+
+  const getTotalCaloriesForDate = (dateISO: string): number => {
+    const entries = calorys[dateISO] || [];
+    return entries.reduce((sum, entry) => sum + entry.calorys, 0);
+  };
+
+  const clearAllCalories = async () => {
+    await AsyncStorage.removeItem(STORAGE_KEY_CALORIES);
+    setCalorys({});
+  };
+
   return (
     <TrackerContext.Provider
       value={{
+        // Workouts
         workoutLogs,
         logWorkout,
         removeLog,
         clearAllLogs,
         getDailyStreak,
         getWeeklyStreak,
+        // Calories
+        calorys,
+        addCaloryEntry,
+        updateCaloryEntry,
+        removeCaloryEntry,
+        getCaloriesForDate,
+        getTotalCaloriesForDate,
+        clearAllCalories,
       }}
     >
       {children}

@@ -10,7 +10,7 @@ import { useTheme } from "../hooks/useTheme";
 
 
 export default function SettingsScreen() {
-  const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker } = useContext(ThemeContext);
+  const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker } = useContext(ThemeContext);
 
   const colors = useTheme();
   const router = useRouter();
@@ -47,6 +47,13 @@ export default function SettingsScreen() {
             subtitle="Gewicht Tracking im Overview anzeigen"
             value={isWTrackerEnabled}
             onValueChange={toggleWTracker}
+          />
+
+          <SettingsBox
+            title="Calories Tracker"
+            subtitle="Calories Tracking im Overview anzeigen"
+            value={isCTrackerEnabled}
+            onValueChange={toggleCTracker}
           />
         </View>
 

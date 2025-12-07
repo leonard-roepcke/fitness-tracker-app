@@ -6,6 +6,8 @@ interface ThemeContextProps {
   toggleTheme: () => void;
   isWTrackerEnabled: boolean;
   toggleWTracker: () => void;
+  isCTrackerEnabled: boolean;
+  toggleCTracker: () => void;
 }
 
 export const ThemeContext = createContext<ThemeContextProps>({
@@ -13,11 +15,14 @@ export const ThemeContext = createContext<ThemeContextProps>({
   toggleTheme: () => {},
   isWTrackerEnabled: false,
   toggleWTracker: () => {},
+  isCTrackerEnabled: false,
+  toggleCTracker: () => {},
 });
 
 export const ThemeProvider = ({ children }: any) => {
   const [isDark, setIsDark] = useState(false);
   const [isWTrackerEnabled, setIsWTrackerEnabled] = useState(false);
+  const [isCTrackerEnabled, setIsCTrackerEnabled] = useState(false);
 
   // Initiales Laden der Werte aus AsyncStorage
   useEffect(() => {
@@ -30,6 +35,12 @@ export const ThemeProvider = ({ children }: any) => {
     AsyncStorage.getItem("wTracker").then((value) => {
       if (value !== null) {
         setIsWTrackerEnabled(value === "true");
+      }
+    });
+
+    AsyncStorage.getItem("cTracker").then((value) => {
+      if (value !== null) {
+        setIsCTrackerEnabled(value === "true");
       }
     });
   }, []);
@@ -46,9 +57,15 @@ export const ThemeProvider = ({ children }: any) => {
     await AsyncStorage.setItem("wTracker", String(newValue));
   };
 
+  const toggleCTracker = async () => {
+    const newValue = !isCTrackerEnabled;
+    setIsCTrackerEnabled(newValue);
+    await AsyncStorage.setItem("cTracker", String(newValue));
+  };
+
   return (
     <ThemeContext.Provider
-      value={{ isDark, toggleTheme, isWTrackerEnabled, toggleWTracker }}
+      value={{ isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker }}
     >
       {children}
     </ThemeContext.Provider>
