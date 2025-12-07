@@ -79,7 +79,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
         box: {
             backgroundColor: colors.card,
             borderRadius: layouts.borderRadius,
-            
+            flex: 1,
             justifyContent: "flex-start",
         },
         boxText: {

@@ -5,7 +5,7 @@ import Layout from '../../constants/Layouts';
 import { useTheme } from "../../hooks/useTheme";
 
 type CreateBoxProps = {
-    onPress: () => void;
+    onPress?: () => void;
     iconName?: keyof typeof Ionicons.glyphMap;
     iconSize?: number;
     iconColor?: string;
@@ -27,7 +27,7 @@ type CreateBoxProps = {
 };
 
 export const CreateBox = ({
-    onPress,
+    onPress=() => {},
     iconName = "add",
     iconSize = 24,
     iconColor,
