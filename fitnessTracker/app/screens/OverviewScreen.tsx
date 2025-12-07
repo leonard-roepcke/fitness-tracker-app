@@ -96,7 +96,7 @@ export default function OverviewScreen() {
             <Text style={styles.header}>Übersicht</Text>
             <Text style={styles.title}></Text>
 
-            <ScrollView style={styles.scrollView}>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <Text style={styles.subtitle}></Text>
                 {isWTrackerEnabled && <WStats />}
                 {isCTrackerEnabled && <CStats />}

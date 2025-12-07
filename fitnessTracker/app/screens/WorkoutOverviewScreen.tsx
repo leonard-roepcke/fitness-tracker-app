@@ -77,7 +77,7 @@ export default function WorkoutOverview() {
                         <Text style={styles.header}>Trainings</Text>
                         <Text style={styles.title}></Text>
 
-            <ScrollView style={styles.scrollView}>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <Text style={styles.subtitle}></Text>
                 
                 {workouts

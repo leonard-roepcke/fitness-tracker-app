@@ -189,6 +189,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
         ref={scrollViewRef} 
         contentContainerStyle={{ flexGrow: 1 }}
         scrollEnabled={false} 
+        showsVerticalScrollIndicator={false}
       >
         <View style={styles.container}>
             <Text style={styles.title}></Text>

@@ -27,7 +27,7 @@ export default function SettingsScreen() {
         <Text style={[styles.header, { color: colors.text }]}>Einstellungen</Text>
       </View>
  
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
  
         {/* App-Einstellungen */}
         <View style={[styles.section, { backgroundColor: colors.card }]}>
