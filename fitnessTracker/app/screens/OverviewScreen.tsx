@@ -10,6 +10,7 @@ import WStats from '../components/WStats';
 import { useTheme } from '../hooks/useTheme';
 import { Workout } from "../types/workout";
 import CardBox from '../components/CardBox';
+import Layouts from '../constants/Layouts';
 
 
 export default function OverviewScreen() {
@@ -33,7 +34,7 @@ export default function OverviewScreen() {
         title: {
             fontSize: 10,
             fontWeight: '600',
-            marginBottom: 8,
+            marginBottom: Layouts.marginVertical,
             color: colors.text,
             justifyContent: 'center',
             alignItems: 'center',
@@ -92,6 +93,7 @@ export default function OverviewScreen() {
             <Text style={styles.title}></Text>
 
             <ScrollView style={styles.scrollView}>
+                <Text style={styles.subtitle}></Text>
                 {isWTrackerEnabled && <WStats />}
                 <Text style={styles.subtitle}></Text>
 
@@ -108,7 +110,7 @@ export default function OverviewScreen() {
                         style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        marginBottom: 10,
+                        marginBottom: Layouts.marginVertical,
                         }}
                     >
                         {row.map((w, i) => (

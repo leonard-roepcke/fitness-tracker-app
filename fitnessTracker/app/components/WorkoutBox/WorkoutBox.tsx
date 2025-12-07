@@ -6,6 +6,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import { Workout } from '../../types/workout';
 import { CreateBox } from '../CreateBox';
+import CardBox from "../CardBox";
 
 const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
     const colors = useTheme();
@@ -43,7 +44,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             alignItems: "center",
             backgroundColor: colors.card,
             borderRadius: layouts.borderRadius,
-            marginVertical: 8,
+            marginVertical: layouts.marginVertical,
             overflow: "hidden",
             height: 70
         },
@@ -78,11 +79,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
         box: {
             backgroundColor: colors.card,
             borderRadius: layouts.borderRadius,
-            paddingTop: 16,
-            paddingLeft: 16,
-            paddingRight: 16,
-            paddingBottom: 12,
-            height: 120,
+            
             justifyContent: "flex-start",
         },
         boxText: {
@@ -120,12 +117,14 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
 
     // VARIANTE: box → klassische Box
     return (
-        <View style={styles.boxContainer}>
-            <TouchableOpacity style={styles.box} onPress={handlePress}>
-                <Text style={styles.boxText} numberOfLines={1}>
-                    {name}
-                </Text>
-            </TouchableOpacity>
+        <View >
+            <CardBox size={0.6}>
+                <TouchableOpacity style={styles.box} onPress={handlePress}>
+                    <Text style={styles.boxText} numberOfLines={1}>
+                        {name}
+                    </Text>
+                </TouchableOpacity>
+            </CardBox>
         </View>
     );
 };
