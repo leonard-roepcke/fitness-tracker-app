@@ -65,6 +65,9 @@ export default function SettingsScreen() {
         alignItems: 'center',
 
     },
+    spacing: {
+        height: Layouts.marginVertical*12,
+    }
   });
 
   return (
@@ -125,6 +128,7 @@ export default function SettingsScreen() {
         <Text style={styles.footerText}>
           Version {version} ({build})
         </Text>
+      <View style={styles.spacing}/>
       </ScrollView>
       <Bar />
     </View>
