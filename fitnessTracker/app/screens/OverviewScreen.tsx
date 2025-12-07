@@ -9,6 +9,7 @@ import { WorkoutBox } from '../components/WorkoutBox';
 import WStats from '../components/WStats';
 import { useTheme } from '../hooks/useTheme';
 import { Workout } from "../types/workout";
+import CardBox from '../components/CardBox';
 
 
 export default function OverviewScreen() {

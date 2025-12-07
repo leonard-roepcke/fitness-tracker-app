@@ -1,14 +1,15 @@
 import Layouts from "@/app/constants/Layouts";
 import { useTheme } from '@/app/hooks/useTheme';
 import { useWeights } from '@/context/WeightContext';
-import CustomModal from '@/app/components/CustomModal'; // Pfad anpassen falls nötig
+import CustomModal from '@/app/components/CustomModal';
+import CardBox from '@/app/components/CardBox';
 import React, { useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle, Polyline } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
-const CHART_WIDTH = width - 48;
-const CHART_HEIGHT = 120;
+const CHART_WIDTH = width - 80; // Angepasst für padding
+const CHART_HEIGHT = 100; // Kompakter für die Box
 const layouts = Layouts;
 
 export default function WStats() {
@@ -17,18 +18,13 @@ export default function WStats() {
   const [showModal, setShowModal] = useState(false);
   const [newWeight, setNewWeight] = useState('');
 
-  // Statistiken berechnen
   const calculateStats = () => {
     if (!weights || weights.length === 0) return null;
 
     const weightValues = weights.map(w => w.weight);
     const current = weightValues[weightValues.length - 1];
-    const highest = Math.max(...weightValues);
-    const lowest = Math.min(...weightValues);
-    const average = weightValues.reduce((a, b) => a + b, 0) / weightValues.length;
     const change = weightValues.length > 1 ? current - weightValues[0] : 0;
 
-    // Durchschnitt der letzten Woche berechnen
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     
@@ -41,7 +37,7 @@ export default function WStats() {
       ? lastWeekWeights.reduce((sum, w) => sum + w.weight, 0) / lastWeekWeights.length
       : current;
 
-    return { current, highest, lowest, average, change, weightValues, weekAverage };
+    return { current, change, weightValues, weekAverage };
   };
 
   const handleAddWeight = async () => {
@@ -68,7 +64,6 @@ export default function WStats() {
 
   const stats = calculateStats();
 
-  // Chart Punkte berechnen
   const getChartPoints = () => {
     if (!stats || stats.weightValues.length === 0) return '';
 
@@ -103,13 +98,9 @@ export default function WStats() {
                 key={btn}
                 style={[styles.numButton, { backgroundColor: colors.background }]}
                 onPress={() => {
-                  if (btn === '←') {
-                    handleBackspace();
-                  } else if (btn === ',') {
-                    handleCommaPress();
-                  } else {
-                    handleNumberPress(btn);
-                  }
+                  if (btn === '←') handleBackspace();
+                  else if (btn === ',') handleCommaPress();
+                  else handleNumberPress(btn);
                 }}
               >
                 <Text style={[styles.numButtonText, { color: colors.text }]}>
@@ -125,17 +116,21 @@ export default function WStats() {
 
   if (!stats) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.card }]}>
-        <Text style={[styles.title, { color: colors.text }]}>Gewichtsstatistik</Text>
-        <Text style={[styles.emptyText, { color: colors.text }]}>
-          Noch keine Einträge
-        </Text>
-        <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: colors.primary }]}
-          onPress={() => setShowModal(true)}
-        >
-          <Text style={styles.addButtonText}>+ Gewicht hinzufügen</Text>
-        </TouchableOpacity>
+      <CardBox>
+        <View style={styles.content}>
+          <Text style={[styles.title, { color: colors.text }]}>Gewicht</Text>
+          <View style={styles.emptyContainer}>
+            <Text style={[styles.emptyText, { color: colors.text }]}>
+              Noch keine Einträge
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={[styles.addButton, { backgroundColor: colors.primary }]}
+            onPress={() => setShowModal(true)}
+          >
+            <Text style={styles.addButtonText}>+ Hinzufügen</Text>
+          </TouchableOpacity>
+        </View>
 
         <CustomModal
           visible={showModal}
@@ -176,7 +171,7 @@ export default function WStats() {
             </View>
           </View>
         </CustomModal>
-      </View>
+      </CardBox>
     );
   }
 
@@ -184,25 +179,60 @@ export default function WStats() {
   const changeColor = stats.change < 0 ? '#10b981' : stats.change > 0 ? '#ef4444' : colors.text;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.card }]}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={[styles.title, { color: colors.text }]}>Gewicht</Text>
-          <View style={styles.compactStats}>
-            <Text style={[styles.compactText, { color: colors.text }]}>
-              Ø {stats.weekAverage.toFixed(1)}kg
-            </Text>
-            <Text style={[styles.compactText, { color: changeColor }]}>
-              {stats.change > 0 ? '+' : ''}{stats.change.toFixed(1)}kg
-            </Text>
+    <CardBox>
+      <View style={styles.content}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Text style={[styles.title, { color: colors.text }]}>Gewicht</Text>
+            <View style={styles.compactStats}>
+              <Text style={[styles.compactText, { color: colors.text }]}>
+                Ø {stats.weekAverage.toFixed(1)}kg
+              </Text>
+              <Text style={[styles.compactText, { color: changeColor }]}>
+                {stats.change > 0 ? '+' : ''}{stats.change.toFixed(1)}kg
+              </Text>
+            </View>
           </View>
+          <TouchableOpacity
+            style={[styles.addButtonSmall, { backgroundColor: colors.primary }]}
+            onPress={() => setShowModal(true)}
+          >
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[styles.addButtonSmall, { backgroundColor: colors.primary }]}
-          onPress={() => setShowModal(true)}
-        >
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
+
+        {/* Chart */}
+        <View style={styles.chartContainer}>
+          <Svg width={CHART_WIDTH} height={CHART_HEIGHT}>
+            {points && (
+              <Polyline
+                points={points}
+                fill="none"
+                stroke={colors.primary}
+                strokeWidth="2"
+              />
+            )}
+
+            {stats.weightValues.map((weight, index) => {
+              const min = Math.min(...stats.weightValues) - 2;
+              const max = Math.max(...stats.weightValues) + 2;
+              const range = max - min;
+              const x = (index / (stats.weightValues.length - 1 || 1)) * CHART_WIDTH;
+              const y = CHART_HEIGHT - ((weight - min) / range) * CHART_HEIGHT;
+
+              return (
+                <Circle
+                  key={index}
+                  cx={x}
+                  cy={y}
+                  r="4"
+                  fill={colors.primary}
+                />
+              );
+            })}
+          </Svg>
+        </View>
       </View>
 
       <CustomModal
@@ -244,55 +274,19 @@ export default function WStats() {
           </View>
         </View>
       </CustomModal>
-
-      {/* Chart */}
-      <View style={styles.chartContainer}>
-        <Svg width={CHART_WIDTH} height={CHART_HEIGHT}>
-          {/* Linie */}
-          {points && (
-            <Polyline
-              points={points}
-              fill="none"
-              stroke={colors.primary}
-              strokeWidth="2"
-            />
-          )}
-
-          {/* Punkte */}
-          {stats.weightValues.map((weight, index) => {
-            const min = Math.min(...stats.weightValues) - 2;
-            const max = Math.max(...stats.weightValues) + 2;
-            const range = max - min;
-            const x = (index / (stats.weightValues.length - 1 || 1)) * CHART_WIDTH;
-            const y = CHART_HEIGHT - ((weight - min) / range) * CHART_HEIGHT;
-
-            return (
-              <Circle
-                key={index}
-                cx={x}
-                cy={y}
-                r="4"
-                fill={colors.primary}
-              />
-            );
-          })}
-        </Svg>
-      </View>
-    </View>
+    </CardBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderRadius: layouts.borderRadius,
-    padding: 16,
-    marginVertical: 8,
+  content: {
+    flex: 1,
+    justifyContent: 'space-between',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    alignItems: 'flex-start',
   },
   headerLeft: {
     flex: 1,
@@ -302,11 +296,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 4,
   },
-  addButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: layouts.borderRadius,
-    marginTop: 16,
+  compactStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  compactText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   addButtonSmall: {
     width: 35,
@@ -318,11 +315,28 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',                                                                             
+    fontWeight: '600',
+  },
+  chartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyText: {
     opacity: 0.6,
-    marginBottom: 8,
+    fontSize: 14,
+  },
+  addButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: layouts.borderRadius,
+    alignItems: 'center',
   },
   modalContent: {
     padding: 4,
@@ -384,17 +398,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: 'white',
-  },
-  compactStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  compactText: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  chartContainer: {
-    alignItems: 'center',
   },
 });
