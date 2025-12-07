@@ -8,8 +8,6 @@ import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import Svg, { Circle, Polyline } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
-const CHART_WIDTH = width - 80; // Angepasst für padding
-const CHART_HEIGHT = 100; // Kompakter für die Box
 const layouts = Layouts;
 
 export default function WStats() {
@@ -17,6 +15,7 @@ export default function WStats() {
   const { weights, addWeight } = useWeights();
   const [showModal, setShowModal] = useState(false);
   const [newWeight, setNewWeight] = useState('');
+  const [chartDimensions, setChartDimensions] = useState(null);
 
   const calculateStats = () => {
     if (!weights || weights.length === 0) return null;
@@ -64,7 +63,7 @@ export default function WStats() {
 
   const stats = calculateStats();
 
-  const getChartPoints = () => {
+  const getChartPoints = (chartWidth, chartHeight) => {
     if (!stats || stats.weightValues.length === 0) return '';
 
     const values = stats.weightValues;
@@ -73,8 +72,8 @@ export default function WStats() {
     const range = max - min;
 
     const points = values.map((weight, index) => {
-      const x = (index / (values.length - 1 || 1)) * CHART_WIDTH;
-      const y = CHART_HEIGHT - ((weight - min) / range) * CHART_HEIGHT;
+      const x = (index / (values.length - 1 || 1)) * chartWidth;
+      const y = chartHeight - ((weight - min) / range) * chartHeight;
       return `${x},${y}`;
     }).join(' ');
 
@@ -203,35 +202,43 @@ export default function WStats() {
         </View>
 
         {/* Chart */}
-        <View style={styles.chartContainer}>
-          <Svg width={CHART_WIDTH} height={CHART_HEIGHT}>
-            {points && (
-              <Polyline
-                points={points}
-                fill="none"
-                stroke={colors.primary}
-                strokeWidth="2"
-              />
-            )}
-
-            {stats.weightValues.map((weight, index) => {
-              const min = Math.min(...stats.weightValues) - 2;
-              const max = Math.max(...stats.weightValues) + 2;
-              const range = max - min;
-              const x = (index / (stats.weightValues.length - 1 || 1)) * CHART_WIDTH;
-              const y = CHART_HEIGHT - ((weight - min) / range) * CHART_HEIGHT;
-
-              return (
-                <Circle
-                  key={index}
-                  cx={x}
-                  cy={y}
-                  r="4"
-                  fill={colors.primary}
+        <View style={styles.chartContainer} onLayout={(e) => {
+          const { width: chartWidth, height: chartHeight } = e.nativeEvent.layout;
+          if (chartWidth > 0 && chartHeight > 0) {
+            const calculatedPoints = getChartPoints(chartWidth, chartHeight);
+            setChartDimensions({ width: chartWidth, height: chartHeight, points: calculatedPoints });
+          }
+        }}>
+          {chartDimensions && (
+            <Svg width={chartDimensions.width} height={chartDimensions.height}>
+              {chartDimensions.points && (
+                <Polyline
+                  points={chartDimensions.points}
+                  fill="none"
+                  stroke={colors.primary}
+                  strokeWidth="2"
                 />
-              );
-            })}
-          </Svg>
+              )}
+
+              {stats.weightValues.map((weight, index) => {
+                const min = Math.min(...stats.weightValues) - 2;
+                const max = Math.max(...stats.weightValues) + 2;
+                const range = max - min;
+                const x = (index / (stats.weightValues.length - 1 || 1)) * chartDimensions.width;
+                const y = chartDimensions.height - ((weight - min) / range) * chartDimensions.height;
+
+                return (
+                  <Circle
+                    key={index}
+                    cx={x}
+                    cy={y}
+                    r="4"
+                    fill={colors.primary}
+                  />
+                );
+              })}
+            </Svg>
+          )}
         </View>
       </View>
 
