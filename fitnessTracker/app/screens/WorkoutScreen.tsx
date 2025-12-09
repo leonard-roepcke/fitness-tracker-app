@@ -12,12 +12,11 @@ import { RepWeightPicker } from '../components/RepWeightPicker';
 import { useTheme } from '../hooks/useTheme';
 import { Keyboard,KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRef, useEffect } from 'react';
-
+import { useAppContext } from "../hooks/useAppContext";
 
 export default function WorkoutScreen({ route, navigation }: any) {
-    const colors = useTheme();
     const router = useRouter();
-    const layouts = Layouts;
+    const { colors, layouts }=useAppContext();
     const nav = navigation;
     const {workouts, updateWorkout} = useWorkouts();
     const { logWorkout, workoutLogs, getDailyStreak, getWeeklyStreak } = useTracker();

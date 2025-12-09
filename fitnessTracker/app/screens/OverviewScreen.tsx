@@ -10,13 +10,13 @@ import WStats from '../components/WStats';
 import { useTheme } from '../hooks/useTheme';
 import { Workout } from "../types/workout";
 import CardBox from '../components/CardBox';
-import Layouts from '../constants/Layouts';
 import CStats from '../components/CStats';
+import { useAppContext } from '../hooks/useAppContext';
 
 
 export default function OverviewScreen() {
+    const {colors, layouts}=useAppContext();
     const {workouts} = useWorkouts();
-    const colors = useTheme();
     const navigation: any = useNavigation();
     const { isWTrackerEnabled, isCTrackerEnabled } = useContext(ThemeContext);
     
@@ -35,7 +35,7 @@ export default function OverviewScreen() {
         title: {
             fontSize: 10,
             fontWeight: '600',
-            marginBottom: Layouts.marginVertical,
+            marginBottom: layouts.marginVertical,
             color: colors.text,
             justifyContent: 'center',
             alignItems: 'center',
@@ -55,7 +55,7 @@ export default function OverviewScreen() {
             color: colors.text,
         },
         spacing: {
-            height: Layouts.marginVertical*12,
+            height: layouts.marginVertical*12,
         }
     });
 
@@ -115,7 +115,7 @@ export default function OverviewScreen() {
                         style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        marginBottom: Layouts.marginVertical,
+                        marginBottom: layouts.marginVertical,
                         }}
                     >
                         {row.map((w, i) => (
