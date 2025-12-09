@@ -13,7 +13,6 @@ import CardBox from '../components/CardBox';
 import CStats from '../components/CStats';
 import { useAppContext } from '../hooks/useAppContext';
 
-
 export default function OverviewScreen() {
     const {colors, layouts}=useAppContext();
     const {workouts} = useWorkouts();

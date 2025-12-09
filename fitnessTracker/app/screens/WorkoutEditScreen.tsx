@@ -1,4 +1,3 @@
-import Layouts from "@/app/constants/Layouts";
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -16,12 +15,11 @@ import Bar from '../components/Bar';
 import { CreateBox } from '../components/CreateBox';
 import CustomModal from "../components/CustomModal";
 import { NumberWheel } from '../components/NumberWheel';
-import { useTheme } from '../hooks/useTheme';
+import { useAppContext } from '../hooks/useAppContext';
 
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
-  const colors = useTheme();
-  const layouts = Layouts;
+  const {colors, layouts}=useAppContext();
   const { workouts, updateWorkout } = useWorkouts();
   const router = useRouter();
   const [scrollEnabled, setScrollEnabled] = useState(true);

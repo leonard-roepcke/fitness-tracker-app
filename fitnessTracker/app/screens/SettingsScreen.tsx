@@ -5,17 +5,15 @@ import { ScrollView, Text, View, StyleSheet } from "react-native";
 import { ThemeContext } from "../../context/ThemeContext";
 import Bar from "../components/Bar";
 import { SettingsBox } from "../components/SettingsBox/SettinsBox";
-import { useTheme } from '../hooks/useTheme';
-import Layouts from '../constants/Layouts';
+import { useAppContext } from '../hooks/useAppContext';
 
 export default function SettingsScreen() {
   const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker } =
     useContext(ThemeContext);
   const router = useRouter();
-  const colors = useTheme();
   const version = Application.nativeApplicationVersion;
   const build = Application.nativeBuildVersion;  
-
+  const {colors, layouts}=useAppContext();
   const handleNavigation = (route: string) => {
     // Navigation zu den jeweiligen Screens
     router.push(route);
@@ -59,14 +57,14 @@ export default function SettingsScreen() {
     title: {
         fontSize: 10,
         fontWeight: '600',
-        marginBottom: Layouts.marginVertical,
+        marginBottom: layouts.marginVertical,
         color: colors.text,
         justifyContent: 'center',
         alignItems: 'center',
 
     },
     spacing: {
-        height: Layouts.marginVertical*12,
+        height: layouts.marginVertical*12,
     }
   });
 

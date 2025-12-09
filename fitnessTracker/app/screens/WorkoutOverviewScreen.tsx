@@ -6,16 +6,15 @@ import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
 import { CreateBox } from '../components/CreateBox';
 import { WorkoutBox } from '../components/WorkoutBox';
-import { useTheme } from '../hooks/useTheme';
 import { Workout } from "../types/workout";
+import { useAppContext } from '../hooks/useAppContext';
 
 
 export default function WorkoutOverview() {
     const {workouts, updateWorkout} = useWorkouts();
-    const colors = useTheme();
     const navigation: any = useNavigation();
     const { isWTrackerEnabled } = useContext(ThemeContext);
-    
+    const {colors, layouts}= useAppContext();    
 
     
 
