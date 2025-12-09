@@ -1,6 +1,5 @@
 import Layouts from "@/app/constants/Layouts";
 import { useTracker } from "@/context/TrackerContext";
-import { useRouter } from 'expo-router';
 import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
@@ -15,9 +14,7 @@ import { useRef, useEffect } from 'react';
 import { useAppContext } from "../hooks/useAppContext";
 
 export default function WorkoutScreen({ route, navigation }: any) {
-    const router = useRouter();
-    const { colors, layouts }=useAppContext();
-    const nav = navigation;
+    const { colors, nav, layouts }=useAppContext();
     const {workouts, updateWorkout} = useWorkouts();
     const { logWorkout, workoutLogs, getDailyStreak, getWeeklyStreak } = useTracker();
     const today = new Date().toISOString().split('T')[0];
@@ -163,13 +160,13 @@ export default function WorkoutScreen({ route, navigation }: any) {
      //Workout abgeschlossen
 
     await logWorkout(workout);
-     if (nav && typeof nav.goBack === 'function') navigation.navigate('WorkoutEndScreen')
-     else router.back();
+     if (nav && typeof nav.goBack === 'function') nav.navigate('WorkoutEndScreen')
+     else navigation.goBack();
  }
    };
 
    const back = () => {
-      router.back();
+      nav.goBack();
    };
    const handleEditPress = (id:number) => {
         if (id === null || id === undefined) return;

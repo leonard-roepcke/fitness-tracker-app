@@ -1,5 +1,4 @@
 import { ThemeContext } from '@/context/ThemeContext';
-import { useNavigation } from 'expo-router';
 import React, { useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
@@ -12,9 +11,8 @@ import { useAppContext } from '../hooks/useAppContext';
 
 export default function WorkoutOverview() {
     const {workouts, updateWorkout} = useWorkouts();
-    const navigation: any = useNavigation();
     const { isWTrackerEnabled } = useContext(ThemeContext);
-    const {colors, layouts}= useAppContext();    
+    const {colors, nav, layouts} = useAppContext();    
 
     
 
@@ -66,7 +64,7 @@ export default function WorkoutOverview() {
     };
 
     const settings = () => {
-        navigation.navigate('Settings');
+        nav.navigate('Settings');
     };
 
     return (
