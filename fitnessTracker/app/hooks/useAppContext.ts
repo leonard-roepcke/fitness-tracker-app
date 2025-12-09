@@ -5,5 +5,6 @@ export function useAppContext(){
   const colors = useTheme();
   const layouts = Layouts;
   const nav = useNavigation();
+
   return{layouts, useRouter, nav, colors};
 }
