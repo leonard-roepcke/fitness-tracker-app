@@ -5,7 +5,7 @@ import SettingsScreen from './screens/SettingsScreen';
 import WorkoutEditScreen from './screens/WorkoutEditScreen';
 import WorkoutOverviewScreen from './screens/WorkoutOverviewScreen';
 import WorkoutScreen from './screens/WorkoutScreen';
-import WorkoutEndScreen from './screens/WorkoutEndScreen.tsx';
+import WorkoutEndScreen from './screens/WorkoutEndScreen';
 
 const Stack = createNativeStackNavigator();
 

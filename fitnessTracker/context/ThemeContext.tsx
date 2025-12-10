@@ -8,6 +8,8 @@ interface ThemeContextProps {
   toggleWTracker: () => void;
   isCTrackerEnabled: boolean;
   toggleCTracker: () => void;
+  isDailyStreakEnabled: boolean;
+  toggleDailyStreak: () => void;
 }
 
 export const ThemeContext = createContext<ThemeContextProps>({
@@ -17,13 +19,16 @@ export const ThemeContext = createContext<ThemeContextProps>({
   toggleWTracker: () => {},
   isCTrackerEnabled: false,
   toggleCTracker: () => {},
+  isDailyStreakEnabled: false,
+  toggleDailyStreak: () => {},
+
 });
 
 export const ThemeProvider = ({ children }: any) => {
   const [isDark, setIsDark] = useState(false);
   const [isWTrackerEnabled, setIsWTrackerEnabled] = useState(false);
   const [isCTrackerEnabled, setIsCTrackerEnabled] = useState(false);
-
+  const [isDailyStreakEnabled, setIsDailyStreakEnabled] = useState(false);
   // Initiales Laden der Werte aus AsyncStorage
   useEffect(() => {
     AsyncStorage.getItem("darkMode").then((value) => {
@@ -43,6 +48,13 @@ export const ThemeProvider = ({ children }: any) => {
         setIsCTrackerEnabled(value === "true");
       }
     });
+
+    AsyncStorage.getItem("DailyStreak").then((value) => {
+      if (value !== null) {
+        setIsDailyStreakEnabled(value === "true");
+      }
+    });
+
   }, []);
 
   const toggleTheme = async () => {
@@ -62,10 +74,16 @@ export const ThemeProvider = ({ children }: any) => {
     setIsCTrackerEnabled(newValue);
     await AsyncStorage.setItem("cTracker", String(newValue));
   };
+  
+  const toggleDailyStreak= async () => {
+    const newValue = !isCTrackerEnabled;
+    setIsDailyStreakEnabled(newValue);
+    await AsyncStorage.setItem("DailyStreak", String(newValue));
+  };
 
   return (
     <ThemeContext.Provider
-      value={{ isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker }}
+      value={{ isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker , isDailyStreakEnabled, toggleDailyStreak}}
     >
       {children}
     </ThemeContext.Provider>

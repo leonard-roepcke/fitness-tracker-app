@@ -85,11 +85,7 @@ export default function OverviewScreen() {
             <StreakFlame color={colors.primary} type={'daily'}/>
             </View>
 
-            <Text style={styles.title}></Text>
-            <Text style={styles.header}>Übersicht</Text>
-            <Text style={styles.title}></Text>
-
-            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+           <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <Text style={styles.subtitle}></Text>
                 {isWTrackerEnabled && <WStats />}
                 {isCTrackerEnabled && <CStats />}

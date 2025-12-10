@@ -8,11 +8,13 @@ import { WorkoutBox } from '../components/WorkoutBox';
 import { Workout } from "../types/workout";
 import { useAppContext } from '../hooks/useAppContext';
 import AppContainer from '../components/ui/AppContainer';
+import { StreakFlame } from '../components/Streak';
+import { IS_IOS } from 'react-native-reanimated/lib/typescript/common';
 
 
 export default function WorkoutOverview() {
     const {workouts, updateWorkout} = useWorkouts();
-    const { isWTrackerEnabled } = useContext(ThemeContext);
+    const { isWTrackerEnabled , isDailyStreakEnabled} = useContext(ThemeContext);
     const {colors, nav, layouts} = useAppContext();    
 
     
@@ -63,6 +65,9 @@ export default function WorkoutOverview() {
 
     return (
         <AppContainer heading="Workouts">
+            <View style={{position: "absolute", top: 62, right: 10,}}>
+                <StreakFlame color={colors.warning} type={isDailyStreakEnabled?'daily':'weekly'}/>
+            </View>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <Text style={styles.subtitle}></Text>

@@ -9,7 +9,7 @@ import { useAppContext } from '../hooks/useAppContext';
 import AppContainer from '../components/ui/AppContainer';
 
 export default function SettingsScreen() {
-  const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker } =
+  const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker, isDailyStreakEnabled, toggleDailyStreak} =
     useContext(ThemeContext);
   const router = useRouter();
   const version = Application.nativeApplicationVersion;
@@ -90,7 +90,13 @@ export default function SettingsScreen() {
           value={isCTrackerEnabled}
           onValueChange={toggleCTracker}
         />
-
+        <SettingsBox
+          title="Daily Steak"
+          subtitle="0=Weekly streak 1=Daily streak"
+          value={isDailyStreakEnabled}
+          onValueChange={toggleDailyStreak}
+        />
+        
         {/* Rechtliches & Support Sektion */}
         <Text style={styles.sectionTitle}>Rechtliches & Support</Text>
         <SettingsBox
