@@ -62,19 +62,40 @@ export default function WorkoutOverview() {
     };
 
     return (
-        <AppContainer>
-
-            <Text style={styles.title}></Text>
-                        <Text style={styles.header}>Trainings</Text>
-                        <Text style={styles.title}></Text>
+        <AppContainer heading="Workouts">
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <Text style={styles.subtitle}></Text>
-                
-                {workouts
-                ?.slice()
-                .sort((a, b) => Number(b.isFavorite) - Number(a.isFavorite))
-                .map((w: Workout, index: number) => (<WorkoutBox key={index} workout={w} />))}
+                    {workouts
+                    ?.reduce((rows: Workout[][], item: Workout, index: number) => {
+                    if (index % 2 === 0) rows.push([item]);
+                    else rows[rows.length - 1].push(item);
+                    return rows;
+                    }, [])
+                    .map((row:number, rowIndex:number) => (
+                    <View
+                        key={rowIndex}
+                        style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginBottom: layouts.marginVertical,
+                        }}
+                    >
+                        {row.map((w, i) => (
+                        <View
+                            key={i}
+                            style={{
+                            flex: 1,
+                            // Nur innerer Abstand zwischen Workouts, nicht zum Rand
+                            marginLeft: i === 0 ? 0 : 8,
+                            marginRight: i === row.length - 1 ? 0 : 8,
+                            }}
+                        >
+                            <WorkoutBox variant="box" workout={w} />
+                        </View>
+                        ))}
+                    </View>
+                    ))}
 
                 <CreateBox  onPress={addWorkout} iconName='add' text='create workout'/>
                 <Text style={styles.title}/>

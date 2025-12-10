@@ -1,6 +1,6 @@
 import {View, Text} from 'react-native'
-import { useTheme} from '../hooks/useTheme.ts'
-import AppContainer from '../components/ui/AppContainer.js';
+import { useTheme} from '../hooks/useTheme';
+import AppContainer from '../components/ui/AppContainer';
 export default function WorkoutEndScreen({route}:any){
   const colors = useTheme();
   const styles = {

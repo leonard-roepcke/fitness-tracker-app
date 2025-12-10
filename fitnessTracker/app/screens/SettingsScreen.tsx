@@ -64,11 +64,7 @@ export default function SettingsScreen() {
   });
 
   return (
-    <AppContainer>
-      {/* Header */}
-      <Text style={styles.title}></Text>
-      <Text style={styles.header}>Einstellungen</Text>
-      <Text style={styles.title}></Text>
+    <AppContainer heading="Settings">
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
         {/* Darstellung Sektion */}
