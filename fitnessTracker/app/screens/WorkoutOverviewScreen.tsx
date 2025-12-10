@@ -7,6 +7,7 @@ import { CreateBox } from '../components/CreateBox';
 import { WorkoutBox } from '../components/WorkoutBox';
 import { Workout } from "../types/workout";
 import { useAppContext } from '../hooks/useAppContext';
+import AppContainer from '../components/ui/AppContainer';
 
 
 export default function WorkoutOverview() {
@@ -18,14 +19,7 @@ export default function WorkoutOverview() {
 
 
     const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            alignItems: 'center',
-            //justifyContent: 'center',
-            padding: 16,
-            backgroundColor: colors.background,
-        },
-        title: {
+       title: {
             fontSize: 24,
             fontWeight: '600',
             marginBottom: 8,
@@ -68,7 +62,7 @@ export default function WorkoutOverview() {
     };
 
     return (
-        <View style={styles.container}>
+        <AppContainer>
 
             <Text style={styles.title}></Text>
                         <Text style={styles.header}>Trainings</Text>
@@ -87,6 +81,6 @@ export default function WorkoutOverview() {
                         <Text style={styles.title}/>
             </ScrollView>
             <Bar/>
-        </View>
+        </AppContainer>
     );
 }

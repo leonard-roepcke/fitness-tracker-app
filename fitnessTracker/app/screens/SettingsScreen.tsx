@@ -6,6 +6,7 @@ import { ThemeContext } from "../../context/ThemeContext";
 import Bar from "../components/Bar";
 import { SettingsBox } from "../components/SettingsBox/SettinsBox";
 import { useAppContext } from '../hooks/useAppContext';
+import AppContainer from '../components/ui/AppContainer';
 
 export default function SettingsScreen() {
   const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker } =
@@ -20,12 +21,6 @@ export default function SettingsScreen() {
   };
 
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-      paddingHorizontal: 20,
-      
-    },
     scrollContent: {
       paddingBottom: 40,
     },
@@ -69,8 +64,7 @@ export default function SettingsScreen() {
   });
 
   return (
-    <View style={styles.container}>
-      
+    <AppContainer>
       {/* Header */}
       <Text style={styles.title}></Text>
       <Text style={styles.header}>Einstellungen</Text>
@@ -129,6 +123,6 @@ export default function SettingsScreen() {
       <View style={styles.spacing}/>
       </ScrollView>
       <Bar />
-    </View>
+    </AppContainer>
   );
 }

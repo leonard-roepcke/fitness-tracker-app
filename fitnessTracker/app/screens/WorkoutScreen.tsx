@@ -12,6 +12,7 @@ import { useTheme } from '../hooks/useTheme';
 import { Keyboard,KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRef, useEffect } from 'react';
 import { useAppContext } from "../hooks/useAppContext";
+import AppContainer from "../components/ui/AppContainer";
 
 export default function WorkoutScreen({ route, navigation }: any) {
     const { colors, nav, layouts }=useAppContext();
@@ -50,12 +51,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
 
 
     const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            padding: 16,
-            backgroundColor: colors.background,
-        },
-        title: {
+              title: {
             fontSize: 28,
             fontWeight: 'bold',
             textAlign: 'center',
@@ -187,7 +183,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
         scrollEnabled={false} 
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.container}>
+        <AppContainer>
             <Text style={styles.title}></Text>
 
             <View style={{ height: 60, justifyContent: 'center' }}>
@@ -238,7 +234,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
               }}
             />
             <Bar/>
-        </View>
+        </AppContainer>
         </ScrollView>
 </KeyboardAvoidingView>
     );

@@ -12,6 +12,7 @@ import { Workout } from "../types/workout";
 import CardBox from '../components/CardBox';
 import CStats from '../components/CStats';
 import { useAppContext } from '../hooks/useAppContext';
+import AppContainer from '../components/ui/AppContainer';
 
 export default function OverviewScreen() {
     const {colors, layouts}=useAppContext();
@@ -24,14 +25,7 @@ export default function OverviewScreen() {
 
 
     const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            alignItems: 'center',
-            //justifyContent: 'center',
-            padding: 16,
-            backgroundColor: colors.background,
-        },
-        title: {
+       title: {
             fontSize: 10,
             fontWeight: '600',
             marginBottom: layouts.marginVertical,
@@ -82,7 +76,7 @@ export default function OverviewScreen() {
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
     return (
-        <View style={styles.container}>
+        <AppContainer>
             <View style={{position: "absolute", top: 62, right: 10,}}>
             <StreakFlame color={colors.warning} type={'weekly'}/>
             </View>
@@ -137,6 +131,6 @@ export default function OverviewScreen() {
                 </ScrollView>
                 
             <Bar/>
-        </View>
+        </AppContainer>
     );
 }
