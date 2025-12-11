@@ -1,7 +1,7 @@
 import { useAppContext } from "@/app/hooks/useAppContext";
 import { StyleSheet, View , Text} from "react-native";
-
-function AppContainer({children, heading=""}:any){
+import Bar from "../Bar"; 
+function AppContainer({children, heading="", isBar=""}:any){
   const { colors, layouts }=useAppContext();
   const styles = StyleSheet.create({
     container: {
@@ -39,6 +39,7 @@ function AppContainer({children, heading=""}:any){
       <Text style={styles.header}>{heading}</Text>
       <Text style={styles.title}></Text> 
       {children}
+      {isBar && <Bar/>}
     </View>
   );
 }
