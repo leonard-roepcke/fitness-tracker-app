@@ -64,7 +64,7 @@ export default function WorkoutOverview() {
     };
 
     return (
-        <AppContainer heading="Workouts">
+        <AppContainer heading="Workouts" isBar={true}>
             <View style={{position: "absolute", top: 62, right: 10,}}>
                 <StreakFlame color={isDailyStreakEnabled? colors.primary : colors.warning} type={isDailyStreakEnabled?'daily':'weekly'}/>
             </View>
@@ -106,7 +106,7 @@ export default function WorkoutOverview() {
                 <Text style={styles.title}/>
                         <Text style={styles.title}/>
             </ScrollView>
-            <Bar/>
+            
         </AppContainer>
     );
 }

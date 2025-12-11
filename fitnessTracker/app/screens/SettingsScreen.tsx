@@ -63,7 +63,7 @@ export default function SettingsScreen() {
   });
 
   return (
-    <AppContainer heading="Settings">
+    <AppContainer heading="Settings" isBar={true}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
         {/* Darstellung Sektion */}
@@ -123,7 +123,7 @@ export default function SettingsScreen() {
         </Text>
       <View style={styles.spacing}/>
       </ScrollView>
-      <Bar />
+      
     </AppContainer>
   );
 }

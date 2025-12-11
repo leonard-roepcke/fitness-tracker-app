@@ -1,11 +1,10 @@
 import { View , Text } from "react-native";
+import AppContainer from "../components/ui/AppContainer";
 
 export default function HealthScreen(){
   return(
-    <View>
-      <Text>
-        HealthScreen
-      </Text>
-    </View>
+      <AppContainer isBar={true} heading="Health">
+
+    </AppContainer>
   )  
 }

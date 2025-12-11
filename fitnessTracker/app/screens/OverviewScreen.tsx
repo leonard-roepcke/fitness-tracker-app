@@ -76,7 +76,7 @@ export default function OverviewScreen() {
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
     return (
-        <AppContainer>
+        <AppContainer isBar={true}>
             <View style={{position: "absolute", top: 62, right: 10,}}>
             <StreakFlame color={colors.warning} type={'weekly'}/>
             </View>
@@ -126,7 +126,6 @@ export default function OverviewScreen() {
                 <View style={styles.spacing}/>
                 </ScrollView>
                 
-            <Bar/>
         </AppContainer>
     );
 }
