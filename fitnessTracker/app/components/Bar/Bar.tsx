@@ -59,6 +59,19 @@ export const Bar = () => {
                 />
             </TouchableOpacity>
 
+
+            <TouchableOpacity
+                onPress={() => navigation.navigate("Health")}
+                style={{ padding: 12 }}
+            >
+                <Ionicons
+                    name="scale"
+                    size={current === "Health" ? activeSize : inactiveSize}
+                    color={colors.text}
+                />
+            </TouchableOpacity>
+
+
             <TouchableOpacity
                 onPress={() => navigation.navigate("Settings")}
                 style={{ padding: 12 }}

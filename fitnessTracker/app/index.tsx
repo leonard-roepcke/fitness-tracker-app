@@ -6,6 +6,7 @@ import WorkoutEditScreen from './screens/WorkoutEditScreen';
 import WorkoutOverviewScreen from './screens/WorkoutOverviewScreen';
 import WorkoutScreen from './screens/WorkoutScreen';
 import WorkoutEndScreen from './screens/WorkoutEndScreen';
+import HealthScreen from './screens/HealthScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +18,8 @@ export default function App() {
       <Stack.Screen name="WorkoutEdit" component={WorkoutEditScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="WorkoutOverview" component={WorkoutOverviewScreen} />
-      <Stack.Screen name="WorkoutEndScreen" component={WorkoutEndScreen} />
+      <Stack.Screen name="WorkoutEnd" component={WorkoutEndScreen} />
+      <Stack.Screen name="Health" component={HealthScreen} />
     </Stack.Navigator>
   );
 }
