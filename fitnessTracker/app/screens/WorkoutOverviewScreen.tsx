@@ -66,7 +66,7 @@ export default function WorkoutOverview() {
     return (
         <AppContainer heading="Workouts">
             <View style={{position: "absolute", top: 62, right: 10,}}>
-                <StreakFlame color={colors.warning} type={isDailyStreakEnabled?'daily':'weekly'}/>
+                <StreakFlame color={isDailyStreakEnabled? colors.primary : colors.warning} type={isDailyStreakEnabled?'daily':'weekly'}/>
             </View>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>

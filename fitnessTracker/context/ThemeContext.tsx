@@ -76,7 +76,7 @@ export const ThemeProvider = ({ children }: any) => {
   };
   
   const toggleDailyStreak= async () => {
-    const newValue = !isCTrackerEnabled;
+    const newValue = !isDailyStreakEnabled;
     setIsDailyStreakEnabled(newValue);
     await AsyncStorage.setItem("DailyStreak", String(newValue));
   };
