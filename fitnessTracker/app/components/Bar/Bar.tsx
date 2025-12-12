@@ -38,17 +38,6 @@ export const Bar = () => {
             }}
         >
             <TouchableOpacity
-                onPress={() => navigation.navigate("Overview")}
-                style={{ padding: 12 }}
-            >
-                <Ionicons
-                    name="home"
-                    size={current === "Overview" ? activeSize : inactiveSize}
-                    color={colors.text}
-                />
-            </TouchableOpacity>
-
-            <TouchableOpacity
                 onPress={() => navigation.navigate("WorkoutOverview")}
                 style={{ padding: 12 }}
             >

@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <Stack.Navigator initialRouteName="Overview" screenOptions={{headerShown: false, animation: "none",animationDuration:0,  gestureEnabled: false, stackPresentation: "push" as const,}}>
+    <Stack.Navigator initialRouteName="WorkoutOverview" screenOptions={{headerShown: false, animation: "none",animationDuration:0,  gestureEnabled: false, stackPresentation: "push" as const,}}>
       <Stack.Screen name="Overview" component={OverviewScreen} />
       <Stack.Screen name="Workout" component={WorkoutScreen} />
       <Stack.Screen name="WorkoutEdit" component={WorkoutEditScreen} />
