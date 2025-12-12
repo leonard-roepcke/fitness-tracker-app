@@ -86,7 +86,13 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             color: colors.text,
             fontSize: 18,
             fontWeight: "500",
-        }
+        },
+        editButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    padding: 0}
+
     });
 
     // VARIANTE: default → Strip
@@ -114,19 +120,27 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             </View>
         );
     }
+// VARIANTE: box → klassische Box
+return (
+    <View>
+        <CardBox size={0.6}>
+            {/* Haupt-Box */}
+            <TouchableOpacity style={styles.box} onPress={handlePress}>
+                <Text style={styles.boxText} numberOfLines={1}>
+                    {name}
+                </Text>
+            </TouchableOpacity>
 
-    // VARIANTE: box → klassische Box
-    return (
-        <View >
-            <CardBox size={0.6}>
-                <TouchableOpacity style={styles.box} onPress={handlePress}>
-                    <Text style={styles.boxText} numberOfLines={1}>
-                        {name}
-                    </Text>
-                </TouchableOpacity>
-            </CardBox>
-        </View>
-    );
+            {/* Edit Button unten rechts */}
+            <TouchableOpacity 
+                style={styles.editButton}
+                onPress={handleEditPress}
+            >
+                <CreateBox iconName="create-outline" onPress={handleEditPress}/>
+            </TouchableOpacity>
+        </CardBox>
+    </View>
+);
 };
 
 export default WorkoutBox;
