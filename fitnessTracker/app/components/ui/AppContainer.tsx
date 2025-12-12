@@ -34,10 +34,15 @@ function AppContainer({children, heading="", isBar=""}:any){
 
   return(
     <View style={styles.container}>
+      { heading!=="" &&(
+        <>
       {/* Header */}
       <Text style={styles.title}></Text>
       <Text style={styles.header}>{heading}</Text>
       <Text style={styles.title}></Text> 
+        </>
+          )
+      }
       {children}
       {isBar && <Bar/>}
     </View>
