@@ -7,11 +7,9 @@ import WStats from '../components/WStats';
 import { useAppContext } from '../hooks/useAppContext';
 import { LanguageContext } from '@/context/LanguageContext';
 import { useLanguage} from '../hooks/useLanguage';
-import { useText } from '../hooks/useText';
 export default function HealthScreen(){
   const { isWTrackerEnabled, isCTrackerEnabled } = useContext(ThemeContext);
-      const { colors, layouts} = useAppContext();
-    const t  = useText();
+      const { colors, layouts, text} = useAppContext();
      const styles = StyleSheet.create({
        title: {
             fontSize: 10,
@@ -43,7 +41,7 @@ export default function HealthScreen(){
 
   
   return(
-      <AppContainer isBar={true} heading={t.health}>
+      <AppContainer isBar={true} heading={text.health}>
                  <Text style={styles.subtitle}></Text>
                 {isWTrackerEnabled && <WStats />}
                 {isCTrackerEnabled && <CStats />}
