@@ -75,8 +75,8 @@ export default function SettingsScreen() {
 
       {/* Sprache Modal */}
       <CustomModal visible={languageModalVisible} onClose={() => setLanguageModalVisible(false)}>
-          <CreateBox onPress={()=> {setLanguage("german"); setLanguageModalVisible(false)}} text='Deutsch' iconName='add'/>
-          <CreateBox onPress={()=> {setLanguage("english"); setLanguageModalVisible(false)}} text='English' iconName='add'/>
+          <CreateBox onPress={()=> {setLanguage("german"); setLanguageModalVisible(false)}} text='Deutsch' iconName='square'/>
+          <CreateBox onPress={()=> {setLanguage("english"); setLanguageModalVisible(false)}} text='English  ' iconName='square'/>
       </CustomModal>
     </AppContainer>
   );
