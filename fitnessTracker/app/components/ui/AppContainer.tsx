@@ -1,8 +1,10 @@
 import { useAppContext } from "@/app/hooks/useAppContext";
 import { StyleSheet, View , Text} from "react-native";
 import Bar from "../Bar"; 
-function AppContainer({children, heading="", isBar=""}:any){
-  const { colors, layouts }=useAppContext();
+import { CreateBox } from '../CreateBox';
+
+function AppContainer({children, heading="", isBar="", backbutton=false}:any){
+  const { colors, layouts, nav }=useAppContext();
   const styles = StyleSheet.create({
     container: {
       flex:1,
@@ -31,6 +33,10 @@ function AppContainer({children, heading="", isBar=""}:any){
 
 
   })
+   const back = () => {
+      nav.goBack();
+   };
+   
 
   return(
     <View style={styles.container}>
@@ -43,7 +49,14 @@ function AppContainer({children, heading="", isBar=""}:any){
         </>
           )
       }
+
       {children}
+      { backbutton &&(<>
+                        {/* Back Button */}
+              <View style={{ position: 'absolute', left: 0 , top: 0}}>
+                <CreateBox onPress={back} iconName='arrow-back' />
+              </View>
+        </>)}
       {isBar && <Bar/>}
     </View>
   );

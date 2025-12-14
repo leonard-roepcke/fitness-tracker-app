@@ -9,6 +9,7 @@ import AppContainer from '../components/ui/AppContainer';
 import { useLanguage } from "@/app/hooks/useLanguage";
 import CustomModal from '../components/CustomModal';
 import { CreateBox } from '../components/CreateBox';
+import TermsOfUseScreen from './info/TermsOfUseScreen';
 
 export default function SettingsScreen() {
   const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker, isDailyStreakEnabled, toggleDailyStreak } =
@@ -16,12 +17,11 @@ export default function SettingsScreen() {
   const router = useRouter();
   const version = Application.nativeApplicationVersion;
   const build = Application.nativeBuildVersion;  
-  const {colors, layouts, text} = useAppContext();
+  const {colors, layouts, text, nav} = useAppContext();
   const { language, setLanguage } = useLanguage();
 
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
-  const handleNavigation = (route: string) => router.push(route);
 
   const styles = StyleSheet.create({
     scrollContent: { paddingBottom: 40 },
@@ -62,8 +62,8 @@ export default function SettingsScreen() {
 
         {/* Rechtliches & Support Sektion */}
         <Text style={styles.sectionTitle}>Rechtliches & Support</Text>
-        <SettingsBox title="Datenschutz" subtitle="Datenschutzerklärung ansehen" isNavigable={true} onPress={() => {}} />
-        <SettingsBox title="Nutzungsbedingungen" subtitle="AGB ansehen" isNavigable={true} onPress={() => {}} />
+        <SettingsBox title="Datenschutz" subtitle="Datenschutzerklärung ansehen" isNavigable={true} onPress={() => nav.navigate("PrivacyPolicy")} />
+        <SettingsBox title="Nutzungsbedingungen" subtitle="AGB ansehen" isNavigable={true} onPress={() => nav.navigate("TermsOfUse")} />
         <SettingsBox title="Hilfe & Support" subtitle="Unterstützung erhalten" isNavigable={true} onPress={() => {}} />
 
         {/* Footer */}
