@@ -64,5 +64,7 @@ export const German = {
   darkmodeSub: "Dunkelmodus aktivieren",
   privacyPolicy: privacyPolicy,
   termsOfUse: termsOfUse,
+  privacyPolicyHeading: "Datenschutz",
+  termsOfUseHeading:"Nutzungsbedingungen",
 
 }

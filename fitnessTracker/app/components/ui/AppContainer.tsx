@@ -1,9 +1,9 @@
 import { useAppContext } from "@/app/hooks/useAppContext";
-import { StyleSheet, View , Text} from "react-native";
+import { StyleSheet, View , Text, ScrollView} from "react-native";
 import Bar from "../Bar"; 
 import { CreateBox } from '../CreateBox';
 
-function AppContainer({children, heading="", isBar="", backbutton=false}:any){
+function AppContainer({children, heading="", isBar="", backbutton=false, scrolable=false}:any){
   const { colors, layouts, nav }=useAppContext();
   const styles = StyleSheet.create({
     container: {
@@ -30,6 +30,10 @@ function AppContainer({children, heading="", isBar="", backbutton=false}:any){
         color: colors.text,
         textAlign: 'center',
     },
+    scrollContent: {
+          paddingBottom: 40
+    },
+
 
 
   })
@@ -40,6 +44,7 @@ function AppContainer({children, heading="", isBar="", backbutton=false}:any){
 
   return(
     <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       { heading!=="" &&(
         <>
       {/* Header */}
@@ -53,10 +58,12 @@ function AppContainer({children, heading="", isBar="", backbutton=false}:any){
       {children}
       { backbutton &&(<>
                         {/* Back Button */}
-              <View style={{ position: 'absolute', left: 0 , top: 0}}>
+              <View style={{ position: 'absolute', left: 0 , top: 40}}>
                 <CreateBox onPress={back} iconName='arrow-back' />
               </View>
         </>)}
+      </ScrollView>
+
       {isBar && <Bar/>}
     </View>
   );

@@ -71,4 +71,6 @@ export const English = {
   darkmodeSub: "activate Darkmode",
   privacyPolicy: privacyPolicy,
   termsOfUse: termsOfUse,
+  privacyPolicyHeading: "Privacy Policy",
+  termsOfUseHeading:"Terms Of Use",
 }
