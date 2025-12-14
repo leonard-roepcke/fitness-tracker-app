@@ -16,7 +16,7 @@ export default function SettingsScreen() {
   const router = useRouter();
   const version = Application.nativeApplicationVersion;
   const build = Application.nativeBuildVersion;  
-  const {colors, layouts} = useAppContext();
+  const {colors, layouts, text} = useAppContext();
   const { language, setLanguage } = useLanguage();
 
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
@@ -35,14 +35,14 @@ export default function SettingsScreen() {
   });
 
   return (
-    <AppContainer heading="Settings" isBar={true}>
+    <AppContainer heading={text.settings} isBar={true}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
         {/* Darstellung Sektion */}
         <Text style={styles.sectionTitle}>Darstellung</Text>
         <SettingsBox
-          title="Dunkelmodus"
-          subtitle="Darkmode aktivieren"
+          title={text.darkmode}
+          subtitle={text.darkmodeSub}
           value={isDark}
           onValueChange={toggleTheme}
         />
