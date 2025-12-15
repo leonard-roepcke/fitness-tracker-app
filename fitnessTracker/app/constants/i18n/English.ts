@@ -73,4 +73,5 @@ export const English = {
   termsOfUse: termsOfUse,
   privacyPolicyHeading: "Privacy Policy",
   termsOfUseHeading:"Terms Of Use",
+  createWorkout:"create workout",
 }

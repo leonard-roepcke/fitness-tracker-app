@@ -15,7 +15,7 @@ import { IS_IOS } from 'react-native-reanimated/lib/typescript/common';
 export default function WorkoutOverview() {
     const {workouts, updateWorkout} = useWorkouts();
     const { isWTrackerEnabled , isDailyStreakEnabled} = useContext(ThemeContext);
-    const {colors, nav, layouts} = useAppContext();    
+    const {colors, nav, layouts, text} = useAppContext();    
 
     
 
@@ -102,7 +102,7 @@ export default function WorkoutOverview() {
                     </View>
                     ))}
 
-                <CreateBox  onPress={addWorkout} iconName='add' text='create workout'/>
+                <CreateBox  onPress={addWorkout} iconName='add' text={text.createWorkout}/>
                 <Text style={styles.title}/>
                         <Text style={styles.title}/>
             </ScrollView>

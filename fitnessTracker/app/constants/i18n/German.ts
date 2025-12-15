@@ -66,5 +66,5 @@ export const German = {
   termsOfUse: termsOfUse,
   privacyPolicyHeading: "Datenschutz",
   termsOfUseHeading:"Nutzungsbedingungen",
-
+  createWorkout: "erstell ein Workout",
 }
