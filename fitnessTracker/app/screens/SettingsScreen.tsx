@@ -49,7 +49,7 @@ export default function SettingsScreen() {
 
         <SettingsBox
           title={`language: ${text.lang}`}
-          subtitle='Anzeige Sprache wählen'
+          subtitle={text.langSub}
           isNavigable={true}
           onPress={() => setLanguageModalVisible(true)}
         />

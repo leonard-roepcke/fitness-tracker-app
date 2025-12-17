@@ -75,4 +75,5 @@ export const English = {
   termsOfUseHeading:"Terms Of Use",
   createWorkout:"create workout",
   lang:"english",
+  langSub:"select language",
 }
