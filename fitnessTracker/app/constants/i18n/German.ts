@@ -71,4 +71,5 @@ export const German = {
   langSub: "Anzeige Sprache wählen",
   weightTracker: "Körpergewicht Tracker",
   calorieTracker: "Kalorien Tracker",
+  dailyStreak:"Tägliche Streak",
 }
