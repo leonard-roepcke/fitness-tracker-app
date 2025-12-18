@@ -62,9 +62,9 @@ export default function SettingsScreen() {
 
         {/* Rechtliches & Support Sektion */}
         <Text style={styles.sectionTitle}>Rechtliches & Support</Text>
-        <SettingsBox title="Datenschutz" subtitle="Datenschutzerklärung ansehen" isNavigable={true} onPress={() => nav.navigate("PrivacyPolicy")} />
-        <SettingsBox title="Nutzungsbedingungen" subtitle="AGB ansehen" isNavigable={true} onPress={() => nav.navigate("TermsOfUse")} />
-        <SettingsBox title="Hilfe & Support" subtitle="Unterstützung erhalten" isNavigable={true} onPress={() => {}} />
+        <SettingsBox title={text.privacyPolicyHeading} subtitle={text.privacyPolicyHeadingSub} isNavigable={true} onPress={() => nav.navigate("PrivacyPolicy")} />
+        <SettingsBox title={text.termsOfUseHeading} subtitle={text.termsOfUseHeadingSub} isNavigable={true} onPress={() => nav.navigate("TermsOfUse")} />
+        <SettingsBox title={text.suport} subtitle={text.suportSub} isNavigable={true} onPress={() => {}} />
 
         {/* Footer */}
         <Text style={styles.footerText}>
