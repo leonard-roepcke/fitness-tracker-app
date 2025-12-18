@@ -56,8 +56,8 @@ export default function SettingsScreen() {
 
         {/* Tracker Sektion */}
         <Text style={styles.sectionTitle}>Tracker</Text>
-        <SettingsBox title="Gewicht Tracker" subtitle="in der Übersicht anzeigen" value={isWTrackerEnabled} onValueChange={toggleWTracker} />
-        <SettingsBox title="Calories Tracker" subtitle="in der Übersicht anzeigen" value={isCTrackerEnabled} onValueChange={toggleCTracker} />
+        <SettingsBox title={text.weightTracker} subtitle="in der Übersicht anzeigen" value={isWTrackerEnabled} onValueChange={toggleWTracker} />
+        <SettingsBox title={text.calorieTracker} subtitle="in der Übersicht anzeigen" value={isCTrackerEnabled} onValueChange={toggleCTracker} />
         <SettingsBox title="Daily Steak" subtitle="0=Weekly streak 1=Daily streak" value={isDailyStreakEnabled} onValueChange={toggleDailyStreak} />
 
         {/* Rechtliches & Support Sektion */}

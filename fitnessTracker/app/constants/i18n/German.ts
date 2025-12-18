@@ -68,5 +68,7 @@ export const German = {
   termsOfUseHeading:"Nutzungsbedingungen",
   createWorkout: "erstell ein Workout",
   lang:"Deutsch",
-  lanSub: "Anzeige Sprache wählen",
+  langSub: "Anzeige Sprache wählen",
+  weightTracker: "Körpergewicht Tracker",
+  calorieTracker: "Kalorien Tracker",
 }

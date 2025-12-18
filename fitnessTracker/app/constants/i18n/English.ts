@@ -76,4 +76,6 @@ export const English = {
   createWorkout:"create workout",
   lang:"english",
   langSub:"select language",
+  weightTracker:"weight tracker",
+  calorieTracker:"calorie tracker",
 }
