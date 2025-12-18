@@ -56,9 +56,9 @@ export default function SettingsScreen() {
 
         {/* Tracker Sektion */}
         <Text style={styles.sectionTitle}>Tracker</Text>
-        <SettingsBox title={text.weightTracker} subtitle="in der Übersicht anzeigen" value={isWTrackerEnabled} onValueChange={toggleWTracker} />
-        <SettingsBox title={text.calorieTracker} subtitle="in der Übersicht anzeigen" value={isCTrackerEnabled} onValueChange={toggleCTracker} />
-        <SettingsBox title={text.dailyStreak} subtitle="0=Weekly streak 1=Daily streak" value={isDailyStreakEnabled} onValueChange={toggleDailyStreak} />
+        <SettingsBox title={text.weightTracker} subtitle={text.weightTrackerSub}  value={isWTrackerEnabled} onValueChange={toggleWTracker} />
+        <SettingsBox title={text.calorieTracker} subtitle={text.calorieTrackerSub} value={isCTrackerEnabled} onValueChange={toggleCTracker} />
+        <SettingsBox title={text.dailyStreak} subtitle={text.dailyStreakSub} value={isDailyStreakEnabled} onValueChange={toggleDailyStreak} />
 
         {/* Rechtliches & Support Sektion */}
         <Text style={styles.sectionTitle}>Rechtliches & Support</Text>

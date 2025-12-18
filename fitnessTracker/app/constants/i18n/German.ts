@@ -72,4 +72,7 @@ export const German = {
   weightTracker: "Körpergewicht Tracker",
   calorieTracker: "Kalorien Tracker",
   dailyStreak:"Tägliche Streak",
+  weightTrackerSub: "In Gesundheit zeigen",
+  calorieTrackerSub: "In Gesundheit zeigen",
+  dailyStreakSub:"0:Wöchentliche 1:Tägliche Streak",
 }

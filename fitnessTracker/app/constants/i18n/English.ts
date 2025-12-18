@@ -78,4 +78,8 @@ export const English = {
   langSub:"select language",
   weightTracker:"weight tracker",
   calorieTracker:"calorie tracker",
+  dailyStreak:"daily streak",
+  weightTrackerSub:"show in health",
+  calorieTrackerSub:"show in health",
+  dailyStreakSub:"0:weakly 1:daily streak",
 }
