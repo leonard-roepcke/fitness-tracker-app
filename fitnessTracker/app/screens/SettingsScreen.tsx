@@ -39,7 +39,7 @@ export default function SettingsScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
         {/* Darstellung Sektion */}
-        <Text style={styles.sectionTitle}>Darstellung</Text>
+        <Text style={styles.sectionTitle}>{text.viewSection}</Text>
         <SettingsBox
           title={text.darkmode}
           subtitle={text.darkmodeSub}
@@ -55,13 +55,13 @@ export default function SettingsScreen() {
         />
 
         {/* Tracker Sektion */}
-        <Text style={styles.sectionTitle}>Tracker</Text>
+        <Text style={styles.sectionTitle}>{text.trackerSection}</Text>
         <SettingsBox title={text.weightTracker} subtitle={text.weightTrackerSub}  value={isWTrackerEnabled} onValueChange={toggleWTracker} />
         <SettingsBox title={text.calorieTracker} subtitle={text.calorieTrackerSub} value={isCTrackerEnabled} onValueChange={toggleCTracker} />
         <SettingsBox title={text.dailyStreak} subtitle={text.dailyStreakSub} value={isDailyStreakEnabled} onValueChange={toggleDailyStreak} />
 
         {/* Rechtliches & Support Sektion */}
-        <Text style={styles.sectionTitle}>Rechtliches & Support</Text>
+        <Text style={styles.sectionTitle}>{text.suportSection}</Text>
         <SettingsBox title={text.privacyPolicyHeading} subtitle={text.privacyPolicyHeadingSub} isNavigable={true} onPress={() => nav.navigate("PrivacyPolicy")} />
         <SettingsBox title={text.termsOfUseHeading} subtitle={text.termsOfUseHeadingSub} isNavigable={true} onPress={() => nav.navigate("TermsOfUse")} />
         <SettingsBox title={text.suport} subtitle={text.suportSub} isNavigable={true} onPress={() => {}} />
