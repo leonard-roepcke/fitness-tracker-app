@@ -82,4 +82,6 @@ export const German = {
   viewSection:"Darstellung",
   trackerSection:"Tracker",
   suportSection:"Rechtliches & Support",
+  newWorkout:"neues Workout",
+  workoutendHeading:" Workout Ende",
 }

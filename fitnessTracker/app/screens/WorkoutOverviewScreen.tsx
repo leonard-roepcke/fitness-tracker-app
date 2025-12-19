@@ -50,7 +50,7 @@ export default function WorkoutOverview() {
         const newId = workouts.length > 0 ? Math.max(...workouts.map(w => w.id ?? 0)) + 1 : 0;
         const newWorkout: Workout = {
             id: newId,
-            name: "Neues Workout",
+            name: text.newWorkout,
             exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10]}],
             createdAt: Date.now(),
             isFavorite: false,

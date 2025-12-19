@@ -89,4 +89,6 @@ export const English = {
   viewSection:"view",
   trackerSection:"tracker",
   suportSection:"suport and data",
+  newWorkout:"new workout",
+  workoutendHeading:"workout end",
 }
