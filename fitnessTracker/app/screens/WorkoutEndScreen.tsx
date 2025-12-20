@@ -11,7 +11,7 @@ export default function WorkoutEndScreen({route}:any){
   },
   }
   return(
-    <AppContainer heading={text.workoutendHeading}>
+    <AppContainer heading={text.workoutendHeading} scrolable={true}>
       <Text style={styles.text}>
         WorkoutEnd
       </Text>
