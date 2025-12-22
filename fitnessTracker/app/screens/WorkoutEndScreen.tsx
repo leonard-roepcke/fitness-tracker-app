@@ -5,7 +5,7 @@ import AppContainer from '../components/ui/AppContainer';
 import { useAppContext } from '../hooks/useAppContext';
 import { useWorkouts } from '../../context/WorkoutContext';
 
-export default function WorkoutEndScreen({route}:any){
+export default function WorkoutEndScreen({route, navigation}:any){
   const colors = useTheme();
   const { text } = useAppContext();
   const params = useSearchParams();
@@ -16,6 +16,8 @@ export default function WorkoutEndScreen({route}:any){
   const workoutId = Number(rawId);
   const workout = workouts?.find(w => w.id === workoutId);
     
+  const isString = typeof workout === "string";
+  const name = isString ? workout : workout.name;
 
   const styles = {
     text:{
@@ -25,7 +27,7 @@ export default function WorkoutEndScreen({route}:any){
   return(
     <AppContainer heading={text.workoutendHeading} scrolable={true}>
       <Text style={styles.text}>
-        WorkoutEnd
+        {name}
       </Text>
     </AppContainer>
   );

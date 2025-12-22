@@ -28,7 +28,9 @@ export default function WorkoutScreen({ route, navigation }: any) {
     const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
     const workoutId = Number(rawId);
     const workout = workouts?.find(w => w.id === workoutId);
-    
+    const isString = typeof workout === "string";    
+    const id = isString ? null : workout.id;
+
     const [text, setText] = useState<string>(workout?.notes ?? "");
 
     const [i_exercise, setI_exercise] = useState(0);
@@ -156,7 +158,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
      //Workout abgeschlossen
 
     await logWorkout(workout);
-     if (nav && typeof nav.goBack === 'function') nav.navigate('WorkoutEndScreen')
+     if (nav && typeof nav.navigate === 'function') nav.navigate('WorkoutEnd', { workoutId: id });
      else navigation.goBack();
  }
    };
