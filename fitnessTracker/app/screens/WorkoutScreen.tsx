@@ -173,19 +173,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
 
 
     return (
-      <KeyboardAvoidingView
-    style={{ flex: 1, backgroundColor: colors.background }}
-    behavior={Platform.OS === "ios" ? "padding" : "height"} // iOS vs Android
-    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20} // optional: offset für Header
-    
->
-    <ScrollView 
-        ref={scrollViewRef} 
-        contentContainerStyle={{ flexGrow: 1 }}
-        scrollEnabled={false} 
-        showsVerticalScrollIndicator={false}
-      >
-        <AppContainer>
+       <AppContainer isBar={true} scrolable={true}>
             <Text style={styles.title}></Text>
 
             <View style={{ height: 60, justifyContent: 'center' }}>
@@ -235,9 +223,6 @@ export default function WorkoutScreen({ route, navigation }: any) {
                 scrollViewRef.current?.scrollToEnd({ animated: true });
               }}
             />
-            <Bar/>
         </AppContainer>
-        </ScrollView>
-</KeyboardAvoidingView>
     );
 }
