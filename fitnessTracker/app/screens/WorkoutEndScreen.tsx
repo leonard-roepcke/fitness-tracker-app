@@ -1,14 +1,26 @@
 import {View, Text} from 'react-native'
+import { useSearchParams } from 'expo-router/build/hooks';
 import { useTheme} from '../hooks/useTheme';
 import AppContainer from '../components/ui/AppContainer';
 import { useAppContext } from '../hooks/useAppContext';
+import { useWorkouts } from '../../context/WorkoutContext';
+
 export default function WorkoutEndScreen({route}:any){
   const colors = useTheme();
   const { text } = useAppContext();
+  const params = useSearchParams();
+  const {workouts, updateWorkout} = useWorkouts();
+
+    // Try react-navigation route params first, otherwise fall back to expo-router search params
+  const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
+  const workoutId = Number(rawId);
+  const workout = workouts?.find(w => w.id === workoutId);
+    
+
   const styles = {
-   text:{
+    text:{
       color: colors.text,
-  },
+    },
   }
   return(
     <AppContainer heading={text.workoutendHeading} scrolable={true}>
