@@ -84,4 +84,6 @@ export const German = {
   suportSection:"Rechtliches & Support",
   newWorkout:"neues Workout",
   workoutendHeading:" Workout Ende",
+  safe:"Speichern",
+  remove:"Löschen",
 }

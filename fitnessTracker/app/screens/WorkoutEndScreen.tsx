@@ -1,4 +1,5 @@
 import {View, Text} from 'react-native'
+import { CreateBox } from '../components/CreateBox';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useTheme} from '../hooks/useTheme';
 import AppContainer from '../components/ui/AppContainer';
@@ -7,7 +8,7 @@ import { useWorkouts } from '../../context/WorkoutContext';
 
 export default function WorkoutEndScreen({route, navigation}:any){
   const colors = useTheme();
-  const { text } = useAppContext();
+  const { text , nav } = useAppContext();
   const params = useSearchParams();
   const {workouts, updateWorkout} = useWorkouts();
 
@@ -24,11 +25,24 @@ export default function WorkoutEndScreen({route, navigation}:any){
       color: colors.text,
     },
   }
+
+  const goHome = () => {
+    nav.navigate('WorkoutOverview');
+  }
+
+  const delGoHome = () => {
+    nav.navigate('WorkoutOverview');
+  }
   return(
     <AppContainer heading={text.workoutendHeading} scrolable={true}>
       <Text style={styles.text}>
         {name}
       </Text>
+    
+    <View>
+      <CreateBox  onPress={goHome} iconName='remove' text={text.remove}/>
+      <CreateBox  onPress={delGoHome} iconName='home' text={text.safe}/>
+    </View>
     </AppContainer>
   );
 }

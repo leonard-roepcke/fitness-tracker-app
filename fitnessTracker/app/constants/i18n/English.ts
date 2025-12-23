@@ -91,4 +91,6 @@ export const English = {
   suportSection:"suport and data",
   newWorkout:"new workout",
   workoutendHeading:"workout end",
+  safe:"safe",
+  remove:"remove",
 }
