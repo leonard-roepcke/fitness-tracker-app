@@ -1,4 +1,5 @@
 import {View, Text} from 'react-native'
+import { useTracker } from "@/context/TrackerContext";
 import { CreateBox } from '../components/CreateBox';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useTheme} from '../hooks/useTheme';
@@ -11,6 +12,7 @@ export default function WorkoutEndScreen({route, navigation}:any){
   const { text , nav } = useAppContext();
   const params = useSearchParams();
   const {workouts, updateWorkout} = useWorkouts();
+    const { logWorkout, workoutLogs, getDailyStreak, getWeeklyStreak } = useTracker();
 
     // Try react-navigation route params first, otherwise fall back to expo-router search params
   const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
@@ -26,7 +28,8 @@ export default function WorkoutEndScreen({route, navigation}:any){
     },
   }
 
-  const goHome = () => {
+  const goHome = async () => {
+    await logWorkout(workout);
     nav.navigate('WorkoutOverview');
   }
 
