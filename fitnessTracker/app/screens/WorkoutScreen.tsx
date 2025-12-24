@@ -157,7 +157,6 @@ export default function WorkoutScreen({ route, navigation }: any) {
  } else {
      //Workout abgeschlossen
 
-    await logWorkout(workout);
      if (nav && typeof nav.navigate === 'function') nav.navigate('WorkoutEnd', { workoutId: id });
      else navigation.goBack();
  }

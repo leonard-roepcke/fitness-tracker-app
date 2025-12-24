@@ -1,4 +1,5 @@
 import {View, Text} from 'react-native'
+import { useEffect } from 'react';
 import { useTracker } from "@/context/TrackerContext";
 import { CreateBox } from '../components/CreateBox';
 import { useSearchParams } from 'expo-router/build/hooks';
@@ -22,11 +23,16 @@ export default function WorkoutEndScreen({route, navigation}:any){
   const isString = typeof workout === "string";
   const name = isString ? workout : workout.name;
 
+  const { showWorkoutsById } = useTracker();
   const styles = {
     text:{
       color: colors.text,
     },
   }
+  useEffect(() => {
+    if (!workoutId) return;
+    console.log(showWorkoutsById(workoutId));
+  }, [workoutLogs]);
 
   const goHome = async () => {
     await logWorkout(workout);
@@ -43,8 +49,8 @@ export default function WorkoutEndScreen({route, navigation}:any){
       </Text>
     
     <View>
-      <CreateBox  onPress={goHome} iconName='remove' text={text.remove}/>
-      <CreateBox  onPress={delGoHome} iconName='home' text={text.safe}/>
+      <CreateBox  onPress={delGoHome} iconName='remove' text={text.remove}/>
+      <CreateBox  onPress={goHome} iconName='home' text={text.safe}/>
     </View>
     </AppContainer>
   );
