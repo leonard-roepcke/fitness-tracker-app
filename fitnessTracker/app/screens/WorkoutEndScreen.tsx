@@ -7,6 +7,8 @@ import { useTheme} from '../hooks/useTheme';
 import AppContainer from '../components/ui/AppContainer';
 import { useAppContext } from '../hooks/useAppContext';
 import { useWorkouts } from '../../context/WorkoutContext';
+import CardBox from '@/app/components/CardBox';
+
 
 export default function WorkoutEndScreen({route, navigation}:any){
   const colors = useTheme();
@@ -49,6 +51,9 @@ export default function WorkoutEndScreen({route, navigation}:any){
       </Text>
     
     <View>
+      <CardBox>
+
+      </CardBox>
       <CreateBox  onPress={delGoHome} iconName='remove' text={text.remove}/>
       <CreateBox  onPress={goHome} iconName='home' text={text.safe}/>
     </View>
