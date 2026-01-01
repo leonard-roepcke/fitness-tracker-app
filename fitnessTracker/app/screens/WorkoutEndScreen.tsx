@@ -54,7 +54,7 @@ export default function WorkoutEndScreen({route, navigation}:any){
       <CardBox>
 
       </CardBox>
-      <CreateBox  onPress={delGoHome} iconName='remove' text={text.remove}/>
+      <CreateBox  onPress={delGoHome} iconName='trash' text={text.remove}/>
       <CreateBox  onPress={goHome} iconName='home' text={text.safe}/>
     </View>
     </AppContainer>
