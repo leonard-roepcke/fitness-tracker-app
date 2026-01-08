@@ -47,7 +47,7 @@ export default function WorkoutEndScreen({route, navigation}:any){
   return(
     <AppContainer heading={text.workoutendHeading} scrolable={true}>
       <Text style={styles.text}>
-        {name}
+        
       </Text>
     
     <View>
