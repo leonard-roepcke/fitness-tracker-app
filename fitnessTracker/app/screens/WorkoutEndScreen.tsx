@@ -45,7 +45,7 @@ export default function WorkoutEndScreen({route, navigation}:any){
     nav.navigate('WorkoutOverview');
   }
   return(
-    <AppContainer heading={text.workoutendHeading} scrolable={true}>
+    <AppContainer heading={`${text.workoutendHeading} ${name}`} scrolable={true}>
       <Text style={styles.text}>
         
       </Text>
