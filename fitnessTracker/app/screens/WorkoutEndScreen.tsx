@@ -8,6 +8,8 @@ import AppContainer from '../components/ui/AppContainer';
 import { useAppContext } from '../hooks/useAppContext';
 import { useWorkouts } from '../../context/WorkoutContext';
 import CardBox from '@/app/components/CardBox';
+import { Dimensions } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
 
 
 export default function WorkoutEndScreen({route, navigation}:any){
@@ -31,6 +33,18 @@ export default function WorkoutEndScreen({route, navigation}:any){
       color: colors.text,
     },
   }
+
+  const screenWidth = Dimensions.get("window").width;
+
+const chartData = {
+  labels: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+  datasets: [
+    {
+      data: [1, 0, 1, 1, 0, 1, 1] // 1 = Workout, 0 = kein Workout
+    }
+  ]
+};
+
   useEffect(() => {
     if (!workoutId) return;
     console.log(showWorkoutsById(workoutId));
@@ -47,12 +61,29 @@ export default function WorkoutEndScreen({route, navigation}:any){
   return(
     <AppContainer heading={`${text.workoutendHeading} ${name}`} scrolable={true}>
       <Text style={styles.text}>
-        
+    
       </Text>
     
     <View>
       <CardBox>
-
+<LineChart
+    data={chartData}
+    width={screenWidth - 60}
+    height={180}
+    yAxisInterval={1}
+    chartConfig={{
+      backgroundColor: colors.background,
+      backgroundGradientFrom: colors.background,
+      backgroundGradientTo: colors.background,
+      decimalPlaces: 0,
+      color: () => colors.text,
+      labelColor: () => colors.text,
+      propsForDots: {
+        r: "4"
+      }
+    }}
+    bezier
+  />
       </CardBox>
       <CreateBox  onPress={delGoHome} iconName='trash' text={text.remove}/>
       <CreateBox  onPress={goHome} iconName='home' text={text.safe}/>
