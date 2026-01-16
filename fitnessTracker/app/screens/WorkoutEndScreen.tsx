@@ -36,15 +36,6 @@ export default function WorkoutEndScreen({route, navigation}:any){
 
   const screenWidth = Dimensions.get("window").width;
 
-const chartData = {
-  labels: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
-  datasets: [
-    {
-      data: [1, 0, 1, 1, 0, 1, 1] // 1 = Workout, 0 = kein Workout
-    }
-  ]
-};
-
   useEffect(() => {
     if (!workoutId) return;
     console.log(showWorkoutsById(workoutId));
@@ -66,25 +57,8 @@ const chartData = {
     
     <View>
       <CardBox>
-<LineChart
-    data={chartData}
-    width={screenWidth - 60}
-    height={180}
-    yAxisInterval={1}
-    chartConfig={{
-      backgroundColor: colors.background,
-      backgroundGradientFrom: colors.background,
-      backgroundGradientTo: colors.background,
-      decimalPlaces: 0,
-      color: () => colors.text,
-      labelColor: () => colors.text,
-      propsForDots: {
-        r: "4"
-      }
-    }}
-    bezier
-  />
-      </CardBox>
+
+              </CardBox>
       <CreateBox  onPress={delGoHome} iconName='trash' text={text.remove}/>
       <CreateBox  onPress={goHome} iconName='home' text={text.safe}/>
     </View>
