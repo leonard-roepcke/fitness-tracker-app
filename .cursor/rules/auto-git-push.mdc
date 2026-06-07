@@ -1,0 +1,10 @@
+---
+description: Automatisches GitHub-Push nach Agent-Änderungen
+alwaysApply: true
+---
+
+Nach jeder abgeschlossenen Agent-Session pusht der Cursor-Hook `.cursor/hooks/auto-git-push.sh` alle Projektänderungen automatisch zu GitHub.
+
+- Kein manuelles `git commit` / `git push` nötig, außer der Nutzer verlangt es ausdrücklich anders.
+- Secrets (`.env`, `credentials.json`) werden nicht committed.
+- Commit-Nachricht basiert auf der letzten User-Prompt-Zeile.

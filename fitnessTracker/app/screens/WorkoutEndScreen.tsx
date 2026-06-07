@@ -1,5 +1,4 @@
 import {View, Text} from 'react-native'
-import { useEffect } from 'react';
 import { useTracker } from "@/context/TrackerContext";
 import { CreateBox } from '../components/CreateBox';
 import { useSearchParams } from 'expo-router/build/hooks';
@@ -8,16 +7,14 @@ import AppContainer from '../components/ui/AppContainer';
 import { useAppContext } from '../hooks/useAppContext';
 import { useWorkouts } from '../../context/WorkoutContext';
 import CardBox from '@/app/components/CardBox';
-import { Dimensions } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
 
 
 export default function WorkoutEndScreen({route, navigation}:any){
   const colors = useTheme();
   const { text , nav } = useAppContext();
   const params = useSearchParams();
-  const {workouts, updateWorkout} = useWorkouts();
-    const { logWorkout, workoutLogs, getDailyStreak, getWeeklyStreak } = useTracker();
+  const {workouts} = useWorkouts();
+    const { logWorkout } = useTracker();
 
     // Try react-navigation route params first, otherwise fall back to expo-router search params
   const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
@@ -27,19 +24,12 @@ export default function WorkoutEndScreen({route, navigation}:any){
   const isString = typeof workout === "string";
   const name = isString ? workout : workout.name;
 
-  const { showWorkoutsById } = useTracker();
   const styles = {
     text:{
       color: colors.text,
     },
   }
 
-  const screenWidth = Dimensions.get("window").width;
-
-  useEffect(() => {
-    if (!workoutId) return;
-    console.log(showWorkoutsById(workoutId));
-  }, [workoutLogs]);
 
   const goHome = async () => {
     await logWorkout(workout);
