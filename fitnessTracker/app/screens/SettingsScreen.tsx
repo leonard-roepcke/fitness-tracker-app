@@ -1,44 +1,100 @@
 import * as Application from 'expo-application';
-import { useRouter } from "expo-router";
+import { ColorPaletteOptions } from '@/app/constants/ColorPalettes';
+import { getAccentColors } from '@/app/constants/ColorPalettes';
 import React, { useContext, useState } from "react";
-import { ScrollView, Text, View, StyleSheet, TouchableOpacity, Button } from "react-native";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemeContext } from "../../context/ThemeContext";
 import { SettingsBox } from "../components/SettingsBox/SettinsBox";
 import { useAppContext } from '../hooks/useAppContext';
 import AppContainer from '../components/ui/AppContainer';
 import { useLanguage } from "@/app/hooks/useLanguage";
 import CustomModal from '../components/CustomModal';
-import { CreateBox } from '../components/CreateBox';
-import TermsOfUseScreen from './info/TermsOfUseScreen';
+import GradientSurface from '../components/ui/GradientSurface';
 
 export default function SettingsScreen() {
-  const { isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker, isDailyStreakEnabled, toggleDailyStreak } =
-    useContext(ThemeContext);
-  const router = useRouter();
+  const {
+    isDark,
+    toggleTheme,
+    colorPalette,
+    setColorPalette,
+    isWTrackerEnabled,
+    toggleWTracker,
+    isCTrackerEnabled,
+    toggleCTracker,
+    isDailyStreakEnabled,
+    toggleDailyStreak,
+  } = useContext(ThemeContext);
   const version = Application.nativeApplicationVersion;
-  const build = Application.nativeBuildVersion;  
-  const {colors, layouts, text, nav} = useAppContext();
+  const build = Application.nativeBuildVersion;
+  const { colors, layouts, text, nav } = useAppContext();
   const { language, setLanguage } = useLanguage();
 
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [colorModalVisible, setColorModalVisible] = useState(false);
 
+  const activePaletteLabel = ColorPaletteOptions.find((p) => p.id === colorPalette);
 
   const styles = StyleSheet.create({
     scrollContent: { paddingBottom: 40 },
-    header: { fontSize: 32, fontWeight: "bold", marginTop: 35, color: colors.text, textAlign: 'center' },
-    sectionTitle: { fontSize: 14, fontWeight: '700', color: colors.primaryDark, paddingHorizontal: 4, paddingTop: 20, paddingBottom: 10, textTransform: 'uppercase', letterSpacing: 0.8 },
+    sectionTitle: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      paddingHorizontal: 4,
+      paddingTop: 20,
+      paddingBottom: 10,
+      textTransform: 'uppercase',
+      letterSpacing: 0.8,
+    },
     footerText: { textAlign: "center", paddingVertical: 30, color: colors.text, opacity: 0.5, fontSize: 14 },
-    title: { fontSize: 10, fontWeight: '600', marginBottom: layouts.marginVertical, color: colors.text, justifyContent: 'center', alignItems: 'center' },
-    spacing: { height: layouts.marginVertical*12 },
-    languageOption: { paddingVertical: 14, paddingHorizontal: 20, backgroundColor: colors.primary, borderRadius: 12, marginVertical: 5, alignItems: 'center' },
-    languageText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+    spacing: { height: layouts.marginVertical * 12 },
+    paletteRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      marginVertical: 6,
+      borderRadius: layouts.borderRadius,
+      overflow: 'hidden',
+    },
+    palettePreview: {
+      width: 48,
+      height: 48,
+      borderRadius: layouts.borderRadius,
+    },
+    paletteLabel: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    paletteOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      padding: 12,
+      borderRadius: layouts.borderRadius,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginVertical: 6,
+      backgroundColor: colors.card,
+    },
+    paletteOptionActive: {
+      borderColor: colors.primary,
+      backgroundColor: colors.overlay,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.primaryDark,
+      textAlign: 'center',
+      marginBottom: 12,
+    },
   });
 
   return (
     <AppContainer heading={text.settings} isBar={true}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
-        {/* Darstellung Sektion */}
         <Text style={styles.sectionTitle}>{text.viewSection}</Text>
         <SettingsBox
           title={text.darkmode}
@@ -48,37 +104,69 @@ export default function SettingsScreen() {
         />
 
         <SettingsBox
+          title={text.colorPalette}
+          subtitle={`${text.colorPaletteSub}: ${language === 'german' ? activePaletteLabel?.labelDe : activePaletteLabel?.labelEn}`}
+          isNavigable={true}
+          onPress={() => setColorModalVisible(true)}
+        />
+
+        <SettingsBox
           title={`language: ${text.lang}`}
           subtitle={text.langSub}
           isNavigable={true}
           onPress={() => setLanguageModalVisible(true)}
         />
 
-        {/* Tracker Sektion */}
         <Text style={styles.sectionTitle}>{text.trackerSection}</Text>
-        <SettingsBox title={text.weightTracker} subtitle={text.weightTrackerSub}  value={isWTrackerEnabled} onValueChange={toggleWTracker} />
+        <SettingsBox title={text.weightTracker} subtitle={text.weightTrackerSub} value={isWTrackerEnabled} onValueChange={toggleWTracker} />
         <SettingsBox title={text.calorieTracker} subtitle={text.calorieTrackerSub} value={isCTrackerEnabled} onValueChange={toggleCTracker} />
         <SettingsBox title={text.dailyStreak} subtitle={text.dailyStreakSub} value={isDailyStreakEnabled} onValueChange={toggleDailyStreak} />
 
-        {/* Rechtliches & Support Sektion */}
         <Text style={styles.sectionTitle}>{text.suportSection}</Text>
         <SettingsBox title={text.privacyPolicyHeading} subtitle={text.privacyPolicyHeadingSub} isNavigable={true} onPress={() => nav.navigate("PrivacyPolicy")} />
         <SettingsBox title={text.termsOfUseHeading} subtitle={text.termsOfUseHeadingSub} isNavigable={true} onPress={() => nav.navigate("TermsOfUse")} />
         <SettingsBox title={text.suport} subtitle={text.suportSub} isNavigable={true} onPress={() => {}} />
 
-        {/* Footer */}
         <Text style={styles.footerText}>
           Version {version} ({build})
         </Text>
-        <View style={styles.spacing}/>
+        <View style={styles.spacing} />
       </ScrollView>
 
-      {/* Sprache Modal */}
       <CustomModal visible={languageModalVisible} onClose={() => setLanguageModalVisible(false)}>
-          <CreateBox onPress={()=> {setLanguage("german"); setLanguageModalVisible(false)}} text='Deutsch' iconName='square'/>
-          <CreateBox onPress={()=> {setLanguage("english"); setLanguageModalVisible(false)}} text='English  ' iconName='square'/>
+        <TouchableOpacity style={styles.paletteOption} onPress={() => { setLanguage("german"); setLanguageModalVisible(false); }}>
+          <Text style={styles.paletteLabel}>Deutsch</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.paletteOption} onPress={() => { setLanguage("english"); setLanguageModalVisible(false); }}>
+          <Text style={styles.paletteLabel}>English</Text>
+        </TouchableOpacity>
+      </CustomModal>
+
+      <CustomModal visible={colorModalVisible} onClose={() => setColorModalVisible(false)}>
+        <Text style={styles.modalTitle}>{text.colorPalette}</Text>
+        {ColorPaletteOptions.map((option) => {
+          const accent = getAccentColors(option.id, isDark);
+          const isActive = colorPalette === option.id;
+          return (
+            <TouchableOpacity
+              key={option.id}
+              style={[styles.paletteOption, isActive && styles.paletteOptionActive]}
+              onPress={() => {
+                setColorPalette(option.id);
+                setColorModalVisible(false);
+              }}
+            >
+              <GradientSurface
+                style={styles.palettePreview}
+                colors={[accent.primaryLight, accent.primary, accent.primaryDark]}
+              />
+              <Text style={styles.paletteLabel}>
+                {language === 'german' ? option.labelDe : option.labelEn}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </CustomModal>
     </AppContainer>
   );
 }
-

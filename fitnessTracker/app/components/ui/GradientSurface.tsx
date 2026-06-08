@@ -4,22 +4,25 @@ import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
 type GradientSurfaceProps = {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     style?: StyleProp<ViewStyle>;
     variant?: 'primary' | 'surface';
+    colors?: [string, string, ...string[]];
 };
 
 export default function GradientSurface({
     children,
     style,
     variant = 'primary',
+    colors: overrideColors,
 }: GradientSurfaceProps) {
     const colors = useTheme();
 
-    const gradientColors =
+    const gradientColors = overrideColors ?? (
         variant === 'primary'
             ? [colors.primaryLight, colors.primary, colors.primaryDark]
-            : [colors.card, colors.surface];
+            : [colors.card, colors.surface]
+    );
 
     return (
         <LinearGradient

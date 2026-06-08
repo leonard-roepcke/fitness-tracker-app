@@ -1,9 +1,12 @@
+import { ColorPaletteId } from "@/app/constants/ColorPalettes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
 
 interface ThemeContextProps {
   isDark: boolean;
   toggleTheme: () => void;
+  colorPalette: ColorPaletteId;
+  setColorPalette: (palette: ColorPaletteId) => void;
   isWTrackerEnabled: boolean;
   toggleWTracker: () => void;
   isCTrackerEnabled: boolean;
@@ -15,52 +18,56 @@ interface ThemeContextProps {
 export const ThemeContext = createContext<ThemeContextProps>({
   isDark: false,
   toggleTheme: () => {},
-  isWTrackerEnabled: false,
+  colorPalette: 'blue',
+  setColorPalette: () => {},
+  isWTrackerEnabled: true,
   toggleWTracker: () => {},
-  isCTrackerEnabled: false,
+  isCTrackerEnabled: true,
   toggleCTracker: () => {},
   isDailyStreakEnabled: false,
   toggleDailyStreak: () => {},
-
 });
 
 export const ThemeProvider = ({ children }: any) => {
   const [isDark, setIsDark] = useState(false);
-  const [isWTrackerEnabled, setIsWTrackerEnabled] = useState(false);
-  const [isCTrackerEnabled, setIsCTrackerEnabled] = useState(false);
+  const [colorPalette, setColorPaletteState] = useState<ColorPaletteId>('blue');
+  const [isWTrackerEnabled, setIsWTrackerEnabled] = useState(true);
+  const [isCTrackerEnabled, setIsCTrackerEnabled] = useState(true);
   const [isDailyStreakEnabled, setIsDailyStreakEnabled] = useState(false);
-  // Initiales Laden der Werte aus AsyncStorage
+
   useEffect(() => {
     AsyncStorage.getItem("darkMode").then((value) => {
-      if (value !== null) {
-        setIsDark(value === "true");
+      if (value !== null) setIsDark(value === "true");
+    });
+
+    AsyncStorage.getItem("colorPalette").then((value) => {
+      if (value === 'blue' || value === 'teal' || value === 'purple' || value === 'orange') {
+        setColorPaletteState(value);
       }
     });
 
     AsyncStorage.getItem("wTracker").then((value) => {
-      if (value !== null) {
-        setIsWTrackerEnabled(value === "true");
-      }
+      if (value !== null) setIsWTrackerEnabled(value === "true");
     });
 
     AsyncStorage.getItem("cTracker").then((value) => {
-      if (value !== null) {
-        setIsCTrackerEnabled(value === "true");
-      }
+      if (value !== null) setIsCTrackerEnabled(value === "true");
     });
 
     AsyncStorage.getItem("DailyStreak").then((value) => {
-      if (value !== null) {
-        setIsDailyStreakEnabled(value === "true");
-      }
+      if (value !== null) setIsDailyStreakEnabled(value === "true");
     });
-
   }, []);
 
   const toggleTheme = async () => {
     const newValue = !isDark;
     setIsDark(newValue);
     await AsyncStorage.setItem("darkMode", String(newValue));
+  };
+
+  const setColorPalette = async (palette: ColorPaletteId) => {
+    setColorPaletteState(palette);
+    await AsyncStorage.setItem("colorPalette", palette);
   };
 
   const toggleWTracker = async () => {
@@ -74,8 +81,8 @@ export const ThemeProvider = ({ children }: any) => {
     setIsCTrackerEnabled(newValue);
     await AsyncStorage.setItem("cTracker", String(newValue));
   };
-  
-  const toggleDailyStreak= async () => {
+
+  const toggleDailyStreak = async () => {
     const newValue = !isDailyStreakEnabled;
     setIsDailyStreakEnabled(newValue);
     await AsyncStorage.setItem("DailyStreak", String(newValue));
@@ -83,7 +90,18 @@ export const ThemeProvider = ({ children }: any) => {
 
   return (
     <ThemeContext.Provider
-      value={{ isDark, toggleTheme, isWTrackerEnabled, toggleWTracker, isCTrackerEnabled, toggleCTracker , isDailyStreakEnabled, toggleDailyStreak}}
+      value={{
+        isDark,
+        toggleTheme,
+        colorPalette,
+        setColorPalette,
+        isWTrackerEnabled,
+        toggleWTracker,
+        isCTrackerEnabled,
+        toggleCTracker,
+        isDailyStreakEnabled,
+        toggleDailyStreak,
+      }}
     >
       {children}
     </ThemeContext.Provider>

@@ -105,7 +105,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
                 </TouchableOpacity>
 
                 <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress}>
-                    <CreateBox iconName="create-outline" onPress={handleEditPress} />
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
                 </TouchableOpacity>
             </View>
         );
@@ -121,7 +121,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
-                    <CreateBox iconName="create-outline" onPress={handleEditPress} />
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
                 </TouchableOpacity>
             </CardBox>
         </View>

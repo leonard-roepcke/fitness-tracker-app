@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Layout from '../../constants/Layouts';
 import { subtleShadow } from '../../utils/shadows';
 import { useTheme } from "../../hooks/useTheme";
+import GradientSurface from '../ui/GradientSurface';
 
 type CreateBoxProps = {
     onPress?: () => void;
@@ -11,7 +12,7 @@ type CreateBoxProps = {
     iconSize?: number;
     iconColor?: string;
     text?: string;
-    variant?: 'default' | 'accent';
+    variant?: 'default' | 'accent' | 'borderless';
 
     padding?: number;
     paddingHorizontal?: number;
@@ -51,13 +52,14 @@ export const CreateBox = ({
     const layout = Layout;
 
     const isAccent = variant === 'accent';
+    const isBorderless = variant === 'borderless';
 
     const styles = StyleSheet.create({
         box: {
-            marginVertical: layout.marginVertical,
-            backgroundColor: isAccent ? colors.primary : colors.card,
+            marginVertical: isBorderless ? 0 : layout.marginVertical,
+            backgroundColor: isBorderless ? 'transparent' : isAccent ? 'transparent' : colors.card,
             borderRadius: layout.borderRadius,
-            padding: padding ?? 16,
+            padding: padding ?? (isBorderless ? 8 : 16),
             paddingHorizontal,
             paddingVertical,
             paddingLeft,
@@ -71,9 +73,18 @@ export const CreateBox = ({
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            borderWidth: isAccent ? 0 : 1,
+            borderWidth: isBorderless || isAccent ? 0 : 1,
             borderColor: colors.border,
-            ...subtleShadow(colors),
+            overflow: isAccent ? 'hidden' : 'visible',
+            ...(isBorderless ? {} : subtleShadow(colors)),
+        },
+        inner: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: isAccent ? (padding ?? 16) : 0,
+            paddingHorizontal: isAccent ? paddingHorizontal : undefined,
+            paddingVertical: isAccent ? paddingVertical : undefined,
         },
         text: {
             color: isAccent ? '#FFFFFF' : colors.text,
@@ -83,14 +94,24 @@ export const CreateBox = ({
         }
     });
 
-    return (
-        <TouchableOpacity style={styles.box} onPress={onPress} activeOpacity={0.75}>
+    const content = (
+        <>
             <Ionicons
                 name={iconName}
                 size={iconSize}
                 color={iconColor ?? (isAccent ? '#FFFFFF' : colors.primary)}
             />
             {text && <Text style={styles.text}>{text}</Text>}
+        </>
+    );
+
+    return (
+        <TouchableOpacity style={styles.box} onPress={onPress} activeOpacity={0.75}>
+            {isAccent ? (
+                <GradientSurface style={{ borderRadius: layout.borderRadius, alignSelf: 'stretch', width: '100%' }}>
+                    <View style={styles.inner}>{content}</View>
+                </GradientSurface>
+            ) : content}
         </TouchableOpacity>
     );
 };
