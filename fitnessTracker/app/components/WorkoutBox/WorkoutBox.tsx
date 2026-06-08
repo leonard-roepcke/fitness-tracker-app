@@ -1,33 +1,23 @@
 import Layouts from "@/app/constants/Layouts";
 import { cardShadow } from "@/app/utils/shadows";
-import { useTracker } from '@/context/TrackerContext';
 import { useWorkouts } from '@/context/WorkoutContext';
-import { getWorkoutVolumeHistory } from '@/app/utils/workoutVolume';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import React, { useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import { Workout } from '../../types/workout';
 import { CreateBox } from '../CreateBox';
 import CardBox from "../CardBox";
-import { WorkoutVolumeChart } from '../WorkoutVolumeChart';
 
 const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
     const colors = useTheme();
     const navigation: any = useNavigation();
     const layouts = Layouts;
-    const { showWorkoutsById, workoutLogs } = useTracker();
 
     const isString = typeof workout === "string";
     const name = isString ? workout : workout.name;
     const id = isString ? null : workout.id;
     const { toggleFavorite } = useWorkouts();
-
-    const volumeHistory = useMemo(() => {
-        if (id == null) return [];
-        return getWorkoutVolumeHistory(showWorkoutsById(id));
-    }, [id, workoutLogs]);
 
     const handlePress = () => {
         if (id != null) navigation.navigate('Workout', { workoutId: id });
@@ -74,116 +64,65 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             borderRightWidth: 0,
             borderLeftWidth: 1,
         },
-        stripPressed: {
-            opacity: 0.75,
-            backgroundColor: colors.overlay,
-        },
         stripCenter: {
             flex: 1,
             justifyContent: "center",
             paddingHorizontal: 20,
-            height: "100%",
         },
         stripText: {
             color: colors.text,
             fontSize: 16,
             fontWeight: "600",
         },
-        boxContainer: {
+        box: {
             flex: 1,
-        },
-        mainPress: {
-            flex: 1,
-            width: '100%',
-        },
-        boxPressed: {
-            opacity: 0.85,
-        },
-        boxHeader: {
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            marginBottom: 8,
+            justifyContent: "flex-start",
         },
         boxText: {
-            flex: 1,
             color: colors.primaryDark,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: "600",
-            paddingRight: 36,
-        },
-        chartArea: {
-            flex: 1,
-            justifyContent: 'flex-end',
         },
         editButton: {
             position: 'absolute',
-            top: 0,
+            bottom: 0,
             right: 0,
-            zIndex: 2,
+            padding: 0,
         },
     });
 
     if (variant === "default") {
-        const starColor = typeof workout !== 'string' && workout.isFavorite ? colors.warning : colors.primary;
-
         return (
             <View style={styles.stripContainer}>
-                <Pressable
-                    style={({ pressed }) => [styles.stripButton, pressed && styles.stripPressed]}
-                    onPress={handleStarPress}
-                    delayPressIn={0}
-                >
-                    <Ionicons name={starIcon} size={24} color={starColor} />
-                </Pressable>
+                <TouchableOpacity style={styles.stripButton} onPress={handleStarPress}>
+                    <CreateBox iconName={starIcon} onPress={handleStarPress} iconColor={typeof workout !== 'string' && workout.isFavorite ? colors.warning : colors.primary} />
+                </TouchableOpacity>
 
-                <Pressable
-                    style={({ pressed }) => [styles.stripCenter, pressed && styles.stripPressed]}
-                    onPress={handlePress}
-                    delayPressIn={0}
-                >
+                <TouchableOpacity style={styles.stripCenter} onPress={handlePress}>
                     <Text style={styles.stripText} numberOfLines={1}>
                         {name}
                     </Text>
-                </Pressable>
+                </TouchableOpacity>
 
-                <Pressable
-                    style={({ pressed }) => [styles.stripButton, styles.stripButtonRight, pressed && styles.stripPressed]}
-                    onPress={handleEditPress}
-                    delayPressIn={0}
-                >
-                    <Ionicons name="create-outline" size={24} color={colors.primary} />
-                </Pressable>
+                <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress}>
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
+                </TouchableOpacity>
             </View>
         );
     }
 
     return (
-        <View style={styles.boxContainer}>
-            <CardBox size={1.1}>
-                <View style={{ flex: 1 }}>
-                    <Pressable
-                        style={({ pressed }) => [styles.mainPress, pressed && styles.boxPressed]}
-                        onPress={handlePress}
-                        delayPressIn={0}
-                    >
-                        <View style={styles.boxHeader}>
-                            <Text style={styles.boxText} numberOfLines={2}>
-                                {name}
-                            </Text>
-                        </View>
-                        <View style={styles.chartArea}>
-                            <WorkoutVolumeChart entries={volumeHistory} compact />
-                        </View>
-                    </Pressable>
-                    <View style={styles.editButton}>
-                        <CreateBox
-                            onPress={handleEditPress}
-                            iconName="create-outline"
-                            variant="borderless"
-                            iconSize={20}
-                        />
-                    </View>
-                </View>
+        <View>
+            <CardBox size={0.6}>
+                <TouchableOpacity style={styles.box} onPress={handlePress}>
+                    <Text style={styles.boxText} numberOfLines={1}>
+                        {name}
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
+                </TouchableOpacity>
             </CardBox>
         </View>
     );

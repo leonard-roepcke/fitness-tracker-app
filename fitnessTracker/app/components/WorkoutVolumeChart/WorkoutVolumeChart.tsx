@@ -6,30 +6,23 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 const CHART_HEIGHT = 120;
-const CHART_HEIGHT_COMPACT = 48;
 const MAX_BARS = 8;
-const MAX_BARS_COMPACT = 5;
 
 type WorkoutVolumeChartProps = {
   entries: VolumeHistoryEntry[];
   highlightVolume?: number;
-  compact?: boolean;
 };
 
 export default function WorkoutVolumeChart({
   entries,
   highlightVolume,
-  compact = false,
 }: WorkoutVolumeChartProps) {
   const colors = useTheme();
   const { text } = useAppContext();
   const { language } = useLanguage();
 
-  const maxBars = compact ? MAX_BARS_COMPACT : MAX_BARS;
-  const chartHeight = compact ? CHART_HEIGHT_COMPACT : CHART_HEIGHT;
-
   const chartEntries = useMemo(() => {
-    const sliced = entries.slice(-maxBars);
+    const sliced = entries.slice(-MAX_BARS);
     if (highlightVolume === undefined) return sliced;
 
     const today = new Date().toISOString().split('T')[0];
@@ -40,8 +33,8 @@ export default function WorkoutVolumeChart({
       );
     }
 
-    return [...sliced, { dateISO: today, volume: highlightVolume }].slice(-maxBars);
-  }, [entries, highlightVolume, maxBars]);
+    return [...sliced, { dateISO: today, volume: highlightVolume }].slice(-MAX_BARS);
+  }, [entries, highlightVolume]);
 
   const maxVolume = useMemo(() => {
     const volumes = chartEntries.map((entry) => entry.volume);
@@ -70,8 +63,8 @@ export default function WorkoutVolumeChart({
       flexDirection: 'row',
       alignItems: 'flex-end',
       justifyContent: 'space-between',
-      gap: compact ? 3 : 6,
-      minHeight: chartHeight + (compact ? 0 : 44),
+      gap: 6,
+      minHeight: CHART_HEIGHT + 44,
     },
     barColumn: {
       flex: 1,
@@ -87,7 +80,7 @@ export default function WorkoutVolumeChart({
     },
     barTrack: {
       width: '100%',
-      height: chartHeight,
+      height: CHART_HEIGHT,
       justifyContent: 'flex-end',
       backgroundColor: colors.overlay,
       borderRadius: 6,
@@ -119,15 +112,13 @@ export default function WorkoutVolumeChart({
 
   return (
     <View style={styles.container}>
-      {!compact && <Text style={styles.title}>{text.workoutVolumeHistory}</Text>}
+      <Text style={styles.title}>{text.workoutVolumeHistory}</Text>
       {chartEntries.length === 0 ? (
-        <Text style={[styles.empty, compact && { paddingVertical: 8, fontSize: 11 }]}>
-          {compact ? '—' : text.workoutVolumeEmpty}
-        </Text>
+        <Text style={styles.empty}>{text.workoutVolumeEmpty}</Text>
       ) : (
         <View style={styles.barsRow}>
           {chartEntries.map((entry, index) => {
-            const barHeight = Math.max(compact ? 3 : 4, (entry.volume / maxVolume) * chartHeight);
+            const barHeight = Math.max(4, (entry.volume / maxVolume) * CHART_HEIGHT);
             const isHighlight =
               highlightVolume !== undefined &&
               entry.dateISO === today &&
@@ -135,7 +126,7 @@ export default function WorkoutVolumeChart({
 
             return (
               <View key={`${entry.dateISO}-${index}`} style={styles.barColumn}>
-                {!compact && <Text style={styles.volumeLabel}>{formatVolume(entry.volume)}</Text>}
+                <Text style={styles.volumeLabel}>{formatVolume(entry.volume)}</Text>
                 <View style={styles.barTrack}>
                   <View
                     style={[
@@ -145,11 +136,9 @@ export default function WorkoutVolumeChart({
                     ]}
                   />
                 </View>
-                {!compact && (
-                  <Text style={styles.dateLabel}>
-                    {formatVolumeDate(entry.dateISO, language)}
-                  </Text>
-                )}
+                <Text style={styles.dateLabel}>
+                  {formatVolumeDate(entry.dateISO, language)}
+                </Text>
               </View>
             );
           })}
