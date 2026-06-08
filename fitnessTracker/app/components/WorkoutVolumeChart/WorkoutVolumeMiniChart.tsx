@@ -7,7 +7,7 @@ const CHART_HEIGHT = 20;
 const MAX_BARS = 7;
 const BAR_WIDTH = 4;
 const BAR_GAP = 2;
-const CORNER_INSET = 6;
+const CORNER_INSET = 12;
 
 type WorkoutVolumeMiniChartProps = {
   entries: VolumeHistoryEntry[];
