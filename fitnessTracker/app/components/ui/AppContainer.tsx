@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Bar from "../Bar";
 import { CreateBox } from '../CreateBox';
 
-function AppContainer({ children, heading = "", isBar = "", backbutton = false }: any) {
+function AppContainer({ children, heading = "", isBar = "", backbutton = false, headerRight = null }: any) {
   const { colors, layouts, nav } = useAppContext();
   const insets = useSafeAreaInsets();
 
@@ -21,10 +21,23 @@ function AppContainer({ children, heading = "", isBar = "", backbutton = false }
       marginBottom: layouts.marginVertical,
       color: colors.text,
     },
+    headerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 12,
+    },
+    headerSide: {
+      width: 80,
+      justifyContent: 'center',
+    },
+    headerSideRight: {
+      alignItems: 'flex-end',
+    },
     header: {
+      flex: 1,
       fontSize: 32,
       fontWeight: "bold",
-      marginTop: 12,
+      lineHeight: 32,
       color: colors.primaryDark,
       textAlign: 'center',
     },
@@ -52,7 +65,13 @@ function AppContainer({ children, heading = "", isBar = "", backbutton = false }
         {heading !== "" && (
           <>
             <Text style={styles.title}></Text>
-            <Text style={styles.header}>{heading}</Text>
+            <View style={styles.headerRow}>
+              <View style={styles.headerSide} />
+              <Text style={styles.header}>{heading}</Text>
+              <View style={[styles.headerSide, styles.headerSideRight]}>
+                {headerRight}
+              </View>
+            </View>
             <View style={styles.headerUnderline} />
           </>
         )}

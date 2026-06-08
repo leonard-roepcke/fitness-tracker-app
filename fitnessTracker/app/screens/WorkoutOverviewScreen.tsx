@@ -9,7 +9,6 @@ import { Workout } from "../types/workout";
 import { useAppContext } from '../hooks/useAppContext';
 import AppContainer from '../components/ui/AppContainer';
 import { StreakFlame } from '../components/Streak';
-import { IS_IOS } from 'react-native-reanimated/lib/typescript/common';
 
 
 export default function WorkoutOverview() {
@@ -64,9 +63,7 @@ export default function WorkoutOverview() {
     };
 
     return (
-        <AppContainer heading="Workouts" isBar={true}>
-                <StreakFlame/>
-
+        <AppContainer heading="Workouts" isBar={true} headerRight={<StreakFlame />}>
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <Text style={styles.subtitle}></Text>
                     {workouts

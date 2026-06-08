@@ -10,7 +10,7 @@ type StreakFlameProps = {
 };
 
 export const StreakFlame: React.FC<StreakFlameProps> = ({
-  size = 38,
+  size = 30,
 }) => {
   const { getDailyStreak, getWeeklyStreak } = useTracker();
   const { colors } = useAppContext();
@@ -34,14 +34,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    margin: 8,
-    position: "absolute",
-    top: 42,
-    right: 10
   },
   streakText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginRight: 8,
+    marginRight: 4,
+    lineHeight: 32,
   },
 });

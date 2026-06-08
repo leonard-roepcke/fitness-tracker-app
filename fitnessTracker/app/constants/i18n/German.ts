@@ -98,7 +98,7 @@ export const German = {
   restTimerMinutes: "Min",
   skipTimer: "Überspringen",
   trackWeight: "Gewicht",
-  trackReps: "Wiederholungen",
+  trackReps: "Wdh.",
   nextSet: "Nächster Satz",
   viewSection:"Darstellung",
   trackerSection:"Tracker",
