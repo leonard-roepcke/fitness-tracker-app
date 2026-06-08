@@ -9,10 +9,11 @@ type GradientButtonProps = {
     title: string;
     onPress: () => void;
     small?: boolean;
+    compact?: boolean;
     style?: StyleProp<ViewStyle>;
 };
 
-export default function GradientButton({ title, onPress, small = false, style }: GradientButtonProps) {
+export default function GradientButton({ title, onPress, small = false, compact = false, style }: GradientButtonProps) {
     const colors = useTheme();
     const layouts = Layouts;
 
@@ -23,8 +24,8 @@ export default function GradientButton({ title, onPress, small = false, style }:
             ...cardShadow(colors),
         },
         inner: {
-            paddingVertical: 12,
-            paddingHorizontal: 24,
+            paddingVertical: compact ? 10 : 12,
+            paddingHorizontal: compact ? 8 : 24,
             alignItems: 'center',
             justifyContent: 'center',
         },
@@ -36,7 +37,7 @@ export default function GradientButton({ title, onPress, small = false, style }:
         },
         text: {
             color: '#FFFFFF',
-            fontSize: small ? 16 : 14,
+            fontSize: small ? 16 : compact ? 13 : 14,
             fontWeight: '600',
         },
     });
