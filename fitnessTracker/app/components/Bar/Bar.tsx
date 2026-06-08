@@ -51,7 +51,6 @@ export const Bar = () => {
             <TouchableOpacity
                 onPress={() => navigation.navigate("WorkoutOverview")}
                 style={[styles.tab, current === "WorkoutOverview" && styles.tabActive]}
-                activeOpacity={1}
             >
                 <FontAwesome5
                     name="dumbbell"
@@ -63,7 +62,6 @@ export const Bar = () => {
             <TouchableOpacity
                 onPress={() => navigation.navigate("Health")}
                 style={[styles.tab, current === "Health" && styles.tabActive]}
-                activeOpacity={1}
             >
                 <Ionicons
                     name="scale"
@@ -75,7 +73,6 @@ export const Bar = () => {
             <TouchableOpacity
                 onPress={() => navigation.navigate("Settings")}
                 style={[styles.tab, current === "Settings" && styles.tabActive]}
-                activeOpacity={1}
             >
                 <Ionicons
                     name="settings"

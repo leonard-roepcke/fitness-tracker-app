@@ -85,7 +85,6 @@ export default function CStats() {
               <TouchableOpacity
                 key={btn}
                 style={[styles.numButton, { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 }]}
-                activeOpacity={1}
                 onPress={() => {
                   if (btn === '←') handleBackspace();
                   else if (btn === ',') handleCommaPress();
@@ -117,7 +116,6 @@ export default function CStats() {
           <GradientButton title="Speichern" onPress={handleAddCalories} style={{ flex: 1 }} />
           <TouchableOpacity
             style={[styles.cancelButton, { borderColor: colors.border, backgroundColor: colors.surface }]}
-            activeOpacity={1}
             onPress={() => { setShowModal(false); setNewCalories(''); }}
           >
             <Text style={[styles.buttonText, { color: colors.text }]}>Abbrechen</Text>

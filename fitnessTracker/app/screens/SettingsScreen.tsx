@@ -180,10 +180,10 @@ export default function SettingsScreen() {
       </ScrollView>
 
       <CustomModal visible={languageModalVisible} onClose={() => setLanguageModalVisible(false)}>
-        <TouchableOpacity style={styles.paletteOption} activeOpacity={1} onPress={() => { setLanguage("german"); setLanguageModalVisible(false); }}>
+        <TouchableOpacity style={styles.paletteOption} onPress={() => { setLanguage("german"); setLanguageModalVisible(false); }}>
           <Text style={styles.paletteLabel}>Deutsch</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.paletteOption} activeOpacity={1} onPress={() => { setLanguage("english"); setLanguageModalVisible(false); }}>
+        <TouchableOpacity style={styles.paletteOption} onPress={() => { setLanguage("english"); setLanguageModalVisible(false); }}>
           <Text style={styles.paletteLabel}>English</Text>
         </TouchableOpacity>
       </CustomModal>
@@ -230,7 +230,6 @@ export default function SettingsScreen() {
         <Text style={styles.modalTitle}>{text.dailyStreakModal}</Text>
         <TouchableOpacity
           style={[styles.paletteOption, !isDailyStreakEnabled && styles.paletteOptionActive]}
-          activeOpacity={1}
           onPress={() => {
             setDailyStreakEnabled(false);
             setStreakModalVisible(false);
@@ -243,7 +242,6 @@ export default function SettingsScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.paletteOption, isDailyStreakEnabled && styles.paletteOptionActive]}
-          activeOpacity={1}
           onPress={() => {
             setDailyStreakEnabled(true);
             setStreakModalVisible(false);
@@ -265,7 +263,6 @@ export default function SettingsScreen() {
             <TouchableOpacity
               key={option.id}
               style={[styles.paletteOption, isActive && styles.paletteOptionActive]}
-              activeOpacity={1}
               onPress={() => {
                 setColorPalette(option.id);
                 setColorModalVisible(false);

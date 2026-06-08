@@ -15,7 +15,6 @@ import Bar from '../components/Bar';
 import { CreateBox } from '../components/CreateBox';
 import CustomModal from "../components/CustomModal";
 import GradientButton from '../components/ui/GradientButton';
-import { ButtonTextGroup } from '../components/ui/ButtonTextGroup';
 import { NumberWheel } from '../components/NumberWheel';
 import { useAppContext } from '../hooks/useAppContext';
 import { cardShadow } from '../utils/shadows';
@@ -248,30 +247,28 @@ export default function WorkoutEditScreen({ route }: any) {
                 />
               </View>
 
-              <ButtonTextGroup baseFontSize={13} minFontSize={10}>
-                <View style={styles.pickerRow}>
-                  <GradientButton
-                    title={setsLabel}
-                    onPress={() => setSetsModalIndex(exIndex)}
-                    compact
-                    style={{ flex: 1 }}
-                  />
-                  <GradientButton
-                    title={text.trackWeight}
-                    onPress={() => toggleExerciseFlag(exIndex, 'trackWeight')}
-                    compact
-                    active={trackWeight}
-                    style={{ flex: 1 }}
-                  />
-                  <GradientButton
-                    title={text.trackReps}
-                    onPress={() => toggleExerciseFlag(exIndex, 'trackReps')}
-                    compact
-                    active={trackReps}
-                    style={{ flex: 1 }}
-                  />
-                </View>
-              </ButtonTextGroup>
+              <View style={styles.pickerRow}>
+                <GradientButton
+                  title={setsLabel}
+                  onPress={() => setSetsModalIndex(exIndex)}
+                  compact
+                  style={{ flex: 1 }}
+                />
+                <GradientButton
+                  title={text.trackWeight}
+                  onPress={() => toggleExerciseFlag(exIndex, 'trackWeight')}
+                  compact
+                  active={trackWeight}
+                  style={{ flex: 1 }}
+                />
+                <GradientButton
+                  title={text.trackReps}
+                  onPress={() => toggleExerciseFlag(exIndex, 'trackReps')}
+                  compact
+                  active={trackReps}
+                  style={{ flex: 1 }}
+                />
+              </View>
 
               <CustomModal
                 visible={setsModalIndex === exIndex}

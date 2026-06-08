@@ -54,7 +54,7 @@ export const SettingsBox: React.FC<SettingsBoxProps> = ({
   // Wenn navigierbar, in TouchableOpacity wrappen
   if (isNavigable && onPress) {
     return (
-      <TouchableOpacity activeOpacity={1} onPress={onPress}>
+      <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
         <CardBox size={0.4}>
           {content}
         </CardBox>

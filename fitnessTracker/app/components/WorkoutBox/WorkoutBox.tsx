@@ -105,17 +105,17 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     if (variant === "default") {
         return (
             <View style={styles.stripContainer}>
-                <TouchableOpacity style={styles.stripButton} onPress={handleStarPress} activeOpacity={1}>
+                <TouchableOpacity style={styles.stripButton} onPress={handleStarPress}>
                     <CreateBox iconName={starIcon} onPress={handleStarPress} iconColor={typeof workout !== 'string' && workout.isFavorite ? colors.warning : colors.primary} />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.stripCenter} onPress={handlePress} activeOpacity={1}>
+                <TouchableOpacity style={styles.stripCenter} onPress={handlePress}>
                     <Text style={styles.stripText} numberOfLines={1}>
                         {name}
                     </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress} activeOpacity={1}>
+                <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress}>
                     <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
                 </TouchableOpacity>
             </View>
@@ -125,7 +125,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     return (
         <View>
             <CardBox size={0.6}>
-                <TouchableOpacity style={styles.box} onPress={handlePress} activeOpacity={1}>
+                <TouchableOpacity style={styles.box} onPress={handlePress}>
                     <Text style={styles.boxText} numberOfLines={1}>
                         {name}
                     </Text>
@@ -136,7 +136,7 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
                     onPress={() => setShowVolumeStats(true)}
                 />
 
-                <TouchableOpacity style={styles.editButton} onPress={handleEditPress} activeOpacity={1}>
+                <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
                     <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
                 </TouchableOpacity>
             </CardBox>

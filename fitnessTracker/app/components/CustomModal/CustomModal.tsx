@@ -172,7 +172,7 @@ export default function CustomModal({
                 <TouchableOpacity
                   onPress={closeModal}
                   style={styles.closeBtn}
-                  activeOpacity={1}
+                  activeOpacity={0.8}
                 >
                   <GradientSurface>
                     <View style={styles.closeBtnInner}>

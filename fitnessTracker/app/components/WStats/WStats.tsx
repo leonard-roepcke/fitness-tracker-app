@@ -80,7 +80,6 @@ export default function WStats() {
               <TouchableOpacity
                 key={btn}
                 style={[styles.numButton, { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 }]}
-                activeOpacity={1}
                 onPress={() => {
                   if (btn === '←') handleBackspace();
                   else if (btn === ',') handleCommaPress();
@@ -112,7 +111,6 @@ export default function WStats() {
           <GradientButton title="Speichern" onPress={handleAddWeight} style={{ flex: 1 }} />
           <TouchableOpacity
             style={[styles.cancelButton, { borderColor: colors.border, backgroundColor: colors.surface }]}
-            activeOpacity={1}
             onPress={() => { setShowModal(false); setNewWeight(''); }}
           >
             <Text style={[styles.buttonText, { color: colors.text }]}>Abbrechen</Text>

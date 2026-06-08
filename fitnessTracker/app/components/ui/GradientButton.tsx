@@ -1,9 +1,8 @@
 import { cardShadow } from "@/app/utils/shadows";
 import Layouts from "@/app/constants/Layouts";
 import React from "react";
-import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
-import ButtonText from "./ButtonText";
 import GradientSurface from "./GradientSurface";
 
 type GradientButtonProps = {
@@ -25,8 +24,6 @@ export default function GradientButton({
 }: GradientButtonProps) {
     const colors = useTheme();
     const layouts = Layouts;
-    const baseFontSize = small ? 16 : compact ? 13 : 14;
-    const minFontSize = small ? 12 : compact ? 10 : 11;
 
     const styles = StyleSheet.create({
         button: {
@@ -35,7 +32,6 @@ export default function GradientButton({
             ...cardShadow(colors),
         },
         inner: {
-            width: '100%',
             paddingVertical: compact ? 10 : 12,
             paddingHorizontal: compact ? 8 : 24,
             alignItems: 'center',
@@ -49,8 +45,8 @@ export default function GradientButton({
         },
         text: {
             color: active ? '#FFFFFF' : colors.textSecondary,
+            fontSize: small ? 16 : compact ? 13 : 14,
             fontWeight: '600',
-            textAlign: 'center',
         },
     });
 
@@ -58,17 +54,11 @@ export default function GradientButton({
         <TouchableOpacity
             style={[styles.button, style, !active && { opacity: 0.75 }]}
             onPress={onPress}
-            activeOpacity={1}
+            activeOpacity={0.85}
         >
             <GradientSurface variant={active ? 'primary' : 'surface'}>
                 <View style={small ? styles.innerSmall : styles.inner}>
-                    <ButtonText
-                        baseFontSize={baseFontSize}
-                        minFontSize={minFontSize}
-                        style={styles.text}
-                    >
-                        {title}
-                    </ButtonText>
+                    <Text style={styles.text}>{title}</Text>
                 </View>
             </GradientSurface>
         </TouchableOpacity>

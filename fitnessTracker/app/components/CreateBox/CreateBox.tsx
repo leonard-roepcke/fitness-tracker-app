@@ -1,10 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Layout from '../../constants/Layouts';
 import { cardShadow } from '../../utils/shadows';
 import { useTheme } from "../../hooks/useTheme";
-import ButtonText from '../ui/ButtonText';
 import GradientSurface from '../ui/GradientSurface';
 
 type CreateBoxProps = {
@@ -68,7 +67,6 @@ export const CreateBox = ({
             borderRadius: layout.borderRadius,
         },
         inner: {
-            width: '100%',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
@@ -90,20 +88,17 @@ export const CreateBox = ({
             borderColor: colors.border,
             borderRadius: layout.borderRadius,
         },
-        textWrap: {
-            flexShrink: 1,
-            minWidth: 0,
-            marginLeft: 8,
-        },
         textPrimary: {
             color: '#FFFFFF',
+            fontSize: 16,
             fontWeight: '600',
-            textAlign: 'center',
+            marginLeft: 8,
         },
         textDefault: {
             color: colors.text,
+            fontSize: 16,
             fontWeight: '600',
-            textAlign: 'center',
+            marginLeft: 8,
         },
     });
 
@@ -119,22 +114,16 @@ export const CreateBox = ({
         ]}>
             <Ionicons name={iconName} size={iconSize} color={resolvedIconColor} />
             {text && (
-                <View style={styles.textWrap}>
-                    <ButtonText
-                        baseFontSize={16}
-                        minFontSize={12}
-                        style={isLargeButton ? styles.textPrimary : styles.textDefault}
-                    >
-                        {text}
-                    </ButtonText>
-                </View>
+                <Text style={isLargeButton ? styles.textPrimary : styles.textDefault}>
+                    {text}
+                </Text>
             )}
         </View>
     );
 
     if (isBorderless) {
         return (
-            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={1}>
+            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
                 {content}
             </TouchableOpacity>
         );
@@ -142,7 +131,7 @@ export const CreateBox = ({
 
     if (isLargeButton) {
         return (
-            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={1}>
+            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.85}>
                 <GradientSurface
                     style={styles.gradientFill}
                     variant={isAccent ? 'primary' : 'surface'}
@@ -154,7 +143,7 @@ export const CreateBox = ({
     }
 
     return (
-        <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={1}>
+        <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
             {content}
         </TouchableOpacity>
     );

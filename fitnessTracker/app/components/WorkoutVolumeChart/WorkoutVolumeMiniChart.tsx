@@ -57,7 +57,7 @@ export default function WorkoutVolumeMiniChart({
   });
 
   return (
-    <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={1}>
+    <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
       <View style={styles.barsRow}>
         {chartEntries.map((entry) => {
           const barHeight = Math.max(2, (entry.volume / maxVolume) * CHART_HEIGHT);
