@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const CHART_HEIGHT = 20;
-const MAX_BARS = 7;
+const MAX_BARS = 14;
 const BAR_WIDTH = 4;
 const BAR_GAP = 2;
 const CORNER_INSET = 12;

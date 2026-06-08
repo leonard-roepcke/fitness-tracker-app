@@ -26,7 +26,7 @@ export const calcTotalVolume = (workout: Workout) => {
 
 export const getWorkoutVolumeHistory = (
   matches: WorkoutLogMatch[],
-  maxBars = 8
+  maxBars = 14
 ): VolumeHistoryEntry[] => {
   return sortWorkoutLogMatches(matches)
     .slice(-maxBars)

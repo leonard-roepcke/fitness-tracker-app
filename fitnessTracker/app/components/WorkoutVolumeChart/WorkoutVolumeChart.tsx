@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 const CHART_HEIGHT = 120;
-const MAX_BARS = 8;
+const MAX_BARS = 14;
 
 type WorkoutVolumeChartProps = {
   entries: VolumeHistoryEntry[];
