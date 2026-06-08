@@ -1,18 +1,24 @@
 import Layouts from "@/app/constants/Layouts";
 import { cardShadow } from "@/app/utils/shadows";
+import { useTracker } from '@/context/TrackerContext';
 import { useWorkouts } from '@/context/WorkoutContext';
 import { useNavigation } from '@react-navigation/native';
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import { Workout } from '../../types/workout';
+import { getWorkoutVolumeHistory } from '../../utils/workoutVolume';
 import { CreateBox } from '../CreateBox';
+import CustomModal from '../CustomModal';
 import CardBox from "../CardBox";
+import { WorkoutVolumeChart } from '../WorkoutVolumeChart';
 
 const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
     const colors = useTheme();
     const navigation: any = useNavigation();
     const layouts = Layouts;
+    const { showWorkoutsById, workoutLogs } = useTracker();
+    const [showVolumeStats, setShowVolumeStats] = useState(false);
 
     const isString = typeof workout === "string";
     const name = isString ? workout : workout.name;
@@ -30,6 +36,11 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     const handleStarPress = () => {
         if (id != null) toggleFavorite(id);
     };
+
+    const volumeHistory = useMemo(() => {
+        if (id == null) return [];
+        return getWorkoutVolumeHistory(showWorkoutsById(id));
+    }, [id, workoutLogs]);
 
     const starIcon = typeof workout === "string"
         ? "star-outline"
@@ -89,6 +100,12 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             right: 0,
             padding: 0,
         },
+        statsButton: {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            padding: 0,
+        },
     });
 
     if (variant === "default") {
@@ -120,10 +137,23 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
                     </Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity style={styles.statsButton} onPress={() => setShowVolumeStats(true)}>
+                    <CreateBox
+                        iconName="stats-chart"
+                        onPress={() => setShowVolumeStats(true)}
+                        variant="borderless"
+                        iconSize={22}
+                    />
+                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
                     <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
                 </TouchableOpacity>
             </CardBox>
+
+            <CustomModal visible={showVolumeStats} onClose={() => setShowVolumeStats(false)}>
+                <WorkoutVolumeChart entries={volumeHistory} />
+            </CustomModal>
         </View>
     );
 };
