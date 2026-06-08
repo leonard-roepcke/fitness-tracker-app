@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -27,6 +28,40 @@ export default function WorkoutEditScreen({ route }: any) {
   const { workouts, updateWorkout } = useWorkouts();
   const router = useRouter();
   const [setsModalIndex, setSetsModalIndex] = useState<number | null>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [focusedInputKey, setFocusedInputKey] = useState<string | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const contentRef = useRef<View>(null);
+  const inputRefs = useRef<Record<string, View | null>>({});
+
+  const scrollToInput = (key: string | null) => {
+    const inputRef = key ? inputRefs.current[key] : null;
+    if (!inputRef || !contentRef.current) return;
+
+    inputRef.measureLayout(
+      contentRef.current,
+      (_x, y) => {
+        scrollViewRef.current?.scrollTo({ y: Math.max(0, y - 20), animated: true });
+      },
+      () => {}
+    );
+  };
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+      setTimeout(() => scrollToInput(focusedInputKey), 50);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardHeight(0));
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, [focusedInputKey]);
 
   if (!workouts) return null;
 
@@ -152,11 +187,20 @@ export default function WorkoutEditScreen({ route }: any) {
       keyboardVerticalOffset={0}
     >
       <ScrollView
+        ref={scrollViewRef}
         style={{ flex: 1, backgroundColor: colors.background }}
-        contentContainerStyle={{ padding: 16, paddingBottom: 60, paddingTop: insets.top + 8 }}
+        contentContainerStyle={{
+          padding: 16,
+          paddingBottom: 60 + keyboardHeight,
+          paddingTop: insets.top + 8,
+        }}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+        <View ref={contentRef}>
+        <View
+          ref={(ref) => { inputRefs.current.workoutName = ref; }}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}
+        >
           <CreateBox onPress={back} iconName='arrow-back' variant='borderless' />
           <TextInput
             style={[styles.input, { flex: 1, height: 50 }]}
@@ -164,6 +208,10 @@ export default function WorkoutEditScreen({ route }: any) {
             onChangeText={handleWorkoutNameChange}
             placeholder="Workout Name"
             placeholderTextColor={colors.textSecondary}
+            onFocus={() => {
+              setFocusedInputKey('workoutName');
+              scrollToInput('workoutName');
+            }}
           />
           <CreateBox onPress={del} iconName='trash' variant='borderless' iconColor={colors.danger} />
         </View>
@@ -175,13 +223,21 @@ export default function WorkoutEditScreen({ route }: any) {
 
           return (
             <View key={exIndex} style={styles.exerciseCard}>
-              <View style={styles.exerciseHeader}>
+              <View
+                ref={(ref) => { inputRefs.current[`exercise-${exIndex}`] = ref; }}
+                style={styles.exerciseHeader}
+              >
                 <TextInput
                   style={[styles.input, { flex: 1 }]}
                   value={exercise.name}
                   onChangeText={(value) => handleExerciseChange(exIndex, value)}
                   placeholder="Exercise Name"
                   placeholderTextColor={colors.textSecondary}
+                  onFocus={() => {
+                    const key = `exercise-${exIndex}`;
+                    setFocusedInputKey(key);
+                    scrollToInput(key);
+                  }}
                 />
                 <CreateBox
                   onPress={() => delExercise(exIndex)}
@@ -236,6 +292,7 @@ export default function WorkoutEditScreen({ route }: any) {
 
         <CreateBox onPress={addExercise} iconName='add' text={text.addExercise} variant='accent' />
         <View style={styles.spacer} />
+        </View>
       </ScrollView>
 
       <Bar />
