@@ -2,7 +2,8 @@ import Layouts from "@/app/constants/Layouts";
 import GradientSurface from "@/app/components/ui/GradientSurface";
 import { cardShadow } from "@/app/utils/shadows";
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import ButtonText from '@/app/components/ui/ButtonText';
 import { useTheme } from '../../hooks/useTheme';
 
 interface ButtonProps {
@@ -69,9 +70,9 @@ export const Button: React.FC<ButtonProps> = ({
       width: fullWidth ? '100%' : undefined,
     },
     buttonText: {
-      fontSize: 17,
       fontWeight: '600',
       letterSpacing: -0.4,
+      textAlign: 'center',
     },
     buttonTextPrimary: {
       color: '#FFFFFF',
@@ -100,10 +101,16 @@ export const Button: React.FC<ButtonProps> = ({
     }
   };
 
+  const label = (
+    <ButtonText baseFontSize={17} minFontSize={12} style={getTextStyle()}>
+      {title}
+    </ButtonText>
+  );
+
   if (disabled) {
     return (
       <View style={styles.buttonDisabled}>
-        <Text style={getTextStyle()}>{title}</Text>
+        {label}
       </View>
     );
   }
@@ -115,7 +122,7 @@ export const Button: React.FC<ButtonProps> = ({
         onPress={onPress}
         activeOpacity={1}
       >
-        <Text style={getTextStyle()}>{title}</Text>
+        {label}
       </TouchableOpacity>
     );
   }
@@ -127,7 +134,7 @@ export const Button: React.FC<ButtonProps> = ({
         onPress={onPress}
         activeOpacity={1}
       >
-        <Text style={getTextStyle()}>{title}</Text>
+        {label}
       </TouchableOpacity>
     );
   }
@@ -140,7 +147,7 @@ export const Button: React.FC<ButtonProps> = ({
     >
       <GradientSurface>
         <View style={styles.buttonInner}>
-          <Text style={getTextStyle()}>{title}</Text>
+          {label}
         </View>
       </GradientSurface>
     </TouchableOpacity>

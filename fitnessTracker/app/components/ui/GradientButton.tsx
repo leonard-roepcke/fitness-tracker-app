@@ -1,8 +1,9 @@
 import { cardShadow } from "@/app/utils/shadows";
 import Layouts from "@/app/constants/Layouts";
 import React from "react";
-import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
+import ButtonText from "./ButtonText";
 import GradientSurface from "./GradientSurface";
 
 type GradientButtonProps = {
@@ -24,6 +25,8 @@ export default function GradientButton({
 }: GradientButtonProps) {
     const colors = useTheme();
     const layouts = Layouts;
+    const baseFontSize = small ? 16 : compact ? 13 : 14;
+    const minFontSize = small ? 12 : compact ? 10 : 11;
 
     const styles = StyleSheet.create({
         button: {
@@ -32,6 +35,7 @@ export default function GradientButton({
             ...cardShadow(colors),
         },
         inner: {
+            width: '100%',
             paddingVertical: compact ? 10 : 12,
             paddingHorizontal: compact ? 8 : 24,
             alignItems: 'center',
@@ -45,8 +49,8 @@ export default function GradientButton({
         },
         text: {
             color: active ? '#FFFFFF' : colors.textSecondary,
-            fontSize: small ? 16 : compact ? 13 : 14,
             fontWeight: '600',
+            textAlign: 'center',
         },
     });
 
@@ -58,7 +62,13 @@ export default function GradientButton({
         >
             <GradientSurface variant={active ? 'primary' : 'surface'}>
                 <View style={small ? styles.innerSmall : styles.inner}>
-                    <Text style={styles.text}>{title}</Text>
+                    <ButtonText
+                        baseFontSize={baseFontSize}
+                        minFontSize={minFontSize}
+                        style={styles.text}
+                    >
+                        {title}
+                    </ButtonText>
                 </View>
             </GradientSurface>
         </TouchableOpacity>

@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Layout from '../../constants/Layouts';
 import { cardShadow } from '../../utils/shadows';
 import { useTheme } from "../../hooks/useTheme";
+import ButtonText from '../ui/ButtonText';
 import GradientSurface from '../ui/GradientSurface';
 
 type CreateBoxProps = {
@@ -67,6 +68,7 @@ export const CreateBox = ({
             borderRadius: layout.borderRadius,
         },
         inner: {
+            width: '100%',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
@@ -88,17 +90,20 @@ export const CreateBox = ({
             borderColor: colors.border,
             borderRadius: layout.borderRadius,
         },
+        textWrap: {
+            flexShrink: 1,
+            minWidth: 0,
+            marginLeft: 8,
+        },
         textPrimary: {
             color: '#FFFFFF',
-            fontSize: 16,
             fontWeight: '600',
-            marginLeft: 8,
+            textAlign: 'center',
         },
         textDefault: {
             color: colors.text,
-            fontSize: 16,
             fontWeight: '600',
-            marginLeft: 8,
+            textAlign: 'center',
         },
     });
 
@@ -114,9 +119,15 @@ export const CreateBox = ({
         ]}>
             <Ionicons name={iconName} size={iconSize} color={resolvedIconColor} />
             {text && (
-                <Text style={isLargeButton ? styles.textPrimary : styles.textDefault}>
-                    {text}
-                </Text>
+                <View style={styles.textWrap}>
+                    <ButtonText
+                        baseFontSize={16}
+                        minFontSize={12}
+                        style={isLargeButton ? styles.textPrimary : styles.textDefault}
+                    >
+                        {text}
+                    </ButtonText>
+                </View>
             )}
         </View>
     );
