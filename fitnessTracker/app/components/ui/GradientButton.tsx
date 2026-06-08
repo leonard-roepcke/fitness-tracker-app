@@ -1,7 +1,7 @@
 import { cardShadow } from "@/app/utils/shadows";
 import Layouts from "@/app/constants/Layouts";
 import React from "react";
-import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import GradientSurface from "./GradientSurface";
 
@@ -29,9 +29,18 @@ export default function GradientButton({
         button: {
             borderRadius: layouts.borderRadius,
             overflow: 'hidden',
+            alignSelf: 'stretch',
+            width: '100%',
             ...cardShadow(colors),
         },
+        pressed: {
+            opacity: 0.82,
+        },
+        gradientFill: {
+            width: '100%',
+        },
         inner: {
+            width: '100%',
             paddingVertical: compact ? 10 : 12,
             paddingHorizontal: compact ? 8 : 24,
             alignItems: 'center',
@@ -51,16 +60,21 @@ export default function GradientButton({
     });
 
     return (
-        <TouchableOpacity
-            style={[styles.button, style, !active && { opacity: 0.75 }]}
+        <Pressable
+            style={({ pressed }) => [
+                styles.button,
+                style,
+                !active && { opacity: 0.75 },
+                pressed && active && styles.pressed,
+            ]}
             onPress={onPress}
-            activeOpacity={0.85}
+            delayPressIn={0}
         >
-            <GradientSurface variant={active ? 'primary' : 'surface'}>
+            <GradientSurface variant={active ? 'primary' : 'surface'} style={styles.gradientFill}>
                 <View style={small ? styles.innerSmall : styles.inner}>
                     <Text style={styles.text}>{title}</Text>
                 </View>
             </GradientSurface>
-        </TouchableOpacity>
+        </Pressable>
     );
 }

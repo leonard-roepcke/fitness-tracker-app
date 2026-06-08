@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Layout from '../../constants/Layouts';
 import { cardShadow } from '../../utils/shadows';
 import { useTheme } from "../../hooks/useTheme";
@@ -56,17 +56,25 @@ export const CreateBox = ({
     const isLargeButton = !!text && !isBorderless;
 
     const styles = StyleSheet.create({
-        touchable: {
+        pressable: {
             marginVertical: isBorderless ? 0 : layout.marginVertical,
             borderRadius: layout.borderRadius,
             overflow: 'hidden',
             alignSelf: isLargeButton ? 'stretch' : 'auto',
+            width: isLargeButton ? '100%' : undefined,
+            minWidth: isBorderless ? 44 : undefined,
+            minHeight: isBorderless ? 44 : undefined,
             ...(isBorderless ? {} : cardShadow(colors)),
+        },
+        pressed: {
+            opacity: 0.78,
         },
         gradientFill: {
             borderRadius: layout.borderRadius,
+            width: '100%',
         },
         inner: {
+            width: '100%',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
@@ -121,30 +129,31 @@ export const CreateBox = ({
         </View>
     );
 
-    if (isBorderless) {
-        return (
-            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
-                {content}
-            </TouchableOpacity>
-        );
-    }
-
     if (isLargeButton) {
         return (
-            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.85}>
+            <Pressable
+                style={({ pressed }) => [styles.pressable, pressed && styles.pressed]}
+                onPress={onPress}
+                delayPressIn={0}
+            >
                 <GradientSurface
                     style={styles.gradientFill}
                     variant={isAccent ? 'primary' : 'surface'}
                 >
                     {content}
                 </GradientSurface>
-            </TouchableOpacity>
+            </Pressable>
         );
     }
 
     return (
-        <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
+        <Pressable
+            style={({ pressed }) => [styles.pressable, pressed && styles.pressed]}
+            onPress={onPress}
+            delayPressIn={0}
+            hitSlop={isBorderless ? 4 : undefined}
+        >
             {content}
-        </TouchableOpacity>
+        </Pressable>
     );
 };

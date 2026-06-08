@@ -2,7 +2,7 @@ import * as Application from 'expo-application';
 import { ColorPaletteOptions } from '@/app/constants/ColorPalettes';
 import { getAccentColors } from '@/app/constants/ColorPalettes';
 import React, { useContext, useState } from "react";
-import { ScrollView, Text, View, StyleSheet, TouchableOpacity, Switch } from "react-native";
+import { ScrollView, Text, View, StyleSheet, Pressable, Switch } from "react-native";
 import { ThemeContext } from "../../context/ThemeContext";
 import { SettingsBox } from "../components/SettingsBox/SettinsBox";
 import { useAppContext } from '../hooks/useAppContext';
@@ -93,6 +93,12 @@ export default function SettingsScreen() {
       borderColor: colors.border,
       marginVertical: 6,
       backgroundColor: colors.card,
+      width: '100%',
+      alignSelf: 'stretch',
+    },
+    paletteOptionPressed: {
+      opacity: 0.78,
+      backgroundColor: colors.overlay,
     },
     paletteOptionActive: {
       borderColor: colors.primary,
@@ -180,12 +186,20 @@ export default function SettingsScreen() {
       </ScrollView>
 
       <CustomModal visible={languageModalVisible} onClose={() => setLanguageModalVisible(false)}>
-        <TouchableOpacity style={styles.paletteOption} onPress={() => { setLanguage("german"); setLanguageModalVisible(false); }}>
+        <Pressable
+          style={({ pressed }) => [styles.paletteOption, pressed && styles.paletteOptionPressed]}
+          onPress={() => { setLanguage("german"); setLanguageModalVisible(false); }}
+          delayPressIn={0}
+        >
           <Text style={styles.paletteLabel}>Deutsch</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.paletteOption} onPress={() => { setLanguage("english"); setLanguageModalVisible(false); }}>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [styles.paletteOption, pressed && styles.paletteOptionPressed]}
+          onPress={() => { setLanguage("english"); setLanguageModalVisible(false); }}
+          delayPressIn={0}
+        >
           <Text style={styles.paletteLabel}>English</Text>
-        </TouchableOpacity>
+        </Pressable>
       </CustomModal>
 
       <CustomModal visible={restTimerModalVisible} onClose={() => setRestTimerModalVisible(false)}>
@@ -228,30 +242,40 @@ export default function SettingsScreen() {
 
       <CustomModal visible={streakModalVisible} onClose={() => setStreakModalVisible(false)}>
         <Text style={styles.modalTitle}>{text.dailyStreakModal}</Text>
-        <TouchableOpacity
-          style={[styles.paletteOption, !isDailyStreakEnabled && styles.paletteOptionActive]}
+        <Pressable
+          style={({ pressed }) => [
+            styles.paletteOption,
+            !isDailyStreakEnabled && styles.paletteOptionActive,
+            pressed && styles.paletteOptionPressed,
+          ]}
           onPress={() => {
             setDailyStreakEnabled(false);
             setStreakModalVisible(false);
           }}
+          delayPressIn={0}
         >
           <View style={{ flex: 1 }}>
             <Text style={styles.paletteLabel}>{text.dailyStreakWeekly}</Text>
             <Text style={styles.optionSubtitle}>{text.dailyStreakSubWeekly}</Text>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.paletteOption, isDailyStreakEnabled && styles.paletteOptionActive]}
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.paletteOption,
+            isDailyStreakEnabled && styles.paletteOptionActive,
+            pressed && styles.paletteOptionPressed,
+          ]}
           onPress={() => {
             setDailyStreakEnabled(true);
             setStreakModalVisible(false);
           }}
+          delayPressIn={0}
         >
           <View style={{ flex: 1 }}>
             <Text style={styles.paletteLabel}>{text.dailyStreakDaily}</Text>
             <Text style={styles.optionSubtitle}>{text.dailyStreakSubDaily}</Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </CustomModal>
 
       <CustomModal visible={colorModalVisible} onClose={() => setColorModalVisible(false)}>
@@ -260,13 +284,18 @@ export default function SettingsScreen() {
           const accent = getAccentColors(option.id, isDark);
           const isActive = colorPalette === option.id;
           return (
-            <TouchableOpacity
+            <Pressable
               key={option.id}
-              style={[styles.paletteOption, isActive && styles.paletteOptionActive]}
+              style={({ pressed }) => [
+                styles.paletteOption,
+                isActive && styles.paletteOptionActive,
+                pressed && styles.paletteOptionPressed,
+              ]}
               onPress={() => {
                 setColorPalette(option.id);
                 setColorModalVisible(false);
               }}
+              delayPressIn={0}
             >
               <GradientSurface
                 style={styles.palettePreview}
@@ -275,7 +304,7 @@ export default function SettingsScreen() {
               <Text style={styles.paletteLabel}>
                 {language === 'german' ? option.labelDe : option.labelEn}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           );
         })}
       </CustomModal>

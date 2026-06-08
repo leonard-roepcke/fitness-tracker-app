@@ -1,7 +1,7 @@
 // components/SettingsBox.tsx
 import { useTheme } from '@/app/hooks/useTheme';
 import React from 'react';
-import { View, Text, Switch, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Switch, StyleSheet, Pressable } from 'react-native';
 import CardBox from '../CardBox';
 
 interface SettingsBoxProps {
@@ -51,14 +51,17 @@ export const SettingsBox: React.FC<SettingsBoxProps> = ({
     </View>
   );
 
-  // Wenn navigierbar, in TouchableOpacity wrappen
   if (isNavigable && onPress) {
     return (
-      <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
+      <Pressable
+        onPress={onPress}
+        delayPressIn={0}
+        style={({ pressed }) => [{ width: '100%' }, pressed && { opacity: 0.78 }]}
+      >
         <CardBox size={0.4}>
           {content}
         </CardBox>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 

@@ -4,7 +4,7 @@ import { useTheme } from "@/app/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 export const Bar = () => {
     const colors = useTheme();
@@ -41,6 +41,10 @@ export const Bar = () => {
         tabActive: {
             backgroundColor: colors.overlay,
         },
+        tabPressed: {
+            opacity: 0.75,
+            backgroundColor: colors.overlay,
+        },
     });
 
     const iconColor = (screen: string) =>
@@ -48,38 +52,53 @@ export const Bar = () => {
 
     return (
         <View style={styles.bar}>
-            <TouchableOpacity
+            <Pressable
                 onPress={() => navigation.navigate("WorkoutOverview")}
-                style={[styles.tab, current === "WorkoutOverview" && styles.tabActive]}
+                delayPressIn={0}
+                style={({ pressed }) => [
+                    styles.tab,
+                    current === "WorkoutOverview" && styles.tabActive,
+                    pressed && styles.tabPressed,
+                ]}
             >
                 <FontAwesome5
                     name="dumbbell"
                     size={current === "WorkoutOverview" ? activeSize : inactiveSize}
                     color={iconColor("WorkoutOverview")}
                 />
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
                 onPress={() => navigation.navigate("Health")}
-                style={[styles.tab, current === "Health" && styles.tabActive]}
+                delayPressIn={0}
+                style={({ pressed }) => [
+                    styles.tab,
+                    current === "Health" && styles.tabActive,
+                    pressed && styles.tabPressed,
+                ]}
             >
                 <Ionicons
                     name="scale"
                     size={current === "Health" ? activeSize : inactiveSize}
                     color={iconColor("Health")}
                 />
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
                 onPress={() => navigation.navigate("Settings")}
-                style={[styles.tab, current === "Settings" && styles.tabActive]}
+                delayPressIn={0}
+                style={({ pressed }) => [
+                    styles.tab,
+                    current === "Settings" && styles.tabActive,
+                    pressed && styles.tabPressed,
+                ]}
             >
                 <Ionicons
                     name="settings"
                     size={current === "Settings" ? activeSize : inactiveSize}
                     color={iconColor("Settings")}
                 />
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 };

@@ -1,8 +1,8 @@
 import Layouts from "@/app/constants/Layouts";
 import GradientSurface from "@/app/components/ui/GradientSurface";
 import { cardShadow } from "@/app/utils/shadows";
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
 interface ButtonProps {
@@ -21,7 +21,6 @@ export const Button: React.FC<ButtonProps> = ({
   fullWidth = false
 }) => {
   const colors = useTheme();
-  const [pressed, setPressed] = useState(false);
   const layouts = Layouts;
 
   const styles = StyleSheet.create({
@@ -115,45 +114,39 @@ export const Button: React.FC<ButtonProps> = ({
 
   if (variant === 'secondary') {
     return (
-      <TouchableOpacity
-        style={[styles.buttonSecondary, pressed && styles.buttonPressed]}
+      <Pressable
+        style={({ pressed }) => [styles.buttonSecondary, pressed && styles.buttonPressed]}
         onPress={onPress}
-        onPressIn={() => setPressed(true)}
-        onPressOut={() => setPressed(false)}
-        activeOpacity={0.8}
+        delayPressIn={0}
       >
         <Text style={getTextStyle()}>{title}</Text>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 
   if (variant === 'destructive') {
     return (
-      <TouchableOpacity
-        style={[styles.buttonDestructive, pressed && styles.buttonPressed]}
+      <Pressable
+        style={({ pressed }) => [styles.buttonDestructive, pressed && styles.buttonPressed]}
         onPress={onPress}
-        onPressIn={() => setPressed(true)}
-        onPressOut={() => setPressed(false)}
-        activeOpacity={0.8}
+        delayPressIn={0}
       >
         <Text style={getTextStyle()}>{title}</Text>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 
   return (
-    <TouchableOpacity
-      style={[styles.button, cardShadow(colors), pressed && styles.buttonPressed]}
+    <Pressable
+      style={({ pressed }) => [styles.button, cardShadow(colors), pressed && styles.buttonPressed]}
       onPress={onPress}
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}
-      activeOpacity={0.9}
+      delayPressIn={0}
     >
       <GradientSurface>
         <View style={styles.buttonInner}>
           <Text style={getTextStyle()}>{title}</Text>
         </View>
       </GradientSurface>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
