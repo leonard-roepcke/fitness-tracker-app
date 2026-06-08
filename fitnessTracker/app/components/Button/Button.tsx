@@ -1,7 +1,8 @@
-// components/ui/Button.tsx
 import Layouts from "@/app/constants/Layouts";
+import GradientSurface from "@/app/components/ui/GradientSurface";
+import { cardShadow } from "@/app/utils/shadows";
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
 interface ButtonProps {
@@ -25,73 +26,75 @@ export const Button: React.FC<ButtonProps> = ({
 
   const styles = StyleSheet.create({
     button: {
-      paddingVertical: 12,
+      borderRadius: layouts.borderRadius,
+      minWidth: 200,
+      alignItems: 'center',
+      overflow: 'hidden',
+      width: fullWidth ? '100%' : undefined,
+    },
+    buttonInner: {
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+      width: '100%',
+    },
+    buttonSecondary: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingVertical: 14,
       paddingHorizontal: 24,
       borderRadius: layouts.borderRadius,
       minWidth: 200,
       alignItems: 'center',
-      shadowColor: colors.text,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
       width: fullWidth ? '100%' : undefined,
-    },
-    buttonPrimary: {
-      backgroundColor: colors.card,
-    },
-    buttonSecondary: {
-      backgroundColor: colors.card,
-      borderWidth: 1,
-      borderColor: colors.card,
+      ...cardShadow(colors),
     },
     buttonDestructive: {
       backgroundColor: colors.danger,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      borderRadius: layouts.borderRadius,
+      minWidth: 200,
+      alignItems: 'center',
+      width: fullWidth ? '100%' : undefined,
+      ...cardShadow(colors),
     },
     buttonDisabled: {
       backgroundColor: colors.border,
-      shadowOpacity: 0,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      borderRadius: layouts.borderRadius,
+      minWidth: 200,
+      alignItems: 'center',
+      width: fullWidth ? '100%' : undefined,
     },
     buttonPressed: {
-      opacity: 0.7,
+      opacity: 0.85,
       transform: [{ scale: 0.98 }],
     },
     buttonText: {
       fontSize: 17,
       fontWeight: '600',
       letterSpacing: -0.4,
-      color: colors.text,
     },
     buttonTextPrimary: {
-      color: colors.text, 
+      color: '#FFFFFF',
     },
     buttonTextSecondary: {
-      color: colors.primary,
+      color: colors.primaryDark,
     },
     buttonTextDestructive: {
-      color: '#FFFFFF', // Immer weiß auf destructive
+      color: '#FFFFFF',
     },
     buttonTextDisabled: {
       color: colors.textSecondary,
     },
   });
 
-  const getButtonStyle = () => {
-    if (disabled) return [styles.button, styles.buttonDisabled];
-    
-    switch (variant) {
-      case 'secondary':
-        return [styles.button, styles.buttonSecondary];
-      case 'destructive':
-        return [styles.button, styles.buttonDestructive];
-      default:
-        return [styles.button, styles.buttonPrimary];
-    }
-  };
-
   const getTextStyle = () => {
     if (disabled) return [styles.buttonText, styles.buttonTextDisabled];
-    
+
     switch (variant) {
       case 'secondary':
         return [styles.buttonText, styles.buttonTextSecondary];
@@ -102,19 +105,55 @@ export const Button: React.FC<ButtonProps> = ({
     }
   };
 
+  if (disabled) {
+    return (
+      <View style={styles.buttonDisabled}>
+        <Text style={getTextStyle()}>{title}</Text>
+      </View>
+    );
+  }
+
+  if (variant === 'secondary') {
+    return (
+      <TouchableOpacity
+        style={[styles.buttonSecondary, pressed && styles.buttonPressed]}
+        onPress={onPress}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
+        activeOpacity={0.8}
+      >
+        <Text style={getTextStyle()}>{title}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  if (variant === 'destructive') {
+    return (
+      <TouchableOpacity
+        style={[styles.buttonDestructive, pressed && styles.buttonPressed]}
+        onPress={onPress}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
+        activeOpacity={0.8}
+      >
+        <Text style={getTextStyle()}>{title}</Text>
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <TouchableOpacity
-      style={[
-        ...getButtonStyle(),
-        pressed && styles.buttonPressed
-      ]}
+      style={[styles.button, cardShadow(colors), pressed && styles.buttonPressed]}
       onPress={onPress}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
-      activeOpacity={0.8}
-      disabled={disabled}
+      activeOpacity={0.9}
     >
-      <Text style={getTextStyle()}>{title}</Text>
+      <GradientSurface>
+        <View style={styles.buttonInner}>
+          <Text style={getTextStyle()}>{title}</Text>
+        </View>
+      </GradientSurface>
     </TouchableOpacity>
   );
 };

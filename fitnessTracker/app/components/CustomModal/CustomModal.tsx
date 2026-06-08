@@ -1,4 +1,6 @@
 import Layouts from "@/app/constants/Layouts";
+import GradientSurface from "@/app/components/ui/GradientSurface";
+import { elevatedShadow } from "@/app/utils/shadows";
 import { useTheme } from "@/app/hooks/useTheme";
 import React, { useEffect, useRef } from "react";
 import {
@@ -22,11 +24,11 @@ interface CustomModalProps {
   showCloseButton?: boolean;
 }
 
-export default function CustomModal({ 
-  visible, 
-  onClose, 
-  children, 
-  showCloseButton = true 
+export default function CustomModal({
+  visible,
+  onClose,
+  children,
+  showCloseButton = true
 }: CustomModalProps) {
   const colors = useTheme();
   const layouts = Layouts;
@@ -82,7 +84,7 @@ export default function CustomModal({
   const styles = StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      backgroundColor: "rgba(0, 20, 50, 0.45)",
       justifyContent: "flex-end",
     },
     backdrop: {
@@ -90,17 +92,13 @@ export default function CustomModal({
     },
     container: {
       backgroundColor: colors.card,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: -3,
-      },
-      shadowOpacity: 0.15,
-      shadowRadius: 10,
-      elevation: 20,
+      borderTopLeftRadius: layouts.borderRadiusLarge,
+      borderTopRightRadius: layouts.borderRadiusLarge,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderBottomWidth: 0,
       maxHeight: SCREEN_HEIGHT * 0.9,
+      ...elevatedShadow(colors),
     },
     handleContainer: {
       paddingTop: 12,
@@ -110,8 +108,8 @@ export default function CustomModal({
     handle: {
       width: 40,
       height: 5,
-      backgroundColor: colors.text || "#C6C6C8",
-      opacity: 0.3,
+      backgroundColor: colors.primary,
+      opacity: 0.4,
       borderRadius: 3,
     },
     content: {
@@ -122,10 +120,13 @@ export default function CustomModal({
       paddingTop: 20,
     },
     closeBtn: {
+      borderRadius: layouts.borderRadius,
+      overflow: 'hidden',
+      ...elevatedShadow(colors),
+    },
+    closeBtnInner: {
       paddingVertical: 14,
       paddingHorizontal: 20,
-      backgroundColor: colors.primary || "#007AFF",
-      borderRadius: 12,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -146,11 +147,11 @@ export default function CustomModal({
       statusBarTranslucent
     >
       <View style={styles.overlay}>
-        <Pressable 
-          style={styles.backdrop} 
+        <Pressable
+          style={styles.backdrop}
           onPress={closeModal}
         />
-        <Animated.View 
+        <Animated.View
           style={[
             styles.container,
             {
@@ -158,7 +159,7 @@ export default function CustomModal({
             }
           ]}
         >
-          <View 
+          <View
             style={styles.handleContainer}
             {...handlePanResponder.panHandlers}
           >
@@ -168,12 +169,16 @@ export default function CustomModal({
             {children}
             {showCloseButton && (
               <View style={styles.buttonWrapper}>
-                <TouchableOpacity 
-                  onPress={closeModal} 
+                <TouchableOpacity
+                  onPress={closeModal}
                   style={styles.closeBtn}
-                  activeOpacity={0.7}
+                  activeOpacity={0.8}
                 >
-                  <Text style={styles.closeText}>Schließen</Text>
+                  <GradientSurface>
+                    <View style={styles.closeBtnInner}>
+                      <Text style={styles.closeText}>Schließen</Text>
+                    </View>
+                  </GradientSurface>
                 </TouchableOpacity>
               </View>
             )}

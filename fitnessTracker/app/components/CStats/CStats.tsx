@@ -2,6 +2,7 @@ import { useTheme } from '@/app/hooks/useTheme';
 import { useTracker } from '@/context/TrackerContext';
 import CustomModal from '@/app/components/CustomModal';
 import CardBox from '@/app/components/CardBox';
+import GradientButton from '@/app/components/ui/GradientButton';
 import React, { useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle, Polyline } from 'react-native-svg';
@@ -99,7 +100,7 @@ export default function CStats() {
             {row.map((btn) => (
               <TouchableOpacity
                 key={btn}
-                style={[styles.numButton, { backgroundColor: colors.background }]}
+                style={[styles.numButton, { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 }]}
                 onPress={() => {
                   if (btn === '←') handleBackspace();
                   else if (btn === ',') handleCommaPress();
@@ -127,12 +128,7 @@ export default function CStats() {
               Noch keine Einträge
             </Text>
           </View>
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: colors.primary }]}
-            onPress={() => setShowModal(true)}
-          >
-            <Text style={styles.addButtonText}>+ Hinzufügen</Text>
-          </TouchableOpacity>
+          <GradientButton title="+ Hinzufügen" onPress={() => setShowModal(true)} />
         </View>
 
         <CustomModal
@@ -156,12 +152,7 @@ export default function CStats() {
             {renderNumPad()}
 
             <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.saveButton, { backgroundColor: colors.primary }]}
-                onPress={handleAddCalories}
-              >
-                <Text style={styles.buttonText}>Speichern</Text>
-              </TouchableOpacity>
+              <GradientButton title="Speichern" onPress={handleAddCalories} style={{ flex: 1 }} />
               <TouchableOpacity
                 style={[styles.cancelButton, { borderColor: colors.text }]}
                 onPress={() => {
@@ -196,12 +187,7 @@ export default function CStats() {
               </Text>
             </View>
           </View>
-          <TouchableOpacity
-            style={[styles.addButtonSmall, { backgroundColor: colors.primary }]}
-            onPress={() => setShowModal(true)}
-          >
-            <Text style={styles.addButtonText}>+</Text>
-          </TouchableOpacity>
+          <GradientButton title="+" onPress={() => setShowModal(true)} small />
         </View>
 
         {/* Chart */}
@@ -266,14 +252,9 @@ export default function CStats() {
           {renderNumPad()}
 
           <View style={styles.buttonRow}>
+            <GradientButton title="Speichern" onPress={handleAddCalories} style={{ flex: 1 }} />
             <TouchableOpacity
-              style={[styles.saveButton, { backgroundColor: colors.primary }]}
-              onPress={handleAddCalories}
-            >
-              <Text style={styles.buttonText}>Speichern</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.cancelButton, { borderColor: colors.text }]}
+              style={[styles.cancelButton, { borderColor: colors.border, backgroundColor: colors.surface }]}
               onPress={() => {
                 setShowModal(false);
                 setNewCalories('');

@@ -26,7 +26,7 @@ export default function SettingsScreen() {
   const styles = StyleSheet.create({
     scrollContent: { paddingBottom: 40 },
     header: { fontSize: 32, fontWeight: "bold", marginTop: 35, color: colors.text, textAlign: 'center' },
-    sectionTitle: { fontSize: 14, fontWeight: '600', color: colors.text, opacity: 0.6, paddingHorizontal: 20, paddingTop: 20, paddingBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 },
+    sectionTitle: { fontSize: 14, fontWeight: '700', color: colors.primaryDark, paddingHorizontal: 4, paddingTop: 20, paddingBottom: 10, textTransform: 'uppercase', letterSpacing: 0.8 },
     footerText: { textAlign: "center", paddingVertical: 30, color: colors.text, opacity: 0.5, fontSize: 14 },
     title: { fontSize: 10, fontWeight: '600', marginBottom: layouts.marginVertical, color: colors.text, justifyContent: 'center', alignItems: 'center' },
     spacing: { height: layouts.marginVertical*12 },

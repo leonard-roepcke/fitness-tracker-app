@@ -1,4 +1,5 @@
 import Layouts from "@/app/constants/Layouts";
+import { cardShadow } from "@/app/utils/shadows";
 import { useWorkouts } from '@/context/WorkoutContext';
 import { useNavigation } from '@react-navigation/native';
 import React from "react";
@@ -18,7 +19,6 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     const id = isString ? null : workout.id;
     const { toggleFavorite } = useWorkouts();
 
-
     const handlePress = () => {
         if (id != null) navigation.navigate('Workout', { workoutId: id });
     };
@@ -28,14 +28,14 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     };
 
     const handleStarPress = () => {
-        if (id != null) toggleFavorite(id)
+        if (id != null) toggleFavorite(id);
     };
 
-    const starIcon = typeof workout === "string" 
-    ? "star-outline" 
-    : workout.isFavorite 
-        ? "star"     
-        : "star-outline"; 
+    const starIcon = typeof workout === "string"
+        ? "star-outline"
+        : workout.isFavorite
+            ? "star"
+            : "star-outline";
 
     const styles = StyleSheet.create({
         stripContainer: {
@@ -43,22 +43,26 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             flexDirection: "row",
             alignItems: "center",
             backgroundColor: colors.card,
-            borderRadius: layouts.borderRadius,
+            borderRadius: layouts.borderRadiusLarge,
             marginVertical: layouts.marginVertical,
             overflow: "hidden",
-            height: 70
+            height: 70,
+            borderWidth: 1,
+            borderColor: colors.border,
+            ...cardShadow(colors),
         },
         stripButton: {
             width: 60,
             height: "100%",
             justifyContent: "center",
             alignItems: "center",
-            borderRightWidth: 0.5,
-            borderColor: colors.card
+            backgroundColor: colors.surface,
+            borderRightWidth: 1,
+            borderColor: colors.border,
         },
         stripButtonRight: {
             borderRightWidth: 0,
-            borderLeftWidth: 0.5,
+            borderLeftWidth: 1,
         },
         stripCenter: {
             flex: 1,
@@ -68,79 +72,60 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
         stripText: {
             color: colors.text,
             fontSize: 16,
-            fontWeight: "500",
-        },
-
-        // BOX VARIANT
-        boxContainer: {
-            width: "100%",
-            marginVertical: 8,
+            fontWeight: "600",
         },
         box: {
-            backgroundColor: colors.card,
-            borderRadius: layouts.borderRadius,
             flex: 1,
             justifyContent: "flex-start",
         },
         boxText: {
-            color: colors.text,
+            color: colors.primaryDark,
             fontSize: 18,
-            fontWeight: "500",
+            fontWeight: "600",
         },
         editButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    padding: 0}
-
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            padding: 0,
+        },
     });
 
-    // VARIANTE: default → Strip
     if (variant === "default") {
         return (
             <View style={styles.stripContainer}>
-
-                {/* STAR LEFT */}
                 <TouchableOpacity style={styles.stripButton} onPress={handleStarPress}>
-                    <CreateBox iconName={starIcon} onPress={handleStarPress}/>
+                    <CreateBox iconName={starIcon} onPress={handleStarPress} iconColor={typeof workout !== 'string' && workout.isFavorite ? colors.warning : colors.primary} />
                 </TouchableOpacity>
 
-                {/* CENTER BOX */}
                 <TouchableOpacity style={styles.stripCenter} onPress={handlePress}>
                     <Text style={styles.stripText} numberOfLines={1}>
                         {name}
                     </Text>
                 </TouchableOpacity>
 
-                {/* EDIT RIGHT */}
                 <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress}>
-                    <CreateBox iconName="create-outline" onPress={handleEditPress}/>
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} />
                 </TouchableOpacity>
-
             </View>
         );
     }
-// VARIANTE: box → klassische Box
-return (
-    <View>
-        <CardBox size={0.6}>
-            {/* Haupt-Box */}
-            <TouchableOpacity style={styles.box} onPress={handlePress}>
-                <Text style={styles.boxText} numberOfLines={1}>
-                    {name}
-                </Text>
-            </TouchableOpacity>
 
-            {/* Edit Button unten rechts */}
-            <TouchableOpacity 
-                style={styles.editButton}
-                onPress={handleEditPress}
-            >
-                <CreateBox iconName="create-outline" onPress={handleEditPress}/>
-            </TouchableOpacity>
-        </CardBox>
-    </View>
-);
+    return (
+        <View>
+            <CardBox size={0.6}>
+                <TouchableOpacity style={styles.box} onPress={handlePress}>
+                    <Text style={styles.boxText} numberOfLines={1}>
+                        {name}
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} />
+                </TouchableOpacity>
+            </CardBox>
+        </View>
+    );
 };
 
 export default WorkoutBox;

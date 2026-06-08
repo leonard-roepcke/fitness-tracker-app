@@ -16,6 +16,7 @@ import { CreateBox } from '../components/CreateBox';
 import CustomModal from "../components/CustomModal";
 import { NumberWheel } from '../components/NumberWheel';
 import { useAppContext } from '../hooks/useAppContext';
+import { cardShadow } from '../utils/shadows';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function WorkoutEditScreen({ route }: any) {
@@ -52,22 +53,25 @@ export default function WorkoutEditScreen({ route }: any) {
       padding: 16,
     },
     input: {
-      padding: 8,
+      padding: 12,
       borderWidth: 1,
-      borderColor: colors.textSecondary,
+      borderColor: colors.border,
       borderRadius: layouts.borderRadius,
       marginBottom: 12,
-      backgroundColor: colors.card,
+      backgroundColor: colors.surface,
       color: colors.text,
       fontSize: 16,
     },
     exerciseBox: {
       marginBottom: 16,
       padding: 12,
-      borderRadius: layouts.borderRadius,
+      borderRadius: layouts.borderRadiusLarge,
       backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
       flexDirection: 'row',
       alignItems: 'center',
+      ...cardShadow(colors),
     },
     exerciseTitle: {
       fontSize: 16,
@@ -264,7 +268,7 @@ export default function WorkoutEditScreen({ route }: any) {
           </View>
         ))}
 
-        <CreateBox onPress={addWorkout} iconName='add' text='Add workout' />
+        <CreateBox onPress={addWorkout} iconName='add' text='Add workout' variant='accent' />
         <Text style={styles.title} />
         <Text style={styles.title} />
       </ScrollView>

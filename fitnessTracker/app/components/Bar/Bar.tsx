@@ -1,9 +1,10 @@
 import Layouts from "@/app/constants/Layouts";
+import { elevatedShadow } from "@/app/utils/shadows";
 import { useTheme } from "@/app/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 export const Bar = () => {
     const colors = useTheme();
@@ -13,65 +14,72 @@ export const Bar = () => {
     const current = route.name;
     const layouts = Layouts;
 
-    // aktive vs. inaktive Größe
     const activeSize = 24;
-    const inactiveSize = 18;
+    const inactiveSize = 20;
+
+    const styles = StyleSheet.create({
+        bar: {
+            position: "absolute",
+            bottom: 20,
+            left: 0,
+            right: 0,
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            padding: 8,
+            backgroundColor: colors.card,
+            borderRadius: layouts.borderRadiusLarge,
+            marginHorizontal: 32,
+            borderWidth: 1,
+            borderColor: colors.border,
+            ...elevatedShadow(colors),
+        },
+        tab: {
+            padding: 12,
+            borderRadius: layouts.borderRadius,
+        },
+        tabActive: {
+            backgroundColor: colors.overlay,
+        },
+    });
+
+    const iconColor = (screen: string) =>
+        current === screen ? colors.primary : colors.textSecondary;
 
     return (
-        <View
-            style={{
-                position: "absolute",
-                bottom: 20,
-                left: 0,
-                right: 0,
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                padding: 5,
-                backgroundColor: colors.card,
-                borderRadius: layouts.borderRadius,
-                marginHorizontal: 40,
-                shadowColor: colors.text,
-                shadowOpacity: 0.15,
-                shadowRadius: 20,
-                elevation: 5,
-            }}
-        >
+        <View style={styles.bar}>
             <TouchableOpacity
                 onPress={() => navigation.navigate("WorkoutOverview")}
-                style={{ padding: 12 }}
+                style={[styles.tab, current === "WorkoutOverview" && styles.tabActive]}
             >
                 <FontAwesome5
                     name="dumbbell"
                     size={current === "WorkoutOverview" ? activeSize : inactiveSize}
-                    color={colors.text}
+                    color={iconColor("WorkoutOverview")}
                 />
             </TouchableOpacity>
 
-
             <TouchableOpacity
                 onPress={() => navigation.navigate("Health")}
-                style={{ padding: 12 }}
+                style={[styles.tab, current === "Health" && styles.tabActive]}
             >
                 <Ionicons
                     name="scale"
                     size={current === "Health" ? activeSize : inactiveSize}
-                    color={colors.text}
+                    color={iconColor("Health")}
                 />
             </TouchableOpacity>
 
-
             <TouchableOpacity
                 onPress={() => navigation.navigate("Settings")}
-                style={{ padding: 12 }}
+                style={[styles.tab, current === "Settings" && styles.tabActive]}
             >
                 <Ionicons
                     name="settings"
                     size={current === "Settings" ? activeSize : inactiveSize}
-                    color={colors.text}
+                    color={iconColor("Settings")}
                 />
             </TouchableOpacity>
-
         </View>
     );
 };

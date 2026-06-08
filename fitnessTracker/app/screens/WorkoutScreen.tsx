@@ -13,6 +13,7 @@ import { Keyboard,KeyboardAvoidingView, Platform, ScrollView } from 'react-nativ
 import { useRef, useEffect } from 'react';
 import { useAppContext } from "../hooks/useAppContext";
 import AppContainer from "../components/ui/AppContainer";
+import { cardShadow } from "../utils/shadows";
 
 export default function WorkoutScreen({ route, navigation }: any) {
     const { colors, nav, layouts }=useAppContext();
@@ -75,7 +76,15 @@ export default function WorkoutScreen({ route, navigation }: any) {
             textAlign: 'center',
             marginTop: 12,
             marginBottom: 8,
-            color: colors.text
+            color: colors.primaryDark,
+            backgroundColor: colors.surface,
+            height: 50,
+            paddingTop: 10,
+            borderRadius: layouts.borderRadiusLarge,
+            borderWidth: 1,
+            borderColor: colors.border,
+            overflow: 'hidden',
+            ...cardShadow(colors),
         },
         exercise: {
             fontSize: 16,
@@ -83,16 +92,18 @@ export default function WorkoutScreen({ route, navigation }: any) {
             marginBottom: 4,
         },
         textBox: {
-          flex: 1, // TextInput füllt den gesamten Container aus
-          textAlignVertical: "top", // Text beginnt oben
+          flex: 1,
+          textAlignVertical: "top",
           borderWidth: 1,
           borderColor: colors.border,
-          borderRadius: layouts.borderRadius,
-          padding: 10,
+          borderRadius: layouts.borderRadiusLarge,
+          padding: 14,
           fontSize: 16,
           color: colors.text,
+          backgroundColor: colors.surface,
           marginTop: 20,
           marginBottom: 70,
+          ...cardShadow(colors),
         },
     });
 
@@ -192,7 +203,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
             </View>
 
             <Text/>
-            <Text style={[styles.subtitle, {backgroundColor:colors.card, height:50, marginTop:5, paddingTop:8,borderRadius: layouts.borderRadius,}]}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
+            <Text style={[styles.subtitle, { marginTop: 5 }]}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
             <Text style={styles.title}></Text>
             <RepWeightPicker 
                 reps={reps}                    

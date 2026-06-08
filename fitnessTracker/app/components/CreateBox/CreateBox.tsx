@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import Layout from '../../constants/Layouts';
+import { subtleShadow } from '../../utils/shadows';
 import { useTheme } from "../../hooks/useTheme";
 
 type CreateBoxProps = {
@@ -10,8 +11,8 @@ type CreateBoxProps = {
     iconSize?: number;
     iconColor?: string;
     text?: string;
+    variant?: 'default' | 'accent';
 
-    // Neue optionale Style-Overrides
     padding?: number;
     paddingHorizontal?: number;
     paddingVertical?: number;
@@ -27,13 +28,13 @@ type CreateBoxProps = {
 };
 
 export const CreateBox = ({
-    onPress=() => {},
+    onPress = () => {},
     iconName = "add",
     iconSize = 24,
     iconColor,
     text,
+    variant = 'default',
 
-    // neue Props
     padding,
     paddingHorizontal,
     paddingVertical,
@@ -49,13 +50,13 @@ export const CreateBox = ({
     const colors = useTheme();
     const layout = Layout;
 
+    const isAccent = variant === 'accent';
+
     const styles = StyleSheet.create({
         box: {
-            marginVertical: 8,
-            backgroundColor: colors.card,
+            marginVertical: layout.marginVertical,
+            backgroundColor: isAccent ? colors.primary : colors.card,
             borderRadius: layout.borderRadius,
-
-            // Standard-Padding → 16
             padding: padding ?? 16,
             paddingHorizontal,
             paddingVertical,
@@ -63,32 +64,33 @@ export const CreateBox = ({
             paddingRight,
             paddingTop,
             paddingBottom,
-
             borderTopLeftRadius: borderTopLeftRadius ?? layout.borderRadius,
             borderTopRightRadius: borderTopRightRadius ?? layout.borderRadius,
             borderBottomLeftRadius: borderBottomLeftRadius ?? layout.borderRadius,
             borderBottomRightRadius: borderBottomRightRadius ?? layout.borderRadius,
-
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
+            borderWidth: isAccent ? 0 : 1,
+            borderColor: colors.border,
+            ...subtleShadow(colors),
         },
         text: {
-            color: colors.text,
+            color: isAccent ? '#FFFFFF' : colors.text,
             fontSize: 16,
+            fontWeight: '600',
             marginLeft: text ? 8 : 0,
         }
     });
 
     return (
-        <TouchableOpacity style={styles.box} onPress={onPress}>
-            <Ionicons 
+        <TouchableOpacity style={styles.box} onPress={onPress} activeOpacity={0.75}>
+            <Ionicons
                 name={iconName}
                 size={iconSize}
-                color={iconColor ?? colors.text}
+                color={iconColor ?? (isAccent ? '#FFFFFF' : colors.primary)}
             />
             {text && <Text style={styles.text}>{text}</Text>}
         </TouchableOpacity>
     );
 };
-

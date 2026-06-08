@@ -100,7 +100,7 @@ export default function WorkoutOverview() {
                     </View>
                     ))}
 
-                <CreateBox  onPress={addWorkout} iconName='add' text={text.createWorkout}/>
+                <CreateBox onPress={addWorkout} iconName='add' text={text.createWorkout} variant='accent' />
                 <Text style={styles.title}/>
                         <Text style={styles.title}/>
             </ScrollView>

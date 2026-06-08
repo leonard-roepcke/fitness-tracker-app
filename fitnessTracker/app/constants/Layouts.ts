@@ -1,5 +1,7 @@
 const Layouts = {
-    borderRadius: 20,
-    marginVertical: 5,
+    borderRadius: 16,
+    borderRadiusLarge: 20,
+    marginVertical: 8,
+    padding: 16,
 }
 export default Layouts;
