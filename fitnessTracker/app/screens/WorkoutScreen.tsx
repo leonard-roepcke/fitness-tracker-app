@@ -1,25 +1,20 @@
-import { useTracker } from "@/context/TrackerContext";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useSearchParams } from 'expo-router/build/hooks';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Keyboard, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { CreateBox } from '../components/CreateBox';
-import CustomModal from '../components/CustomModal';
 import { RepWeightPicker } from '../components/RepWeightPicker';
 import { RestTimer } from '../components/RestTimer';
-import { WorkoutVolumeChart } from '../components/WorkoutVolumeChart';
 import GradientButton from '../components/ui/GradientButton';
 import AppContainer from "../components/ui/AppContainer";
 import { useAppContext } from "../hooks/useAppContext";
-import { getWorkoutVolumeHistory } from '../utils/workoutVolume';
 import { cardShadow } from "../utils/shadows";
 
 export default function WorkoutScreen({ route, navigation }: any) {
     const { colors, nav, layouts, text } = useAppContext();
     const { workouts, updateWorkout } = useWorkouts();
     const { isRestTimerEnabled, restTimerDuration } = useContext(ThemeContext);
-    const { showWorkoutsById, workoutLogs } = useTracker();
 
     const params = useSearchParams();
     const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
@@ -29,13 +24,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
     const [showRestTimer, setShowRestTimer] = useState(false);
-    const [showVolumeStats, setShowVolumeStats] = useState(false);
     const completingTimerRef = useRef(false);
-
-    const volumeHistory = useMemo(
-        () => getWorkoutVolumeHistory(showWorkoutsById(workoutId)),
-        [workoutLogs, workoutId]
-    );
 
     const [weight, setWeight] = useState<number>(() =>
         workout ? (workout.exercises[i_exercise].last_weight?.[i_set] ?? 0) : 0
@@ -86,36 +75,19 @@ export default function WorkoutScreen({ route, navigation }: any) {
             overflow: 'hidden',
             ...cardShadow(colors),
         },
-        notesWrapper: {
-            marginTop: 20,
-            marginBottom: 70,
-            position: 'relative',
-        },
         textBox: {
-            minHeight: 120,
+            flex: 1,
             textAlignVertical: "top",
             borderWidth: 1,
             borderColor: colors.border,
             borderRadius: layouts.borderRadiusLarge,
             padding: 14,
-            paddingLeft: 48,
-            paddingBottom: 44,
             fontSize: 16,
             color: colors.text,
             backgroundColor: colors.surface,
+            marginTop: 20,
+            marginBottom: 70,
             ...cardShadow(colors),
-        },
-        statsIcon: {
-            position: 'absolute',
-            left: 4,
-            bottom: 4,
-        },
-        modalTitle: {
-            fontSize: 18,
-            fontWeight: '700',
-            color: colors.primaryDark,
-            textAlign: 'center',
-            marginBottom: 12,
         },
     });
 
@@ -242,37 +214,22 @@ export default function WorkoutScreen({ route, navigation }: any) {
             <Text style={styles.title}></Text>
             <GradientButton title={text.nextSet} onPress={handlePress} />
 
-            <View style={styles.notesWrapper}>
-                <TextInput
-                    style={styles.textBox}
-                    multiline={true}
-                    placeholder="Notizen: Schreibe hier..."
-                    placeholderTextColor={colors.border}
-                    value={workout.notes}
-                    onChangeText={(value) => {
-                        if (!workouts) return;
-                        const updatedWorkouts = workouts.map(w => {
-                            if (w.id !== workout.id) return w;
-                            return { ...w, notes: value };
-                        });
-                        updateWorkout(updatedWorkouts);
-                        scrollViewRef.current?.scrollToEnd({ animated: true });
-                    }}
-                />
-                <View style={styles.statsIcon}>
-                    <CreateBox
-                        onPress={() => setShowVolumeStats(true)}
-                        iconName="stats-chart"
-                        variant="borderless"
-                        iconSize={22}
-                    />
-                </View>
-            </View>
-
-            <CustomModal visible={showVolumeStats} onClose={() => setShowVolumeStats(false)}>
-                <Text style={styles.modalTitle}>{text.workoutVolumeHistory}</Text>
-                <WorkoutVolumeChart entries={volumeHistory} />
-            </CustomModal>
+            <TextInput
+                style={styles.textBox}
+                multiline={true}
+                placeholder="Notizen: Schreibe hier..."
+                placeholderTextColor={colors.border}
+                value={workout.notes}
+                onChangeText={(value) => {
+                    if (!workouts) return;
+                    const updatedWorkouts = workouts.map(w => {
+                        if (w.id !== workout.id) return w;
+                        return { ...w, notes: value };
+                    });
+                    updateWorkout(updatedWorkouts);
+                    scrollViewRef.current?.scrollToEnd({ animated: true });
+                }}
+            />
 
             <RestTimer
                 visible={showRestTimer}
