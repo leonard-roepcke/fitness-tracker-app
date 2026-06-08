@@ -112,6 +112,10 @@ export const English = {
   suportSection:"suport and data",
   newWorkout:"new workout",
   workoutendHeading:"workout end",
+  workoutEndVolume: "Total volume",
+  workoutEndExercises: "Exercises & sets",
+  workoutEndNotes: "Notes",
+  workoutNotFound: "Workout not found",
   safe:"safe",
   remove:"remove",
 }

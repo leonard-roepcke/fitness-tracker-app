@@ -105,6 +105,10 @@ export const German = {
   suportSection:"Rechtliches & Support",
   newWorkout:"neues Workout",
   workoutendHeading:" Workout Ende",
+  workoutEndVolume: "Gesamtvolumen",
+  workoutEndExercises: "Übungen & Sätze",
+  workoutEndNotes: "Notizen",
+  workoutNotFound: "Workout nicht gefunden",
   safe:"Speichern",
   remove:"Löschen",
 }
