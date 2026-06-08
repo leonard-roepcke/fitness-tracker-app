@@ -1,19 +1,19 @@
 export interface Exercise {
-  id: string;                 // spätere Skalierung
   name: string;
   sets: number;
   last_reps: number[];
+  last_weight?: number[];
+  trackWeight?: boolean;
+  trackReps?: boolean;
   notes?: string;
-
-  // Einheitliche interne Repräsentation
-  weights?: number[];          // neues Feld, empfohlen
 }
 
 export interface Workout {
-  id: string;
+  id: number;
   name: string;
   exercises: Exercise[];
-  createdAt: number;
+  notes?: string;
+  createdAt?: number;
   updatedAt?: number;
   isFavorite?: boolean;
 }

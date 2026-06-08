@@ -1,43 +1,31 @@
-import Layouts from "@/app/constants/Layouts";
 import { useTracker } from "@/context/TrackerContext";
+import { ThemeContext } from "@/context/ThemeContext";
 import { useSearchParams } from 'expo-router/build/hooks';
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Keyboard, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
-import Bar from '../components/Bar';
-import { Button } from '../components/Button';
 import { CreateBox } from '../components/CreateBox';
 import { RepWeightPicker } from '../components/RepWeightPicker';
-import { useTheme } from '../hooks/useTheme';
-import { Keyboard,KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useRef, useEffect } from 'react';
-import { useAppContext } from "../hooks/useAppContext";
+import { RestTimer } from '../components/RestTimer';
+import GradientButton from '../components/ui/GradientButton';
 import AppContainer from "../components/ui/AppContainer";
+import { useAppContext } from "../hooks/useAppContext";
 import { cardShadow } from "../utils/shadows";
 
 export default function WorkoutScreen({ route, navigation }: any) {
-    const { colors, nav, layouts }=useAppContext();
-    const {workouts, updateWorkout} = useWorkouts();
-    const { logWorkout, workoutLogs, getDailyStreak, getWeeklyStreak } = useTracker();
-    const today = new Date().toISOString().split('T')[0];
-
-    
-    
+    const { colors, nav, layouts, text } = useAppContext();
+    const { workouts, updateWorkout } = useWorkouts();
+    const { isRestTimerEnabled, restTimerDuration } = useContext(ThemeContext);
 
     const params = useSearchParams();
-    // Try react-navigation route params first, otherwise fall back to expo-router search params
     const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
     const workoutId = Number(rawId);
     const workout = workouts?.find(w => w.id === workoutId);
-    const isString = typeof workout === "string";    
-    const id = isString ? null : workout.id;
-
-    const [text, setText] = useState<string>(workout?.notes ?? "");
 
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
-    
-    // weight und reps als lokale Zustände (frühere `sets`-Variable war verwirrend)
+    const [showRestTimer, setShowRestTimer] = useState(false);
+
     const [weight, setWeight] = useState<number>(() =>
         workout ? (workout.exercises[i_exercise].last_weight?.[i_set] ?? 0) : 0
     );
@@ -45,30 +33,31 @@ export default function WorkoutScreen({ route, navigation }: any) {
         workout ? (workout.exercises[i_exercise].last_reps?.[i_set] ?? 0) : 0
     );
 
-    // Removed automatic syncing on index changes. Wheels will update only when
-    // the user presses the "Next Set" button.
+    const scrollViewRef = useRef<ScrollView>(null);
+
+    useEffect(() => {
+        const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+            scrollViewRef.current?.scrollToEnd({ animated: true });
+        });
+        return () => showSubscription.remove();
+    }, []);
 
     if (!workout) {
         return <Text>Workout nicht gefunden</Text>;
     }
 
+    const currentExercise = workout.exercises[i_exercise];
+    const trackWeight = currentExercise.trackWeight !== false;
+    const trackReps = currentExercise.trackReps !== false;
 
     const styles = StyleSheet.create({
-              title: {
+        title: {
             fontSize: 28,
             fontWeight: 'bold',
             textAlign: 'center',
             marginBottom: 0,
             marginTop: 10,
             color: colors.text,
-        },
-        content: {
-            flex: 1,
-        },
-        text: {  
-            fontSize: 16,
-            color: colors.text,
-            marginBottom: 4,
         },
         subtitle: {
             fontSize: 22,
@@ -86,152 +75,165 @@ export default function WorkoutScreen({ route, navigation }: any) {
             overflow: 'hidden',
             ...cardShadow(colors),
         },
-        exercise: {
-            fontSize: 16,
-            marginLeft: 8,
-            marginBottom: 4,
-        },
         textBox: {
-          flex: 1,
-          textAlignVertical: "top",
-          borderWidth: 1,
-          borderColor: colors.border,
-          borderRadius: layouts.borderRadiusLarge,
-          padding: 14,
-          fontSize: 16,
-          color: colors.text,
-          backgroundColor: colors.surface,
-          marginTop: 20,
-          marginBottom: 70,
-          ...cardShadow(colors),
+            flex: 1,
+            textAlignVertical: "top",
+            borderWidth: 1,
+            borderColor: colors.border,
+            borderRadius: layouts.borderRadiusLarge,
+            padding: 14,
+            fontSize: 16,
+            color: colors.text,
+            backgroundColor: colors.surface,
+            marginTop: 20,
+            marginBottom: 70,
+            ...cardShadow(colors),
         },
     });
 
-    const [loading, setLoading] = useState(false);
-    const scrollViewRef = useRef<ScrollView>(null);
+    const saveCurrentSet = () => {
+        if (!workouts) return;
 
-    useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    });
-
-    return () => {
-      showSubscription.remove();
-    };
-  }, []);
-
-    const handlePress = async () => {
-        if (!workout || !workouts) return;
-        
         const updatedWorkouts = workouts.map(w => {
-    if (w.id !== workout.id) return w;
+            if (w.id !== workout.id) return w;
 
-    // Das Workout updaten
-    const updatedExercises = w.exercises.map((ex, idx) => {
-      if (idx !== i_exercise) return ex;
+            const updatedExercises = w.exercises.map((ex, idx) => {
+                if (idx !== i_exercise) return ex;
 
-      // aktuelle Übung updaten
-      const newLastWeight = [...(ex.last_weight ?? [])];
-      const newLastReps = [...(ex.last_reps ?? [])];
+                const newLastWeight = [...(ex.last_weight ?? [])];
+                const newLastReps = [...(ex.last_reps ?? [])];
 
-      newLastWeight[i_set] = weight;
-      newLastReps[i_set] = reps;
+                if (ex.trackWeight !== false) {
+                    newLastWeight[i_set] = weight;
+                }
+                if (ex.trackReps !== false) {
+                    newLastReps[i_set] = reps;
+                }
 
-      return {
-        ...ex,
-        last_weight: newLastWeight,
-        last_reps: newLastReps,
-      };
-    });
+                return {
+                    ...ex,
+                    last_weight: newLastWeight,
+                    last_reps: newLastReps,
+                };
+            });
 
-    return {
-      ...w,
-      exercises: updatedExercises,
+            return { ...w, exercises: updatedExercises };
+        });
+
+        updateWorkout(updatedWorkouts);
     };
- });
- // State global updaten
- updateWorkout(updatedWorkouts);
- // Nächster Satz / nächste Übung wie gehabt
- if (i_set < workout.exercises[i_exercise].sets - 1) {
-   const nextSet = i_set + 1;
-   setI_set(nextSet);
-   const exercise = workout.exercises[i_exercise];
-   setWeight(exercise.last_weight?.[nextSet] ?? 0);
-   setReps(exercise.last_reps?.[nextSet] ?? 0);
- } else if (i_exercise < workout.exercises.length - 1) {
-   const nextExercise = i_exercise + 1;
-   setI_exercise(nextExercise);
-   setI_set(0);
-   const exercise = workout.exercises[nextExercise];
-   setWeight(exercise.last_weight?.[0] ?? 0);
-   setReps(exercise.last_reps?.[0] ?? 0);
- } else {
-     //Workout abgeschlossen
 
-     if (nav && typeof nav.navigate === 'function') nav.navigate('WorkoutEnd', { workoutId: id });
-     else navigation.goBack();
- }
-   };
+    const advanceToNext = () => {
+        const isLastSet = i_set >= currentExercise.sets - 1;
+        const isLastExercise = i_exercise >= workout.exercises.length - 1;
 
-   const back = () => {
-      nav.goBack();
-   };
-   const handleEditPress = (id:number) => {
-        if (id === null || id === undefined) return;
+        if (!isLastSet) {
+            const nextSet = i_set + 1;
+            setI_set(nextSet);
+            const exercise = workout.exercises[i_exercise];
+            setWeight(exercise.last_weight?.[nextSet] ?? 0);
+            setReps(exercise.last_reps?.[nextSet] ?? 0);
+        } else if (!isLastExercise) {
+            const nextExercise = i_exercise + 1;
+            setI_exercise(nextExercise);
+            setI_set(0);
+            const exercise = workout.exercises[nextExercise];
+            setWeight(exercise.last_weight?.[0] ?? 0);
+            setReps(exercise.last_reps?.[0] ?? 0);
+        } else {
+            if (nav && typeof nav.navigate === 'function') {
+                nav.navigate('WorkoutEnd', { workoutId: workout.id });
+            } else {
+                navigation.goBack();
+            }
+        }
+    };
+
+    const handlePress = () => {
+        saveCurrentSet();
+
+        const isLastSet = i_set >= currentExercise.sets - 1;
+        const isLastExercise = i_exercise >= workout.exercises.length - 1;
+        const hasMoreSets = !(isLastSet && isLastExercise);
+
+        if (hasMoreSets && isRestTimerEnabled) {
+            setShowRestTimer(true);
+            return;
+        }
+
+        advanceToNext();
+    };
+
+    const handleTimerComplete = () => {
+        setShowRestTimer(false);
+        advanceToNext();
+    };
+
+    const back = () => nav.goBack();
+
+    const handleEditPress = (id: number) => {
         navigation.navigate('WorkoutEdit', { workoutId: id });
     };
 
-
     return (
-       <AppContainer isBar={true} scrolable={true}>
+        <AppContainer isBar={true} scrolable={true}>
             <Text style={styles.title}></Text>
 
             <View style={{ height: 60, justifyContent: 'center' }}>
-              {/* Absolute Title */}
-              <Text style={[styles.title, { position: 'absolute', left: 0, right: 0, textAlign: 'center' , height:60, paddingTop:18,}]}>
-                {i_exercise + 1}/{workout.exercises.length} {workout.name}
-              </Text>
-            
-              {/* Back Button */}
-              <View style={{ position: 'absolute', left: 0 , top: 0}}>
-                <CreateBox onPress={back} iconName='arrow-back' />
-              </View>
+                <Text style={[styles.title, { position: 'absolute', left: 0, right: 0, textAlign: 'center', height: 60, paddingTop: 18 }]}>
+                    {i_exercise + 1}/{workout.exercises.length} {workout.name}
+                </Text>
 
-              <View style={{ position: 'absolute', right: 0 , top: 0}}>
-                <CreateBox onPress={()=>handleEditPress(workout.id)} iconName='create-outline' />
-              </View>
+                <View style={{ position: 'absolute', left: 0, top: 0 }}>
+                    <CreateBox onPress={back} iconName='arrow-back' variant='borderless' />
+                </View>
+
+                <View style={{ position: 'absolute', right: 0, top: 0 }}>
+                    <CreateBox onPress={() => handleEditPress(workout.id)} iconName='create-outline' variant='borderless' />
+                </View>
             </View>
 
-            <Text/>
-            <Text style={[styles.subtitle, { marginTop: 5 }]}>{i_set+1}/{workout.exercises[i_exercise].sets} {workout.exercises[i_exercise].name}</Text>
+            <Text />
+            <Text style={[styles.subtitle, { marginTop: 5 }]}>
+                {i_set + 1}/{currentExercise.sets} {currentExercise.name}
+            </Text>
             <Text style={styles.title}></Text>
-            <RepWeightPicker 
-                reps={reps}                    
-                weight={weight}                
-                onWeightChange={setWeight}     
-                onRepsChange={setReps}         
+
+            <RepWeightPicker
+                reps={reps}
+                weight={weight}
+                onWeightChange={setWeight}
+                onRepsChange={setReps}
+                showReps={trackReps}
+                showWeight={trackWeight}
             />
+
             <Text style={styles.title}></Text>
-            <Button 
-                title="Next Set" 
-                onPress={handlePress}
-                variant="primary"
-            />
+            <GradientButton title={text.nextSet} onPress={handlePress} />
+
             <TextInput
-              style={styles.textBox}
-              multiline={true}
-              placeholder="Notizen: Schreibe hier..."
-              placeholderTextColor={colors.border}
-              value={workout.notes}
-              onChangeText={(value) => {
-                if (!workout || !workouts) return;
-                const updatedWorkouts = workouts.map(w => {
-                    if (w.id !== workout.id) return w;
-                    return { ...w, notes: value };
-                });
-                updateWorkout(updatedWorkouts);
-                scrollViewRef.current?.scrollToEnd({ animated: true });
-              }}
+                style={styles.textBox}
+                multiline={true}
+                placeholder="Notizen: Schreibe hier..."
+                placeholderTextColor={colors.border}
+                value={workout.notes}
+                onChangeText={(value) => {
+                    if (!workouts) return;
+                    const updatedWorkouts = workouts.map(w => {
+                        if (w.id !== workout.id) return w;
+                        return { ...w, notes: value };
+                    });
+                    updateWorkout(updatedWorkouts);
+                    scrollViewRef.current?.scrollToEnd({ animated: true });
+                }}
+            />
+
+            <RestTimer
+                visible={showRestTimer}
+                duration={restTimerDuration}
+                onComplete={handleTimerComplete}
+                onSkip={handleTimerComplete}
+                skipLabel={text.skipTimer}
             />
         </AppContainer>
     );

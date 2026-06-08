@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Layout from '../../constants/Layouts';
-import { subtleShadow } from '../../utils/shadows';
+import { cardShadow } from '../../utils/shadows';
 import { useTheme } from "../../hooks/useTheme";
 import GradientSurface from '../ui/GradientSurface';
 
@@ -51,15 +51,26 @@ export const CreateBox = ({
     const colors = useTheme();
     const layout = Layout;
 
-    const isAccent = variant === 'accent';
     const isBorderless = variant === 'borderless';
+    const isAccent = variant === 'accent';
+    const isLargeButton = !!text && !isBorderless;
 
     const styles = StyleSheet.create({
-        box: {
+        touchable: {
             marginVertical: isBorderless ? 0 : layout.marginVertical,
-            backgroundColor: isBorderless ? 'transparent' : isAccent ? 'transparent' : colors.card,
             borderRadius: layout.borderRadius,
-            padding: padding ?? (isBorderless ? 8 : 16),
+            overflow: 'hidden',
+            alignSelf: isLargeButton ? 'stretch' : 'auto',
+            ...(isBorderless ? {} : cardShadow(colors)),
+        },
+        gradientFill: {
+            borderRadius: layout.borderRadius,
+        },
+        inner: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: padding ?? (isBorderless ? 8 : isLargeButton ? 14 : 12),
             paddingHorizontal,
             paddingVertical,
             paddingLeft,
@@ -70,48 +81,70 @@ export const CreateBox = ({
             borderTopRightRadius: borderTopRightRadius ?? layout.borderRadius,
             borderBottomLeftRadius: borderBottomLeftRadius ?? layout.borderRadius,
             borderBottomRightRadius: borderBottomRightRadius ?? layout.borderRadius,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderWidth: isBorderless || isAccent ? 0 : 1,
+        },
+        compactInner: {
+            backgroundColor: colors.surface,
+            borderWidth: 1,
             borderColor: colors.border,
-            overflow: isAccent ? 'hidden' : 'visible',
-            ...(isBorderless ? {} : subtleShadow(colors)),
+            borderRadius: layout.borderRadius,
         },
-        inner: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: isAccent ? (padding ?? 16) : 0,
-            paddingHorizontal: isAccent ? paddingHorizontal : undefined,
-            paddingVertical: isAccent ? paddingVertical : undefined,
-        },
-        text: {
-            color: isAccent ? '#FFFFFF' : colors.text,
+        textPrimary: {
+            color: '#FFFFFF',
             fontSize: 16,
             fontWeight: '600',
-            marginLeft: text ? 8 : 0,
-        }
+            marginLeft: 8,
+        },
+        textDefault: {
+            color: colors.text,
+            fontSize: 16,
+            fontWeight: '600',
+            marginLeft: 8,
+        },
     });
 
-    const content = (
-        <>
-            <Ionicons
-                name={iconName}
-                size={iconSize}
-                color={iconColor ?? (isAccent ? '#FFFFFF' : colors.primary)}
-            />
-            {text && <Text style={styles.text}>{text}</Text>}
-        </>
+    const resolvedIconColor = iconColor ?? (
+        isBorderless ? colors.primary :
+        isLargeButton ? '#FFFFFF' : colors.primary
     );
 
-    return (
-        <TouchableOpacity style={styles.box} onPress={onPress} activeOpacity={0.75}>
-            {isAccent ? (
-                <GradientSurface style={{ borderRadius: layout.borderRadius, alignSelf: 'stretch', width: '100%' }}>
-                    <View style={styles.inner}>{content}</View>
+    const content = (
+        <View style={[
+            styles.inner,
+            !isLargeButton && !isBorderless && styles.compactInner,
+        ]}>
+            <Ionicons name={iconName} size={iconSize} color={resolvedIconColor} />
+            {text && (
+                <Text style={isLargeButton ? styles.textPrimary : styles.textDefault}>
+                    {text}
+                </Text>
+            )}
+        </View>
+    );
+
+    if (isBorderless) {
+        return (
+            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
+                {content}
+            </TouchableOpacity>
+        );
+    }
+
+    if (isLargeButton) {
+        return (
+            <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.85}>
+                <GradientSurface
+                    style={styles.gradientFill}
+                    variant={isAccent ? 'primary' : 'surface'}
+                >
+                    {content}
                 </GradientSurface>
-            ) : content}
+            </TouchableOpacity>
+        );
+    }
+
+    return (
+        <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
+            {content}
         </TouchableOpacity>
     );
 };

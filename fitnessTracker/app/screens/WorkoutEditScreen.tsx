@@ -5,6 +5,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View
@@ -18,6 +19,7 @@ import { NumberWheel } from '../components/NumberWheel';
 import { useAppContext } from '../hooks/useAppContext';
 import { cardShadow } from '../utils/shadows';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Exercise } from '../types/workout';
 
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
@@ -60,40 +62,60 @@ export default function WorkoutEditScreen({ route }: any) {
       gap: 8,
     },
     setsRow: {
-      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: 12,
+      marginBottom: 12,
     },
-    setsLabel: {
-      fontSize: 14,
+    toggleRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 8,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      marginTop: 4,
+    },
+    toggleLabel: {
+      fontSize: 15,
       fontWeight: '600',
-      color: colors.textSecondary,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
+      color: colors.text,
     },
     spacer: {
       height: 80,
     },
   });
 
+  const saveWorkouts = (updated: typeof workouts) => updateWorkout(updated);
+
   const handleWorkoutNameChange = (name: string) => {
     const updated = [...workouts];
     updated[index] = { ...updated[index], name };
-    updateWorkout(updated);
+    saveWorkouts(updated);
   };
 
   const handleExerciseChange = (exerciseIndex: number, value: string) => {
     const updated = [...workouts];
     updated[index].exercises[exerciseIndex].name = value;
-    updateWorkout(updated);
+    saveWorkouts(updated);
+  };
+
+  const toggleExerciseFlag = (
+    exerciseIndex: number,
+    field: 'trackWeight' | 'trackReps',
+    value: boolean
+  ) => {
+    const updated = [...workouts];
+    updated[index].exercises[exerciseIndex] = {
+      ...updated[index].exercises[exerciseIndex],
+      [field]: value,
+    };
+    saveWorkouts(updated);
   };
 
   const back = () => router.back();
 
   const del = () => {
     if (workoutId === undefined) return;
-    updateWorkout(workouts.filter((w) => w.id !== workoutId));
+    saveWorkouts(workouts.filter((w) => w.id !== workoutId));
     router.back();
   };
 
@@ -101,22 +123,24 @@ export default function WorkoutEditScreen({ route }: any) {
     const updated = [...workouts];
     const newExercises = updated[index].exercises.filter((_, idx) => idx !== exerciseIndex);
     updated[index] = { ...updated[index], exercises: newExercises };
-    updateWorkout(updated);
+    saveWorkouts(updated);
   };
 
   const addExercise = () => {
-    const updated = [...workouts];
-    const newExercise = {
+    const newExercise: Exercise = {
       name: 'New Exercise',
       sets: 3,
       last_reps: [0, 0, 0],
       last_weight: [0, 0, 0],
+      trackWeight: true,
+      trackReps: true,
     };
+    const updated = [...workouts];
     updated[index] = {
       ...updated[index],
       exercises: [...updated[index].exercises, newExercise],
     };
-    updateWorkout(updated);
+    saveWorkouts(updated);
   };
 
   const changeSets = (exerciseIndex: number, value: number) => {
@@ -132,7 +156,7 @@ export default function WorkoutEditScreen({ route }: any) {
     while (ex.last_weight.length < value) ex.last_weight.push(0);
     if (ex.last_weight.length > value) ex.last_weight = ex.last_weight.slice(0, value);
 
-    updateWorkout(updated);
+    saveWorkouts(updated);
   };
 
   return (
@@ -158,51 +182,75 @@ export default function WorkoutEditScreen({ route }: any) {
           <CreateBox onPress={del} iconName='trash' variant='borderless' iconColor={colors.danger} />
         </View>
 
-        {workout.exercises.map((exercise, exIndex) => (
-          <View key={exIndex} style={styles.exerciseCard}>
-            <View style={styles.exerciseHeader}>
-              <TextInput
-                style={[styles.input, { flex: 1 }]}
-                value={exercise.name}
-                onChangeText={(value) => handleExerciseChange(exIndex, value)}
-                placeholder="Exercise Name"
-                placeholderTextColor={colors.textSecondary}
-              />
-              <CreateBox
-                onPress={() => delExercise(exIndex)}
-                iconName='trash'
-                variant='borderless'
-                iconColor={colors.danger}
-              />
-            </View>
+        {workout.exercises.map((exercise, exIndex) => {
+          const trackWeight = exercise.trackWeight !== false;
+          const trackReps = exercise.trackReps !== false;
 
-            <View style={styles.setsRow}>
-              <Text style={styles.setsLabel}>{text.sets}</Text>
-              <GradientButton
-                title={`${exercise.sets} ${exercise.sets > 1 ? text.sets : text.set}`}
-                onPress={() => setModalExerciseIndex(exIndex)}
-                style={{ minWidth: 120 }}
-              />
-            </View>
-
-            <CustomModal
-              visible={modalExerciseIndex === exIndex}
-              onClose={() => setModalExerciseIndex(null)}
-            >
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <NumberWheel
-                  min={1}
-                  max={30}
-                  value={exercise.sets}
-                  onValueChange={(value) => changeSets(exIndex, value)}
-                  width={120}
-                  suffix={` ${text.sets}`}
-                  visibleItems={3}
+          return (
+            <View key={exIndex} style={styles.exerciseCard}>
+              <View style={styles.exerciseHeader}>
+                <TextInput
+                  style={[styles.input, { flex: 1 }]}
+                  value={exercise.name}
+                  onChangeText={(value) => handleExerciseChange(exIndex, value)}
+                  placeholder="Exercise Name"
+                  placeholderTextColor={colors.textSecondary}
+                />
+                <CreateBox
+                  onPress={() => delExercise(exIndex)}
+                  iconName='trash'
+                  variant='borderless'
+                  iconColor={colors.danger}
                 />
               </View>
-            </CustomModal>
-          </View>
-        ))}
+
+              <View style={styles.setsRow}>
+                <GradientButton
+                  title={`${exercise.sets} ${exercise.sets > 1 ? text.sets : text.set}`}
+                  onPress={() => setModalExerciseIndex(exIndex)}
+                  style={{ minWidth: 160 }}
+                />
+              </View>
+
+              <View style={styles.toggleRow}>
+                <Text style={styles.toggleLabel}>{text.trackWeight}</Text>
+                <Switch
+                  value={trackWeight}
+                  onValueChange={(v) => toggleExerciseFlag(exIndex, 'trackWeight', v)}
+                  trackColor={{ false: colors.border, true: colors.primary }}
+                  thumbColor="#fff"
+                />
+              </View>
+
+              <View style={styles.toggleRow}>
+                <Text style={styles.toggleLabel}>{text.trackReps}</Text>
+                <Switch
+                  value={trackReps}
+                  onValueChange={(v) => toggleExerciseFlag(exIndex, 'trackReps', v)}
+                  trackColor={{ false: colors.border, true: colors.primary }}
+                  thumbColor="#fff"
+                />
+              </View>
+
+              <CustomModal
+                visible={modalExerciseIndex === exIndex}
+                onClose={() => setModalExerciseIndex(null)}
+              >
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <NumberWheel
+                    min={1}
+                    max={30}
+                    value={exercise.sets}
+                    onValueChange={(value) => changeSets(exIndex, value)}
+                    width={120}
+                    suffix={` ${text.sets}`}
+                    visibleItems={3}
+                  />
+                </View>
+              </CustomModal>
+            </View>
+          );
+        })}
 
         <CreateBox onPress={addExercise} iconName='add' text={text.addExercise} variant='accent' />
         <View style={styles.spacer} />

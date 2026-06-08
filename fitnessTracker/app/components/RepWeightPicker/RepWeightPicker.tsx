@@ -1,7 +1,5 @@
-// components/ui/SetRepPicker.tsx
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useTheme } from '../../hooks/useTheme';
 import { NumberWheel } from '../NumberWheel';
 
 interface RepWeightPickerProps {
@@ -9,15 +7,19 @@ interface RepWeightPickerProps {
   weight: number;
   onWeightChange: (weight: number) => void;
   onRepsChange: (reps: number) => void;
+  showReps?: boolean;
+  showWeight?: boolean;
 }
 
 export const RepWeightPicker: React.FC<RepWeightPickerProps> = ({
   reps,
   weight,
   onWeightChange,
-  onRepsChange
+  onRepsChange,
+  showReps = true,
+  showWeight = true,
 }) => {
-  const colors = useTheme();
+  if (!showReps && !showWeight) return null;
 
   const styles = StyleSheet.create({
     container: {
@@ -25,47 +27,40 @@ export const RepWeightPicker: React.FC<RepWeightPickerProps> = ({
       alignItems: 'center',
       justifyContent: 'center',
       paddingVertical: 0,
+      gap: 16,
     },
     wheelContainer: {
       alignItems: 'center',
-      marginHorizontal: 0,
-    },
-    label: {
-      fontSize: 16,
-      color: colors.textSecondary,
-      marginBottom: 8,
-    },
-    separator: {
-      fontSize: 18,
-      color: colors.text,
-      marginTop: 40,
     },
   });
 
   return (
     <View style={styles.container}>
-      <View style={styles.wheelContainer}>
-        <NumberWheel
-          min={0}
-          max={30}
-          value={reps}
-          onValueChange={onRepsChange}
-          width={90}
-          suffix=' Reps'
-        />
-      </View>
+      {showReps && (
+        <View style={styles.wheelContainer}>
+          <NumberWheel
+            min={0}
+            max={30}
+            value={reps}
+            onValueChange={onRepsChange}
+            width={90}
+            suffix=' Reps'
+          />
+        </View>
+      )}
 
-      <View style={styles.wheelContainer}>
-        <NumberWheel
-          min={0}
-          max={300}
-          value={weight}
-          onValueChange={onWeightChange}
-          width={90}
-          suffix=' kg'
-        />
-      </View>
-
+      {showWeight && (
+        <View style={styles.wheelContainer}>
+          <NumberWheel
+            min={0}
+            max={300}
+            value={weight}
+            onValueChange={onWeightChange}
+            width={90}
+            suffix=' kg'
+          />
+        </View>
+      )}
     </View>
   );
 };

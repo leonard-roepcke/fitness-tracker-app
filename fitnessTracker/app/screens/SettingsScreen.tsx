@@ -23,6 +23,8 @@ export default function SettingsScreen() {
     toggleCTracker,
     isDailyStreakEnabled,
     toggleDailyStreak,
+    isRestTimerEnabled,
+    toggleRestTimer,
   } = useContext(ThemeContext);
   const version = Application.nativeApplicationVersion;
   const build = Application.nativeBuildVersion;
@@ -118,6 +120,12 @@ export default function SettingsScreen() {
         />
 
         <Text style={styles.sectionTitle}>{text.trackerSection}</Text>
+        <SettingsBox
+          title={text.restTimer}
+          subtitle={text.restTimerSub}
+          value={isRestTimerEnabled}
+          onValueChange={toggleRestTimer}
+        />
         <SettingsBox title={text.weightTracker} subtitle={text.weightTrackerSub} value={isWTrackerEnabled} onValueChange={toggleWTracker} />
         <SettingsBox title={text.calorieTracker} subtitle={text.calorieTrackerSub} value={isCTrackerEnabled} onValueChange={toggleCTracker} />
         <SettingsBox title={text.dailyStreak} subtitle={text.dailyStreakSub} value={isDailyStreakEnabled} onValueChange={toggleDailyStreak} />

@@ -13,6 +13,9 @@ interface ThemeContextProps {
   toggleCTracker: () => void;
   isDailyStreakEnabled: boolean;
   toggleDailyStreak: () => void;
+  isRestTimerEnabled: boolean;
+  toggleRestTimer: () => void;
+  restTimerDuration: number;
 }
 
 export const ThemeContext = createContext<ThemeContextProps>({
@@ -26,6 +29,9 @@ export const ThemeContext = createContext<ThemeContextProps>({
   toggleCTracker: () => {},
   isDailyStreakEnabled: false,
   toggleDailyStreak: () => {},
+  isRestTimerEnabled: true,
+  toggleRestTimer: () => {},
+  restTimerDuration: 60,
 });
 
 export const ThemeProvider = ({ children }: any) => {
@@ -34,6 +40,8 @@ export const ThemeProvider = ({ children }: any) => {
   const [isWTrackerEnabled, setIsWTrackerEnabled] = useState(true);
   const [isCTrackerEnabled, setIsCTrackerEnabled] = useState(true);
   const [isDailyStreakEnabled, setIsDailyStreakEnabled] = useState(false);
+  const [isRestTimerEnabled, setIsRestTimerEnabled] = useState(true);
+  const restTimerDuration = 60;
 
   useEffect(() => {
     AsyncStorage.getItem("darkMode").then((value) => {
@@ -56,6 +64,10 @@ export const ThemeProvider = ({ children }: any) => {
 
     AsyncStorage.getItem("DailyStreak").then((value) => {
       if (value !== null) setIsDailyStreakEnabled(value === "true");
+    });
+
+    AsyncStorage.getItem("restTimer").then((value) => {
+      if (value !== null) setIsRestTimerEnabled(value === "true");
     });
   }, []);
 
@@ -88,6 +100,12 @@ export const ThemeProvider = ({ children }: any) => {
     await AsyncStorage.setItem("DailyStreak", String(newValue));
   };
 
+  const toggleRestTimer = async () => {
+    const newValue = !isRestTimerEnabled;
+    setIsRestTimerEnabled(newValue);
+    await AsyncStorage.setItem("restTimer", String(newValue));
+  };
+
   return (
     <ThemeContext.Provider
       value={{
@@ -101,6 +119,9 @@ export const ThemeProvider = ({ children }: any) => {
         toggleCTracker,
         isDailyStreakEnabled,
         toggleDailyStreak,
+        isRestTimerEnabled,
+        toggleRestTimer,
+        restTimerDuration,
       }}
     >
       {children}

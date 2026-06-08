@@ -51,7 +51,7 @@ export default function WorkoutOverview() {
         const newWorkout: Workout = {
             id: newId,
             name: text.newWorkout,
-            exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10]}],
+            exercises: [{ name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10], trackWeight: true, trackReps: true }],
             createdAt: Date.now(),
             isFavorite: false,
         };
