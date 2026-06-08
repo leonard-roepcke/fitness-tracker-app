@@ -16,6 +16,7 @@ interface ThemeContextProps {
   isRestTimerEnabled: boolean;
   toggleRestTimer: () => void;
   restTimerDuration: number;
+  setRestTimerDuration: (seconds: number) => void;
 }
 
 export const ThemeContext = createContext<ThemeContextProps>({
@@ -32,6 +33,7 @@ export const ThemeContext = createContext<ThemeContextProps>({
   isRestTimerEnabled: true,
   toggleRestTimer: () => {},
   restTimerDuration: 60,
+  setRestTimerDuration: () => {},
 });
 
 export const ThemeProvider = ({ children }: any) => {
@@ -41,7 +43,7 @@ export const ThemeProvider = ({ children }: any) => {
   const [isCTrackerEnabled, setIsCTrackerEnabled] = useState(true);
   const [isDailyStreakEnabled, setIsDailyStreakEnabled] = useState(false);
   const [isRestTimerEnabled, setIsRestTimerEnabled] = useState(true);
-  const restTimerDuration = 60;
+  const [restTimerDuration, setRestTimerDurationState] = useState(60);
 
   useEffect(() => {
     AsyncStorage.getItem("darkMode").then((value) => {
@@ -68,6 +70,15 @@ export const ThemeProvider = ({ children }: any) => {
 
     AsyncStorage.getItem("restTimer").then((value) => {
       if (value !== null) setIsRestTimerEnabled(value === "true");
+    });
+
+    AsyncStorage.getItem("restTimerDuration").then((value) => {
+      if (value !== null) {
+        const parsed = parseInt(value, 10);
+        if (!Number.isNaN(parsed) && parsed >= 15 && parsed <= 300) {
+          setRestTimerDurationState(parsed);
+        }
+      }
     });
   }, []);
 
@@ -106,6 +117,12 @@ export const ThemeProvider = ({ children }: any) => {
     await AsyncStorage.setItem("restTimer", String(newValue));
   };
 
+  const setRestTimerDuration = async (seconds: number) => {
+    const clamped = Math.max(15, Math.min(300, seconds));
+    setRestTimerDurationState(clamped);
+    await AsyncStorage.setItem("restTimerDuration", String(clamped));
+  };
+
   return (
     <ThemeContext.Provider
       value={{
@@ -122,6 +139,7 @@ export const ThemeProvider = ({ children }: any) => {
         isRestTimerEnabled,
         toggleRestTimer,
         restTimerDuration,
+        setRestTimerDuration,
       }}
     >
       {children}

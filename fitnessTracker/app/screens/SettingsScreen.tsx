@@ -9,6 +9,7 @@ import { useAppContext } from '../hooks/useAppContext';
 import AppContainer from '../components/ui/AppContainer';
 import { useLanguage } from "@/app/hooks/useLanguage";
 import CustomModal from '../components/CustomModal';
+import { NumberWheel } from '../components/NumberWheel';
 import GradientSurface from '../components/ui/GradientSurface';
 
 export default function SettingsScreen() {
@@ -25,6 +26,8 @@ export default function SettingsScreen() {
     toggleDailyStreak,
     isRestTimerEnabled,
     toggleRestTimer,
+    restTimerDuration,
+    setRestTimerDuration,
   } = useContext(ThemeContext);
   const version = Application.nativeApplicationVersion;
   const build = Application.nativeBuildVersion;
@@ -33,6 +36,7 @@ export default function SettingsScreen() {
 
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [colorModalVisible, setColorModalVisible] = useState(false);
+  const [restTimerModalVisible, setRestTimerModalVisible] = useState(false);
 
   const activePaletteLabel = ColorPaletteOptions.find((p) => p.id === colorPalette);
 
@@ -126,9 +130,22 @@ export default function SettingsScreen() {
           value={isRestTimerEnabled}
           onValueChange={toggleRestTimer}
         />
+        {isRestTimerEnabled && (
+          <SettingsBox
+            title={text.restTimerDuration}
+            subtitle={`${restTimerDuration} ${text.restTimerSeconds}`}
+            isNavigable={true}
+            onPress={() => setRestTimerModalVisible(true)}
+          />
+        )}
         <SettingsBox title={text.weightTracker} subtitle={text.weightTrackerSub} value={isWTrackerEnabled} onValueChange={toggleWTracker} />
         <SettingsBox title={text.calorieTracker} subtitle={text.calorieTrackerSub} value={isCTrackerEnabled} onValueChange={toggleCTracker} />
-        <SettingsBox title={text.dailyStreak} subtitle={text.dailyStreakSub} value={isDailyStreakEnabled} onValueChange={toggleDailyStreak} />
+        <SettingsBox
+          title={text.dailyStreak}
+          subtitle={isDailyStreakEnabled ? text.dailyStreakSubDaily : text.dailyStreakSubWeekly}
+          value={isDailyStreakEnabled}
+          onValueChange={toggleDailyStreak}
+        />
 
         <Text style={styles.sectionTitle}>{text.suportSection}</Text>
         <SettingsBox title={text.privacyPolicyHeading} subtitle={text.privacyPolicyHeadingSub} isNavigable={true} onPress={() => nav.navigate("PrivacyPolicy")} />
@@ -148,6 +165,21 @@ export default function SettingsScreen() {
         <TouchableOpacity style={styles.paletteOption} onPress={() => { setLanguage("english"); setLanguageModalVisible(false); }}>
           <Text style={styles.paletteLabel}>English</Text>
         </TouchableOpacity>
+      </CustomModal>
+
+      <CustomModal visible={restTimerModalVisible} onClose={() => setRestTimerModalVisible(false)}>
+        <Text style={styles.modalTitle}>{text.restTimerDurationModal}</Text>
+        <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+          <NumberWheel
+            min={15}
+            max={300}
+            value={restTimerDuration}
+            onValueChange={setRestTimerDuration}
+            width={120}
+            suffix={` ${text.restTimerSeconds}`}
+            visibleItems={3}
+          />
+        </View>
       </CustomModal>
 
       <CustomModal visible={colorModalVisible} onClose={() => setColorModalVisible(false)}>
