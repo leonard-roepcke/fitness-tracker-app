@@ -90,6 +90,7 @@ export const German = {
   restTimerDuration: "Pausendauer",
   restTimerDurationModal: "Pausendauer wählen",
   restTimerSeconds: "Sekunden",
+  restTimerMinutes: "Min",
   skipTimer: "Überspringen",
   trackWeight: "Gewicht",
   trackReps: "Wiederholungen",

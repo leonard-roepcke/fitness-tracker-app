@@ -40,6 +40,15 @@ export default function SettingsScreen() {
 
   const activePaletteLabel = ColorPaletteOptions.find((p) => p.id === colorPalette);
 
+  const formatMinutes = (minutes: number) => {
+    const formatted = Number.isInteger(minutes)
+      ? String(minutes)
+      : minutes.toFixed(1).replace('.', language === 'german' ? ',' : '.');
+    return `${formatted} ${text.restTimerMinutes}`;
+  };
+
+  const formatRestDuration = (seconds: number) => formatMinutes(seconds / 60);
+
   const styles = StyleSheet.create({
     scrollContent: { paddingBottom: 40 },
     sectionTitle: {
@@ -133,7 +142,7 @@ export default function SettingsScreen() {
         {isRestTimerEnabled && (
           <SettingsBox
             title={text.restTimerDuration}
-            subtitle={`${restTimerDuration} ${text.restTimerSeconds}`}
+            subtitle={formatRestDuration(restTimerDuration)}
             isNavigable={true}
             onPress={() => setRestTimerModalVisible(true)}
           />
@@ -171,12 +180,19 @@ export default function SettingsScreen() {
         <Text style={styles.modalTitle}>{text.restTimerDurationModal}</Text>
         <View style={{ alignItems: 'center', paddingVertical: 8 }}>
           <NumberWheel
-            min={15}
-            max={300}
-            value={restTimerDuration}
-            onValueChange={setRestTimerDuration}
+            min={1}
+            max={10}
+            step={1}
+            value={restTimerDuration / 30}
+            onValueChange={(units) => setRestTimerDuration(units * 30)}
+            formatValue={(units) => {
+              const minutes = units * 0.5;
+              return Number.isInteger(minutes)
+                ? String(minutes)
+                : minutes.toFixed(1).replace('.', language === 'german' ? ',' : '.');
+            }}
             width={120}
-            suffix={` ${text.restTimerSeconds}`}
+            suffix={` ${text.restTimerMinutes}`}
             visibleItems={3}
           />
         </View>

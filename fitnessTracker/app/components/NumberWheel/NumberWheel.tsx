@@ -7,21 +7,25 @@ import { useTheme } from '../../hooks/useTheme';
 interface NumberWheelProps {
   min?: number;
   max?: number;
+  step?: number;
   value: number;
   onValueChange: (value: number) => void;
   width?: number;
   suffix?: string;
   visibleItems?: number;
+  formatValue?: (value: number) => string;
 }
 
 export const NumberWheel: React.FC<NumberWheelProps> = ({
   min = 0,
   max = 59,
+  step = 1,
   value,
   onValueChange,
   width = 80,
   suffix = '',
   visibleItems = 5,
+  formatValue,
 }) => {
   const colors = useTheme();
   const scrollRef = useRef<ScrollView>(null);
@@ -29,7 +33,10 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
   const itemHeight = 35;
   const layouts = Layouts;
   
-  const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min);
+  const numbers = Array.from(
+    { length: Math.floor((max - min) / step) + 1 },
+    (_, i) => min + i * step
+  );
   const paddingItems = Math.floor(visibleItems / 2);
 
   useEffect(() => {
@@ -270,7 +277,7 @@ export const NumberWheel: React.FC<NumberWheelProps> = ({
                   }
                 ]}
               >
-                {number.toString().padStart(2, '0')}{suffix}
+                {formatValue ? formatValue(number) : number.toString().padStart(2, '0')}{suffix}
               </Text>
             </View>
           );

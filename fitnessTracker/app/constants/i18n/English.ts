@@ -97,6 +97,7 @@ export const English = {
   restTimerDuration: "Rest duration",
   restTimerDurationModal: "Choose rest duration",
   restTimerSeconds: "seconds",
+  restTimerMinutes: "min",
   skipTimer: "Skip",
   trackWeight: "Weight",
   trackReps: "Reps",

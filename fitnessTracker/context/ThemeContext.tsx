@@ -2,6 +2,15 @@ import { ColorPaletteId } from "@/app/constants/ColorPalettes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
 
+const REST_TIMER_MIN = 30;
+const REST_TIMER_MAX = 300;
+const REST_TIMER_STEP = 30;
+
+const snapRestTimerDuration = (seconds: number) => {
+  const clamped = Math.max(REST_TIMER_MIN, Math.min(REST_TIMER_MAX, seconds));
+  return Math.round(clamped / REST_TIMER_STEP) * REST_TIMER_STEP;
+};
+
 interface ThemeContextProps {
   isDark: boolean;
   toggleTheme: () => void;
@@ -75,8 +84,8 @@ export const ThemeProvider = ({ children }: any) => {
     AsyncStorage.getItem("restTimerDuration").then((value) => {
       if (value !== null) {
         const parsed = parseInt(value, 10);
-        if (!Number.isNaN(parsed) && parsed >= 15 && parsed <= 300) {
-          setRestTimerDurationState(parsed);
+        if (!Number.isNaN(parsed)) {
+          setRestTimerDurationState(snapRestTimerDuration(parsed));
         }
       }
     });
@@ -118,9 +127,9 @@ export const ThemeProvider = ({ children }: any) => {
   };
 
   const setRestTimerDuration = async (seconds: number) => {
-    const clamped = Math.max(15, Math.min(300, seconds));
-    setRestTimerDurationState(clamped);
-    await AsyncStorage.setItem("restTimerDuration", String(clamped));
+    const snapped = snapRestTimerDuration(seconds);
+    setRestTimerDurationState(snapped);
+    await AsyncStorage.setItem("restTimerDuration", String(snapped));
   };
 
   return (
