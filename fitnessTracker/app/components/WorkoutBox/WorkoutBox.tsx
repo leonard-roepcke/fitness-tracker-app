@@ -11,7 +11,7 @@ import { getWorkoutVolumeHistory } from '../../utils/workoutVolume';
 import { CreateBox } from '../CreateBox';
 import CustomModal from '../CustomModal';
 import CardBox from "../CardBox";
-import { WorkoutVolumeChart } from '../WorkoutVolumeChart';
+import { WorkoutVolumeChart, WorkoutVolumeMiniChart } from '../WorkoutVolumeChart';
 
 const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
     const colors = useTheme();
@@ -100,12 +100,6 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             right: 0,
             padding: 0,
         },
-        statsButton: {
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            padding: 0,
-        },
     });
 
     if (variant === "default") {
@@ -137,14 +131,10 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
                     </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.statsButton} onPress={() => setShowVolumeStats(true)}>
-                    <CreateBox
-                        iconName="stats-chart"
-                        onPress={() => setShowVolumeStats(true)}
-                        variant="borderless"
-                        iconSize={22}
-                    />
-                </TouchableOpacity>
+                <WorkoutVolumeMiniChart
+                    entries={volumeHistory}
+                    onPress={() => setShowVolumeStats(true)}
+                />
 
                 <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
                     <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
