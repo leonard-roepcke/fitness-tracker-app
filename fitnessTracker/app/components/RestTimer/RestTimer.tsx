@@ -25,21 +25,26 @@ export default function RestTimer({
   onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible) {
+      setRemaining(duration);
+      return;
+    }
 
     setRemaining(duration);
-    const interval = setInterval(() => {
-      setRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          onCompleteRef.current();
-          return 0;
-        }
-        return prev - 1;
-      });
+    let ticks = duration;
+
+    const intervalId = setInterval(() => {
+      ticks -= 1;
+      if (ticks <= 0) {
+        clearInterval(intervalId);
+        setRemaining(0);
+        onCompleteRef.current();
+        return;
+      }
+      setRemaining(ticks);
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalId);
   }, [visible, duration]);
 
   const minutes = Math.floor(remaining / 60);

@@ -25,6 +25,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
     const [showRestTimer, setShowRestTimer] = useState(false);
+    const completingTimerRef = useRef(false);
 
     const [weight, setWeight] = useState<number>(() =>
         workout ? (workout.exercises[i_exercise].last_weight?.[i_set] ?? 0) : 0
@@ -157,6 +158,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
         const hasMoreSets = !(isLastSet && isLastExercise);
 
         if (hasMoreSets && isRestTimerEnabled) {
+            completingTimerRef.current = false;
             setShowRestTimer(true);
             return;
         }
@@ -165,6 +167,8 @@ export default function WorkoutScreen({ route, navigation }: any) {
     };
 
     const handleTimerComplete = () => {
+        if (completingTimerRef.current || !showRestTimer) return;
+        completingTimerRef.current = true;
         setShowRestTimer(false);
         advanceToNext();
     };

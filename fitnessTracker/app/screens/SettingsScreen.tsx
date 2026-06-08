@@ -2,7 +2,7 @@ import * as Application from 'expo-application';
 import { ColorPaletteOptions } from '@/app/constants/ColorPalettes';
 import { getAccentColors } from '@/app/constants/ColorPalettes';
 import React, { useContext, useState } from "react";
-import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import { ThemeContext } from "../../context/ThemeContext";
 import { SettingsBox } from "../components/SettingsBox/SettinsBox";
 import { useAppContext } from '../hooks/useAppContext';
@@ -23,7 +23,7 @@ export default function SettingsScreen() {
     isCTrackerEnabled,
     toggleCTracker,
     isDailyStreakEnabled,
-    toggleDailyStreak,
+    setDailyStreakEnabled,
     isRestTimerEnabled,
     toggleRestTimer,
     restTimerDuration,
@@ -37,6 +37,7 @@ export default function SettingsScreen() {
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [colorModalVisible, setColorModalVisible] = useState(false);
   const [restTimerModalVisible, setRestTimerModalVisible] = useState(false);
+  const [streakModalVisible, setStreakModalVisible] = useState(false);
 
   const activePaletteLabel = ColorPaletteOptions.find((p) => p.id === colorPalette);
 
@@ -104,6 +105,25 @@ export default function SettingsScreen() {
       textAlign: 'center',
       marginBottom: 12,
     },
+    modalSwitchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 8,
+      marginBottom: 8,
+    },
+    modalSwitchLabel: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+      paddingRight: 12,
+    },
+    optionSubtitle: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      marginTop: 2,
+    },
   });
 
   return (
@@ -135,25 +155,17 @@ export default function SettingsScreen() {
         <Text style={styles.sectionTitle}>{text.trackerSection}</Text>
         <SettingsBox
           title={text.restTimer}
-          subtitle={text.restTimerSub}
-          value={isRestTimerEnabled}
-          onValueChange={toggleRestTimer}
+          subtitle={isRestTimerEnabled ? formatRestDuration(restTimerDuration) : text.restTimerOff}
+          isNavigable={true}
+          onPress={() => setRestTimerModalVisible(true)}
         />
-        {isRestTimerEnabled && (
-          <SettingsBox
-            title={text.restTimerDuration}
-            subtitle={formatRestDuration(restTimerDuration)}
-            isNavigable={true}
-            onPress={() => setRestTimerModalVisible(true)}
-          />
-        )}
         <SettingsBox title={text.weightTracker} subtitle={text.weightTrackerSub} value={isWTrackerEnabled} onValueChange={toggleWTracker} />
         <SettingsBox title={text.calorieTracker} subtitle={text.calorieTrackerSub} value={isCTrackerEnabled} onValueChange={toggleCTracker} />
         <SettingsBox
           title={text.dailyStreak}
-          subtitle={isDailyStreakEnabled ? text.dailyStreakSubDaily : text.dailyStreakSubWeekly}
-          value={isDailyStreakEnabled}
-          onValueChange={toggleDailyStreak}
+          subtitle={isDailyStreakEnabled ? text.dailyStreakDaily : text.dailyStreakWeekly}
+          isNavigable={true}
+          onPress={() => setStreakModalVisible(true)}
         />
 
         <Text style={styles.sectionTitle}>{text.suportSection}</Text>
@@ -177,25 +189,69 @@ export default function SettingsScreen() {
       </CustomModal>
 
       <CustomModal visible={restTimerModalVisible} onClose={() => setRestTimerModalVisible(false)}>
-        <Text style={styles.modalTitle}>{text.restTimerDurationModal}</Text>
-        <View style={{ alignItems: 'center', paddingVertical: 8 }}>
-          <NumberWheel
-            min={1}
-            max={10}
-            step={1}
-            value={restTimerDuration / 30}
-            onValueChange={(units) => setRestTimerDuration(units * 30)}
-            formatValue={(units) => {
-              const minutes = units * 0.5;
-              return Number.isInteger(minutes)
-                ? String(minutes)
-                : minutes.toFixed(1).replace('.', language === 'german' ? ',' : '.');
-            }}
-            width={120}
-            suffix={` ${text.restTimerMinutes}`}
-            visibleItems={3}
+        <Text style={styles.modalTitle}>{text.restTimer}</Text>
+        <View style={styles.modalSwitchRow}>
+          <Text style={styles.modalSwitchLabel}>{text.restTimerEnable}</Text>
+          <Switch
+            value={isRestTimerEnabled}
+            onValueChange={toggleRestTimer}
+            trackColor={{ false: '#d1d5db', true: colors.primary }}
+            thumbColor={isRestTimerEnabled ? '#fff' : '#f4f4f5'}
           />
         </View>
+        {isRestTimerEnabled && (
+          <>
+            <Text style={[styles.modalTitle, { fontSize: 16, marginBottom: 4 }]}>
+              {text.restTimerDurationModal}
+            </Text>
+            <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+              <NumberWheel
+                min={1}
+                max={10}
+                step={1}
+                value={restTimerDuration / 30}
+                onValueChange={(units) => setRestTimerDuration(units * 30)}
+                formatValue={(units) => {
+                  const minutes = units * 0.5;
+                  return Number.isInteger(minutes)
+                    ? String(minutes)
+                    : minutes.toFixed(1).replace('.', language === 'german' ? ',' : '.');
+                }}
+                width={120}
+                suffix={` ${text.restTimerMinutes}`}
+                visibleItems={3}
+              />
+            </View>
+          </>
+        )}
+      </CustomModal>
+
+      <CustomModal visible={streakModalVisible} onClose={() => setStreakModalVisible(false)}>
+        <Text style={styles.modalTitle}>{text.dailyStreakModal}</Text>
+        <TouchableOpacity
+          style={[styles.paletteOption, !isDailyStreakEnabled && styles.paletteOptionActive]}
+          onPress={() => {
+            setDailyStreakEnabled(false);
+            setStreakModalVisible(false);
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={styles.paletteLabel}>{text.dailyStreakWeekly}</Text>
+            <Text style={styles.optionSubtitle}>{text.dailyStreakSubWeekly}</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.paletteOption, isDailyStreakEnabled && styles.paletteOptionActive]}
+          onPress={() => {
+            setDailyStreakEnabled(true);
+            setStreakModalVisible(false);
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={styles.paletteLabel}>{text.dailyStreakDaily}</Text>
+            <Text style={styles.optionSubtitle}>{text.dailyStreakSubDaily}</Text>
+          </View>
+        </TouchableOpacity>
       </CustomModal>
 
       <CustomModal visible={colorModalVisible} onClose={() => setColorModalVisible(false)}>

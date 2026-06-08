@@ -21,7 +21,7 @@ interface ThemeContextProps {
   isCTrackerEnabled: boolean;
   toggleCTracker: () => void;
   isDailyStreakEnabled: boolean;
-  toggleDailyStreak: () => void;
+  setDailyStreakEnabled: (enabled: boolean) => void;
   isRestTimerEnabled: boolean;
   toggleRestTimer: () => void;
   restTimerDuration: number;
@@ -38,7 +38,7 @@ export const ThemeContext = createContext<ThemeContextProps>({
   isCTrackerEnabled: true,
   toggleCTracker: () => {},
   isDailyStreakEnabled: false,
-  toggleDailyStreak: () => {},
+  setDailyStreakEnabled: () => {},
   isRestTimerEnabled: true,
   toggleRestTimer: () => {},
   restTimerDuration: 60,
@@ -114,10 +114,9 @@ export const ThemeProvider = ({ children }: any) => {
     await AsyncStorage.setItem("cTracker", String(newValue));
   };
 
-  const toggleDailyStreak = async () => {
-    const newValue = !isDailyStreakEnabled;
-    setIsDailyStreakEnabled(newValue);
-    await AsyncStorage.setItem("DailyStreak", String(newValue));
+  const setDailyStreakEnabled = async (enabled: boolean) => {
+    setIsDailyStreakEnabled(enabled);
+    await AsyncStorage.setItem("DailyStreak", String(enabled));
   };
 
   const toggleRestTimer = async () => {
@@ -144,7 +143,7 @@ export const ThemeProvider = ({ children }: any) => {
         isCTrackerEnabled,
         toggleCTracker,
         isDailyStreakEnabled,
-        toggleDailyStreak,
+        setDailyStreakEnabled,
         isRestTimerEnabled,
         toggleRestTimer,
         restTimerDuration,
