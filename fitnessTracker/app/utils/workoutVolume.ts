@@ -4,7 +4,13 @@ import { Workout } from '@/context/WorkoutContext';
 export type VolumeHistoryEntry = {
   dateISO: string;
   volume: number;
+  index: number;
 };
+
+export const sortWorkoutLogMatches = (matches: WorkoutLogMatch[]) =>
+  [...matches].sort(
+    (a, b) => a.dateISO.localeCompare(b.dateISO) || a.index - b.index
+  );
 
 export const calcTotalVolume = (workout: Workout) => {
   let total = 0;
@@ -22,12 +28,12 @@ export const getWorkoutVolumeHistory = (
   matches: WorkoutLogMatch[],
   maxBars = 8
 ): VolumeHistoryEntry[] => {
-  return [...matches]
-    .sort((a, b) => a.dateISO.localeCompare(b.dateISO))
+  return sortWorkoutLogMatches(matches)
     .slice(-maxBars)
     .map((match) => ({
       dateISO: match.dateISO,
       volume: match.volume,
+      index: match.index,
     }));
 };
 

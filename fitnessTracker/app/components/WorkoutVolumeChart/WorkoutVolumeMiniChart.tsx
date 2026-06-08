@@ -60,11 +60,11 @@ export default function WorkoutVolumeMiniChart({
   return (
     <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={0.75}>
       <View style={styles.barsRow}>
-        {chartEntries.map((entry, index) => {
+        {chartEntries.map((entry) => {
           const barHeight = Math.max(2, (entry.volume / maxVolume) * CHART_HEIGHT);
 
           return (
-            <View key={`${entry.dateISO}-${index}`} style={styles.barColumn}>
+            <View key={`${entry.dateISO}-${entry.index}`} style={styles.barColumn}>
               <View style={[styles.barFill, { height: barHeight }]} />
             </View>
           );

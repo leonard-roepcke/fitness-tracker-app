@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { sortWorkoutLogMatches } from "../app/utils/workoutVolume";
 import { WorkoutLogsByDate } from "../app/types/workoutLogs";
 import { Workout } from "./WorkoutContext";
 
@@ -115,7 +116,7 @@ export const TrackerProvider = ({ children }: { children: ReactNode }) => {
       });
     });
 
-    return result;
+    return sortWorkoutLogMatches(result);
   };
 
   const logWorkout = async (workout: Workout) => {

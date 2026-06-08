@@ -125,7 +125,7 @@ export default function WorkoutVolumeChart({
               index === chartEntries.length - 1;
 
             return (
-              <View key={`${entry.dateISO}-${index}`} style={styles.barColumn}>
+              <View key={`${entry.dateISO}-${entry.index}`} style={styles.barColumn}>
                 <Text style={styles.volumeLabel}>{formatVolume(entry.volume)}</Text>
                 <View style={styles.barTrack}>
                   <View
