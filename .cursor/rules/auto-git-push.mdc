@@ -1,10 +1,34 @@
 ---
-description: Automatisches GitHub-Push nach Agent-Änderungen
+description: Änderungen immer automatisch zu GitHub pushen
 alwaysApply: true
 ---
 
-Nach jeder abgeschlossenen Agent-Session pusht der Cursor-Hook `.cursor/hooks/auto-git-push.sh` alle Projektänderungen automatisch zu GitHub.
+# Automatischer GitHub-Push
 
-- Kein manuelles `git commit` / `git push` nötig, außer der Nutzer verlangt es ausdrücklich anders.
-- Secrets (`.env`, `credentials.json`) werden nicht committed.
-- Commit-Nachricht basiert auf der letzten User-Prompt-Zeile.
+Nach jeder abgeschlossenen Agent-Session pusht der Cursor-Hook `.cursor/hooks/auto-git-push.sh` alle Projektänderungen automatisch zu GitHub (`origin/<aktueller-branch>`).
+
+## Für den Agent
+
+- **Kein manuelles `git commit` oder `git push`** — der Hook übernimmt das am Ende der Session.
+- Änderungen trotzdem vollständig umsetzen; nicht wegen Git-Schritten zurückhalten.
+- Nur manuell committen/pushen, wenn der Nutzer das **ausdrücklich** verlangt (z. B. eigene Commit-Message, kein Push, anderer Branch).
+- Bei explizitem Commit-Wunsch des Nutzers: normal committen; Push nur, wenn der Nutzer Push ebenfalls verlangt.
+
+## Was der Hook macht
+
+1. `git add -A` für alle Änderungen
+2. Secrets ausschließen: `.env`, `.env.local`, `.env.production`, `credentials.json`
+3. Commit mit letzter User-Prompt-Zeile als Message (`agent: <prompt>`)
+4. `git push origin <branch>`
+
+## Beispiele
+
+```bash
+# ❌ Nicht nötig nach normaler Agent-Arbeit
+git add . && git commit -m "fix stats button" && git push
+
+# ✅ Agent macht Code-Änderungen; Hook pusht am Session-Ende automatisch
+
+# ✅ Nur wenn Nutzer es explizit will
+git commit -m "feat: custom release message"
+```
