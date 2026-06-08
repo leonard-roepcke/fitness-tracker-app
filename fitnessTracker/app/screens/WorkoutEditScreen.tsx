@@ -16,9 +16,11 @@ import { CreateBox } from '../components/CreateBox';
 import CustomModal from "../components/CustomModal";
 import { NumberWheel } from '../components/NumberWheel';
 import { useAppContext } from '../hooks/useAppContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
+  const insets = useSafeAreaInsets();
   const {colors, layouts}=useAppContext();
   const { workouts, updateWorkout } = useWorkouts();
   const router = useRouter();
@@ -199,7 +201,7 @@ export default function WorkoutEditScreen({ route }: any) {
     >
       <ScrollView
         style={{ flex: 1, backgroundColor: colors.background }}
-        contentContainerStyle={{ padding: 16, paddingBottom: 60, paddingTop: 20 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 60, paddingTop: insets.top + 8 }}
         scrollEnabled={scrollEnabled}
         keyboardShouldPersistTaps="handled"
       >

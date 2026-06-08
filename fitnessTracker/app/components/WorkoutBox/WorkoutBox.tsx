@@ -20,15 +20,15 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
 
 
     const handlePress = () => {
-        if (id) navigation.navigate('Workout', { workoutId: id });
+        if (id != null) navigation.navigate('Workout', { workoutId: id });
     };
 
     const handleEditPress = () => {
-        if (id) navigation.navigate('WorkoutEdit', { workoutId: id });
+        if (id != null) navigation.navigate('WorkoutEdit', { workoutId: id });
     };
 
     const handleStarPress = () => {
-        if(id) toggleFavorite(id)
+        if (id != null) toggleFavorite(id)
     };
 
     const starIcon = typeof workout === "string" 
