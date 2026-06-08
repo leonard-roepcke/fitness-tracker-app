@@ -3,9 +3,8 @@ import { cardShadow } from "@/app/utils/shadows";
 import { useTracker } from '@/context/TrackerContext';
 import { useWorkouts } from '@/context/WorkoutContext';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import { Workout } from '../../types/workout';
 import { getWorkoutVolumeHistory } from '../../utils/workoutVolume';
@@ -76,15 +75,10 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             borderRightWidth: 0,
             borderLeftWidth: 1,
         },
-        stripPressed: {
-            opacity: 0.75,
-            backgroundColor: colors.overlay,
-        },
         stripCenter: {
             flex: 1,
             justifyContent: "center",
             paddingHorizontal: 20,
-            height: "100%",
         },
         stripText: {
             color: colors.text,
@@ -94,10 +88,6 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
         box: {
             flex: 1,
             justifyContent: "flex-start",
-            width: '100%',
-        },
-        boxPressed: {
-            opacity: 0.85,
         },
         boxText: {
             color: colors.primaryDark,
@@ -113,35 +103,21 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     });
 
     if (variant === "default") {
-        const starColor = typeof workout !== 'string' && workout.isFavorite ? colors.warning : colors.primary;
-
         return (
             <View style={styles.stripContainer}>
-                <Pressable
-                    style={({ pressed }) => [styles.stripButton, pressed && styles.stripPressed]}
-                    onPress={handleStarPress}
-                    delayPressIn={0}
-                >
-                    <Ionicons name={starIcon} size={24} color={starColor} />
-                </Pressable>
+                <TouchableOpacity style={styles.stripButton} onPress={handleStarPress} activeOpacity={1}>
+                    <CreateBox iconName={starIcon} onPress={handleStarPress} iconColor={typeof workout !== 'string' && workout.isFavorite ? colors.warning : colors.primary} />
+                </TouchableOpacity>
 
-                <Pressable
-                    style={({ pressed }) => [styles.stripCenter, pressed && styles.stripPressed]}
-                    onPress={handlePress}
-                    delayPressIn={0}
-                >
+                <TouchableOpacity style={styles.stripCenter} onPress={handlePress} activeOpacity={1}>
                     <Text style={styles.stripText} numberOfLines={1}>
                         {name}
                     </Text>
-                </Pressable>
+                </TouchableOpacity>
 
-                <Pressable
-                    style={({ pressed }) => [styles.stripButton, styles.stripButtonRight, pressed && styles.stripPressed]}
-                    onPress={handleEditPress}
-                    delayPressIn={0}
-                >
-                    <Ionicons name="create-outline" size={24} color={colors.primary} />
-                </Pressable>
+                <TouchableOpacity style={[styles.stripButton, styles.stripButtonRight]} onPress={handleEditPress} activeOpacity={1}>
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
+                </TouchableOpacity>
             </View>
         );
     }
@@ -149,28 +125,20 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
     return (
         <View>
             <CardBox size={0.6}>
-                <Pressable
-                    style={({ pressed }) => [styles.box, pressed && styles.boxPressed]}
-                    onPress={handlePress}
-                    delayPressIn={0}
-                >
+                <TouchableOpacity style={styles.box} onPress={handlePress} activeOpacity={1}>
                     <Text style={styles.boxText} numberOfLines={1}>
                         {name}
                     </Text>
-                </Pressable>
+                </TouchableOpacity>
 
                 <WorkoutVolumeMiniChart
                     entries={volumeHistory}
                     onPress={() => setShowVolumeStats(true)}
                 />
 
-                <View style={styles.editButton}>
-                    <CreateBox
-                        onPress={handleEditPress}
-                        iconName="create-outline"
-                        variant="borderless"
-                    />
-                </View>
+                <TouchableOpacity style={styles.editButton} onPress={handleEditPress} activeOpacity={1}>
+                    <CreateBox iconName="create-outline" onPress={handleEditPress} variant="borderless" />
+                </TouchableOpacity>
             </CardBox>
 
             <CustomModal visible={showVolumeStats} onClose={() => setShowVolumeStats(false)}>

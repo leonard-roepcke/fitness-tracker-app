@@ -11,6 +11,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from "react-native";
 
@@ -117,20 +118,13 @@ export default function CustomModal({
     },
     buttonWrapper: {
       paddingTop: 20,
-      alignSelf: 'stretch',
-      width: '100%',
     },
     closeBtn: {
       borderRadius: layouts.borderRadius,
       overflow: 'hidden',
-      width: '100%',
       ...elevatedShadow(colors),
     },
-    closeBtnPressed: {
-      opacity: 0.82,
-    },
     closeBtnInner: {
-      width: '100%',
       paddingVertical: 14,
       paddingHorizontal: 20,
       alignItems: "center",
@@ -175,17 +169,17 @@ export default function CustomModal({
             {children}
             {showCloseButton && (
               <View style={styles.buttonWrapper}>
-                <Pressable
+                <TouchableOpacity
                   onPress={closeModal}
-                  delayPressIn={0}
-                  style={({ pressed }) => [styles.closeBtn, pressed && styles.closeBtnPressed]}
+                  style={styles.closeBtn}
+                  activeOpacity={1}
                 >
                   <GradientSurface>
                     <View style={styles.closeBtnInner}>
                       <Text style={styles.closeText}>Schließen</Text>
                     </View>
                   </GradientSurface>
-                </Pressable>
+                </TouchableOpacity>
               </View>
             )}
           </View>

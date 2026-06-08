@@ -4,7 +4,7 @@ import CustomModal from '@/app/components/CustomModal';
 import CardBox from '@/app/components/CardBox';
 import GradientButton from '@/app/components/ui/GradientButton';
 import React, { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle, Polyline } from 'react-native-svg';
 import Layouts from '@/app/constants/Layouts';
 
@@ -82,22 +82,18 @@ export default function CStats() {
         {numbers.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.numPadRow}>
             {row.map((btn) => (
-              <Pressable
+              <TouchableOpacity
                 key={btn}
-                style={({ pressed }) => [
-                  styles.numButton,
-                  { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
-                  pressed && styles.numButtonPressed,
-                ]}
+                style={[styles.numButton, { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 }]}
+                activeOpacity={1}
                 onPress={() => {
                   if (btn === '←') handleBackspace();
                   else if (btn === ',') handleCommaPress();
                   else handleNumberPress(btn);
                 }}
-                delayPressIn={0}
               >
                 <Text style={[styles.numButtonText, { color: colors.text }]}>{btn}</Text>
-              </Pressable>
+              </TouchableOpacity>
             ))}
           </View>
         ))}
@@ -119,17 +115,13 @@ export default function CStats() {
         {renderNumPad()}
         <View style={styles.buttonRow}>
           <GradientButton title="Speichern" onPress={handleAddCalories} style={{ flex: 1 }} />
-          <Pressable
-            style={({ pressed }) => [
-              styles.cancelButton,
-              { borderColor: colors.border, backgroundColor: colors.surface },
-              pressed && styles.cancelButtonPressed,
-            ]}
+          <TouchableOpacity
+            style={[styles.cancelButton, { borderColor: colors.border, backgroundColor: colors.surface }]}
+            activeOpacity={1}
             onPress={() => { setShowModal(false); setNewCalories(''); }}
-            delayPressIn={0}
           >
             <Text style={[styles.buttonText, { color: colors.text }]}>Abbrechen</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </CustomModal>
@@ -217,11 +209,9 @@ const styles = StyleSheet.create({
   displayText: { fontSize: 32, fontWeight: '600' },
   numPad: { marginBottom: 16 },
   numPadRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
-  numButton: { flex: 1, aspectRatio: 1.5, borderRadius: layouts.borderRadius, justifyContent: 'center', alignItems: 'center', width: '100%' },
-  numButtonPressed: { opacity: 0.78 },
+  numButton: { flex: 1, aspectRatio: 1.5, borderRadius: layouts.borderRadius, justifyContent: 'center', alignItems: 'center' },
   numButtonText: { fontSize: 24, fontWeight: '600' },
   buttonRow: { flexDirection: 'row', gap: 8 },
-  cancelButton: { flex: 1, paddingVertical: 12, borderRadius: layouts.borderRadius, borderWidth: 1, alignItems: 'center', width: '100%' },
-  cancelButtonPressed: { opacity: 0.78 },
+  cancelButton: { flex: 1, paddingVertical: 12, borderRadius: layouts.borderRadius, borderWidth: 1, alignItems: 'center' },
   buttonText: { fontSize: 14, fontWeight: '600' },
 });

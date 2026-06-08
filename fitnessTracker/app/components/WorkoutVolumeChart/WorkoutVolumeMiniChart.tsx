@@ -1,7 +1,7 @@
 import { VolumeHistoryEntry } from '@/app/utils/workoutVolume';
 import { useTheme } from '@/app/hooks/useTheme';
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const CHART_HEIGHT = 20;
 const MAX_BARS = 14;
@@ -36,12 +36,6 @@ export default function WorkoutVolumeMiniChart({
       position: 'absolute',
       bottom: CORNER_INSET,
       left: CORNER_INSET,
-      padding: 6,
-      borderRadius: 6,
-    },
-    touchablePressed: {
-      opacity: 0.75,
-      backgroundColor: colors.overlay,
     },
     barsRow: {
       flexDirection: 'row',
@@ -63,11 +57,7 @@ export default function WorkoutVolumeMiniChart({
   });
 
   return (
-    <Pressable
-      style={({ pressed }) => [styles.touchable, pressed && styles.touchablePressed]}
-      onPress={onPress}
-      delayPressIn={0}
-    >
+    <TouchableOpacity style={styles.touchable} onPress={onPress} activeOpacity={1}>
       <View style={styles.barsRow}>
         {chartEntries.map((entry) => {
           const barHeight = Math.max(2, (entry.volume / maxVolume) * CHART_HEIGHT);
@@ -79,6 +69,6 @@ export default function WorkoutVolumeMiniChart({
           );
         })}
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 }

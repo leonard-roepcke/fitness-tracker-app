@@ -2,7 +2,7 @@ import Layouts from "@/app/constants/Layouts";
 import GradientSurface from "@/app/components/ui/GradientSurface";
 import { cardShadow } from "@/app/utils/shadows";
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 
 interface ButtonProps {
@@ -68,10 +68,6 @@ export const Button: React.FC<ButtonProps> = ({
       alignItems: 'center',
       width: fullWidth ? '100%' : undefined,
     },
-    buttonPressed: {
-      opacity: 0.85,
-      transform: [{ scale: 0.98 }],
-    },
     buttonText: {
       fontSize: 17,
       fontWeight: '600',
@@ -114,39 +110,39 @@ export const Button: React.FC<ButtonProps> = ({
 
   if (variant === 'secondary') {
     return (
-      <Pressable
-        style={({ pressed }) => [styles.buttonSecondary, pressed && styles.buttonPressed]}
+      <TouchableOpacity
+        style={styles.buttonSecondary}
         onPress={onPress}
-        delayPressIn={0}
+        activeOpacity={1}
       >
         <Text style={getTextStyle()}>{title}</Text>
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 
   if (variant === 'destructive') {
     return (
-      <Pressable
-        style={({ pressed }) => [styles.buttonDestructive, pressed && styles.buttonPressed]}
+      <TouchableOpacity
+        style={styles.buttonDestructive}
         onPress={onPress}
-        delayPressIn={0}
+        activeOpacity={1}
       >
         <Text style={getTextStyle()}>{title}</Text>
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 
   return (
-    <Pressable
-      style={({ pressed }) => [styles.button, cardShadow(colors), pressed && styles.buttonPressed]}
+    <TouchableOpacity
+      style={[styles.button, cardShadow(colors)]}
       onPress={onPress}
-      delayPressIn={0}
+      activeOpacity={1}
     >
       <GradientSurface>
         <View style={styles.buttonInner}>
           <Text style={getTextStyle()}>{title}</Text>
         </View>
       </GradientSurface>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
