@@ -5,7 +5,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   View
@@ -21,20 +20,13 @@ import { cardShadow } from '../utils/shadows';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Exercise } from '../types/workout';
 
-type PickerField = 'sets' | 'weight' | 'reps';
-
-type ActiveModal = {
-  exerciseIndex: number;
-  field: PickerField;
-} | null;
-
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
   const insets = useSafeAreaInsets();
   const { colors, layouts, text } = useAppContext();
   const { workouts, updateWorkout } = useWorkouts();
   const router = useRouter();
-  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+  const [setsModalIndex, setSetsModalIndex] = useState<number | null>(null);
 
   if (!workouts) return null;
 
@@ -72,21 +64,6 @@ export default function WorkoutEditScreen({ route }: any) {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      marginBottom: 12,
-    },
-    toggleRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: 8,
-      borderTopWidth: 1,
-      borderTopColor: colors.border,
-      marginTop: 4,
-    },
-    toggleLabel: {
-      fontSize: 15,
-      fontWeight: '600',
-      color: colors.text,
     },
     spacer: {
       height: 80,
@@ -109,13 +86,13 @@ export default function WorkoutEditScreen({ route }: any) {
 
   const toggleExerciseFlag = (
     exerciseIndex: number,
-    field: 'trackWeight' | 'trackReps',
-    value: boolean
+    field: 'trackWeight' | 'trackReps'
   ) => {
     const updated = [...workouts];
+    const current = updated[index].exercises[exerciseIndex][field] !== false;
     updated[index].exercises[exerciseIndex] = {
       ...updated[index].exercises[exerciseIndex],
-      [field]: value,
+      [field]: !current,
     };
     saveWorkouts(updated);
   };
@@ -126,41 +103,15 @@ export default function WorkoutEditScreen({ route }: any) {
     ex.sets = value;
 
     if (!ex.last_reps) ex.last_reps = [];
-    const currentReps = ex.last_reps[0] ?? 0;
-    while (ex.last_reps.length < value) ex.last_reps.push(currentReps);
+    while (ex.last_reps.length < value) ex.last_reps.push(0);
     if (ex.last_reps.length > value) ex.last_reps = ex.last_reps.slice(0, value);
 
     if (!ex.last_weight) ex.last_weight = [];
-    const currentWeight = ex.last_weight[0] ?? 0;
-    while (ex.last_weight.length < value) ex.last_weight.push(currentWeight);
+    while (ex.last_weight.length < value) ex.last_weight.push(0);
     if (ex.last_weight.length > value) ex.last_weight = ex.last_weight.slice(0, value);
 
     saveWorkouts(updated);
   };
-
-  const changeWeight = (exerciseIndex: number, value: number) => {
-    const updated = [...workouts];
-    const ex = updated[index].exercises[exerciseIndex];
-    if (!ex.last_weight) ex.last_weight = [];
-    while (ex.last_weight.length < ex.sets) ex.last_weight.push(value);
-    ex.last_weight = ex.last_weight.map(() => value);
-    saveWorkouts(updated);
-  };
-
-  const changeReps = (exerciseIndex: number, value: number) => {
-    const updated = [...workouts];
-    const ex = updated[index].exercises[exerciseIndex];
-    if (!ex.last_reps) ex.last_reps = [];
-    while (ex.last_reps.length < ex.sets) ex.last_reps.push(value);
-    ex.last_reps = ex.last_reps.map(() => value);
-    saveWorkouts(updated);
-  };
-
-  const openModal = (exerciseIndex: number, field: PickerField) => {
-    setActiveModal({ exerciseIndex, field });
-  };
-
-  const closeModal = () => setActiveModal(null);
 
   const back = () => router.back();
 
@@ -194,53 +145,6 @@ export default function WorkoutEditScreen({ route }: any) {
     saveWorkouts(updated);
   };
 
-  const renderModalContent = (exerciseIndex: number) => {
-    const exercise = workout.exercises[exerciseIndex];
-    if (!exercise || !activeModal) return null;
-
-    const weight = exercise.last_weight?.[0] ?? 0;
-    const reps = exercise.last_reps?.[0] ?? 0;
-
-    switch (activeModal.field) {
-      case 'sets':
-        return (
-          <NumberWheel
-            min={1}
-            max={30}
-            value={exercise.sets}
-            onValueChange={(value) => changeSets(exerciseIndex, value)}
-            width={120}
-            suffix={` ${text.sets}`}
-            visibleItems={3}
-          />
-        );
-      case 'weight':
-        return (
-          <NumberWheel
-            min={0}
-            max={300}
-            value={weight}
-            onValueChange={(value) => changeWeight(exerciseIndex, value)}
-            width={120}
-            suffix=" kg"
-            visibleItems={3}
-          />
-        );
-      case 'reps':
-        return (
-          <NumberWheel
-            min={0}
-            max={30}
-            value={reps}
-            onValueChange={(value) => changeReps(exerciseIndex, value)}
-            width={120}
-            suffix={` ${text.trackReps}`}
-            visibleItems={3}
-          />
-        );
-    }
-  };
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: colors.background }}
@@ -267,8 +171,6 @@ export default function WorkoutEditScreen({ route }: any) {
         {workout.exercises.map((exercise, exIndex) => {
           const trackWeight = exercise.trackWeight !== false;
           const trackReps = exercise.trackReps !== false;
-          const displayWeight = exercise.last_weight?.[0] ?? 0;
-          const displayReps = exercise.last_reps?.[0] ?? 0;
           const setsLabel = `${exercise.sets} ${exercise.sets > 1 ? text.sets : text.set}`;
 
           return (
@@ -292,50 +194,40 @@ export default function WorkoutEditScreen({ route }: any) {
               <View style={styles.pickerRow}>
                 <GradientButton
                   title={setsLabel}
-                  onPress={() => openModal(exIndex, 'sets')}
+                  onPress={() => setSetsModalIndex(exIndex)}
                   compact
                   style={{ flex: 1 }}
                 />
                 <GradientButton
-                  title={`${displayWeight} kg`}
-                  onPress={() => openModal(exIndex, 'weight')}
+                  title={text.trackWeight}
+                  onPress={() => toggleExerciseFlag(exIndex, 'trackWeight')}
                   compact
+                  active={trackWeight}
                   style={{ flex: 1 }}
                 />
                 <GradientButton
-                  title={`${displayReps} Reps`}
-                  onPress={() => openModal(exIndex, 'reps')}
+                  title={text.trackReps}
+                  onPress={() => toggleExerciseFlag(exIndex, 'trackReps')}
                   compact
+                  active={trackReps}
                   style={{ flex: 1 }}
-                />
-              </View>
-
-              <View style={styles.toggleRow}>
-                <Text style={styles.toggleLabel}>{text.trackWeight}</Text>
-                <Switch
-                  value={trackWeight}
-                  onValueChange={(v) => toggleExerciseFlag(exIndex, 'trackWeight', v)}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="#fff"
-                />
-              </View>
-
-              <View style={styles.toggleRow}>
-                <Text style={styles.toggleLabel}>{text.trackReps}</Text>
-                <Switch
-                  value={trackReps}
-                  onValueChange={(v) => toggleExerciseFlag(exIndex, 'trackReps', v)}
-                  trackColor={{ false: colors.border, true: colors.primary }}
-                  thumbColor="#fff"
                 />
               </View>
 
               <CustomModal
-                visible={activeModal?.exerciseIndex === exIndex}
-                onClose={closeModal}
+                visible={setsModalIndex === exIndex}
+                onClose={() => setSetsModalIndex(null)}
               >
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                  {renderModalContent(exIndex)}
+                  <NumberWheel
+                    min={1}
+                    max={30}
+                    value={exercise.sets}
+                    onValueChange={(value) => changeSets(exIndex, value)}
+                    width={120}
+                    suffix={` ${text.sets}`}
+                    visibleItems={3}
+                  />
                 </View>
               </CustomModal>
             </View>

@@ -10,10 +10,18 @@ type GradientButtonProps = {
     onPress: () => void;
     small?: boolean;
     compact?: boolean;
+    active?: boolean;
     style?: StyleProp<ViewStyle>;
 };
 
-export default function GradientButton({ title, onPress, small = false, compact = false, style }: GradientButtonProps) {
+export default function GradientButton({
+    title,
+    onPress,
+    small = false,
+    compact = false,
+    active = true,
+    style,
+}: GradientButtonProps) {
     const colors = useTheme();
     const layouts = Layouts;
 
@@ -36,7 +44,7 @@ export default function GradientButton({ title, onPress, small = false, compact 
             justifyContent: 'center',
         },
         text: {
-            color: '#FFFFFF',
+            color: active ? '#FFFFFF' : colors.textSecondary,
             fontSize: small ? 16 : compact ? 13 : 14,
             fontWeight: '600',
         },
@@ -44,11 +52,11 @@ export default function GradientButton({ title, onPress, small = false, compact 
 
     return (
         <TouchableOpacity
-            style={[styles.button, style]}
+            style={[styles.button, style, !active && { opacity: 0.75 }]}
             onPress={onPress}
             activeOpacity={0.85}
         >
-            <GradientSurface>
+            <GradientSurface variant={active ? 'primary' : 'surface'}>
                 <View style={small ? styles.innerSmall : styles.inner}>
                     <Text style={styles.text}>{title}</Text>
                 </View>
