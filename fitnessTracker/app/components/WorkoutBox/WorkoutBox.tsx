@@ -96,8 +96,8 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
         },
         editButton: {
             position: 'absolute',
-            bottom: 0,
-            right: 0,
+            bottom: 6,
+            right: 6,
             padding: 0,
         },
     });

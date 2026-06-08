@@ -4,8 +4,10 @@ import React, { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 const CHART_HEIGHT = 20;
-const MAX_BARS = 8;
-const CHART_WIDTH = 48;
+const MAX_BARS = 7;
+const BAR_WIDTH = 4;
+const BAR_GAP = 2;
+const CORNER_INSET = 6;
 
 type WorkoutVolumeMiniChartProps = {
   entries: VolumeHistoryEntry[];
@@ -32,25 +34,22 @@ export default function WorkoutVolumeMiniChart({
   const styles = StyleSheet.create({
     touchable: {
       position: 'absolute',
-      bottom: 0,
-      left: 0,
-      padding: 8,
+      bottom: CORNER_INSET,
+      left: CORNER_INSET,
     },
     barsRow: {
       flexDirection: 'row',
       alignItems: 'flex-end',
-      justifyContent: 'space-between',
-      width: CHART_WIDTH,
       height: CHART_HEIGHT,
-      gap: 2,
+      gap: BAR_GAP,
     },
     barColumn: {
-      flex: 1,
+      width: BAR_WIDTH,
       height: CHART_HEIGHT,
       justifyContent: 'flex-end',
     },
     barFill: {
-      width: '100%',
+      width: BAR_WIDTH,
       backgroundColor: colors.primary,
       borderRadius: 2,
       minHeight: 2,
