@@ -151,4 +151,6 @@ export const German = {
   homeMotivation1: "Willkommen zurück.",
   homeMotivation2: "Bleib dran — jede Session zählt.",
   homeMotivation3: "Bereit für dein nächstes Training?",
+  prBadge: "PR!",
+  prCountLabel: "neue PRs",
 }

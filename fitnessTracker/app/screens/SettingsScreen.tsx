@@ -10,7 +10,7 @@ import AppContainer from '../components/ui/AppContainer';
 import { useLanguage } from "@/app/hooks/useLanguage";
 import CustomModal from '../components/CustomModal';
 import { NumberWheel } from '../components/NumberWheel';
-import GradientSurface from '../components/ui/GradientSurface';
+import { resetOnboarding } from './OnboardingScreen';
 
 export default function SettingsScreen() {
   const {
@@ -171,6 +171,7 @@ export default function SettingsScreen() {
         <Text style={styles.sectionTitle}>{text.suportSection}</Text>
         <SettingsBox title={text.privacyPolicyHeading} subtitle={text.privacyPolicyHeadingSub} isNavigable={true} onPress={() => nav.navigate("PrivacyPolicy")} />
         <SettingsBox title={text.termsOfUseHeading} subtitle={text.termsOfUseHeadingSub} isNavigable={true} onPress={() => nav.navigate("TermsOfUse")} />
+        <SettingsBox title={text.onboardingReplay} subtitle={text.onboardingReplaySub} isNavigable={true} onPress={async () => { await resetOnboarding(); nav.navigate('Onboarding'); }} />
         <SettingsBox title={text.suport} subtitle={text.suportSub} isNavigable={true} onPress={() => {}} />
 
         <Text style={styles.footerText}>

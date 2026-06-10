@@ -1,3 +1,4 @@
+import { checkSetForPR } from '@/app/utils/personalRecords';
 import { ThemeContext } from "@/context/ThemeContext";
 import { useSessions } from "@/context/SessionContext";
 import { useSearchParams } from 'expo-router/build/hooks';
@@ -22,6 +23,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
         updateSessionNotes,
         getLastPerformance,
         discardActiveSession,
+        sessions,
     } = useSessions();
     const { isRestTimerEnabled, restTimerDuration } = useContext(ThemeContext);
     const params = useSearchParams();
@@ -107,6 +109,13 @@ export default function WorkoutScreen({ route, navigation }: any) {
         lastTime: {
             fontSize: 14,
             color: colors.textSecondary,
+            textAlign: 'center',
+            marginBottom: 8,
+        },
+        prBadge: {
+            fontSize: 13,
+            fontWeight: '700',
+            color: colors.warning,
             textAlign: 'center',
             marginBottom: 8,
         },
@@ -209,6 +218,15 @@ export default function WorkoutScreen({ route, navigation }: any) {
         ? `${text.lastTime}: ${lastPerformance.weight} kg × ${lastPerformance.reps}`
         : null;
 
+    const prCheck = checkSetForPR(
+        sessions,
+        currentSessionExercise.exerciseId,
+        weight,
+        reps,
+        session.id
+    );
+    const isPR = prCheck.isWeightPR || prCheck.isVolumePR;
+
     return (
         <AppContainer isBar={true} scrolable={true}>
             <View style={{ height: 60, justifyContent: 'center' }}>
@@ -231,6 +249,10 @@ export default function WorkoutScreen({ route, navigation }: any) {
 
             {lastTimeLabel && (
                 <Text style={styles.lastTime}>{lastTimeLabel}</Text>
+            )}
+
+            {isPR && weight > 0 && (
+                <Text style={styles.prBadge}>{text.prBadge}</Text>
             )}
 
             <RepWeightPicker

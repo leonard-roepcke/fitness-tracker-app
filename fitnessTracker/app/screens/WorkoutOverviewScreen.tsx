@@ -1,7 +1,7 @@
-import { ThemeContext } from '@/context/ThemeContext';
 import { useSessions } from '@/context/SessionContext';
-import React, { useContext, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { v4 as uuidv4 } from 'uuid';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { CreateBox } from '../components/CreateBox';
 import { WorkoutBox } from '../components/WorkoutBox';

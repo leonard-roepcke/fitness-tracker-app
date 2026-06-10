@@ -11,6 +11,7 @@ import {
   getBestSet,
   getMaxWeightTimeline,
 } from '../utils/exerciseHistory';
+import { isSetPR } from '../utils/personalRecords';
 import { formatSessionDate } from '../utils/sessionHistory';
 
 export default function ExerciseHistoryScreen({ route }: any) {
@@ -124,6 +125,11 @@ export default function ExerciseHistoryScreen({ route }: any) {
       fontSize: 13,
       color: colors.textSecondary,
     },
+    setTextPR: {
+      fontSize: 13,
+      color: colors.warning,
+      fontWeight: '600',
+    },
     empty: {
       textAlign: 'center',
       color: colors.textSecondary,
@@ -184,16 +190,27 @@ export default function ExerciseHistoryScreen({ route }: any) {
                 {formatSessionDate(entry.dateISO, language)}
               </Text>
               <Text style={styles.entrySub}>{entry.workoutName}</Text>
-              {entry.sets.map((set) => (
+              {entry.sets.map((set) => {
+                const isPR = isSetPR(
+                  sessions.filter((s) => s.status === 'completed' && s.id !== entry.sessionId),
+                  exerciseId,
+                  set.weight,
+                  set.reps
+                ) || (
+                  sessions.find((s) => s.id === entry.sessionId)?.completedAt ===
+                  Math.max(...sessions.filter(s => s.status === 'completed').map(s => s.completedAt ?? 0))
+                  && set.weight === entry.maxWeight
+                );
+                return (
                 <View key={set.setIndex} style={styles.setRow}>
                   <Text style={styles.setText}>
                     {text.set} {set.setIndex + 1}
                   </Text>
-                  <Text style={styles.setText}>
-                    {set.weight} kg × {set.reps}
+                  <Text style={isPR ? styles.setTextPR : styles.setText}>
+                    {set.weight} kg × {set.reps}{isPR ? ` ${text.prBadge}` : ''}
                   </Text>
                 </View>
-              ))}
+              );})}
             </View>
           ))
         )}

@@ -9,7 +9,9 @@ import { useWorkouts } from '../../context/WorkoutContext';
 import CardBox from '@/app/components/CardBox';
 import { WorkoutVolumeChart } from '../components/WorkoutVolumeChart';
 import { mergeVolumeHistory, sessionsToVolumeHistory } from '../utils/sessionStreak';
+import { applySessionToWorkout } from '../utils/syncTemplateFromSession';
 import { calcSessionVolume } from '../utils/sessionVolume';
+import { countSessionPRs } from '../utils/personalRecords';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -24,6 +26,7 @@ export default function WorkoutEndScreen({ route }: any) {
     completeSession,
     discardActiveSession,
     getSessionsByWorkoutId,
+    sessions,
   } = useSessions();
 
   const rawSessionId = route?.params?.sessionId ?? ((params as any).get ? (params as any).get('sessionId') : (params as any).sessionId);
@@ -33,6 +36,11 @@ export default function WorkoutEndScreen({ route }: any) {
 
   const session = getSessionById(sessionId);
   const workout = workouts?.find((w) => w.id === workoutId);
+
+  const prCount = useMemo(() => {
+    if (!session) return 0;
+    return countSessionPRs(session, sessions);
+  }, [session, sessions]);
 
   const summary = useMemo(() => {
     if (!session) return null;
@@ -82,6 +90,13 @@ export default function WorkoutEndScreen({ route }: any) {
       height: 1,
       backgroundColor: colors.border,
       marginBottom: 16,
+    },
+    prSummary: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.warning,
+      textAlign: 'center',
+      marginBottom: 12,
     },
     actions: {
       gap: layouts.marginVertical,
@@ -136,6 +151,12 @@ export default function WorkoutEndScreen({ route }: any) {
             <Text style={styles.statValue}>{summary.totalSets}</Text>
           </View>
         </View>
+
+        {prCount > 0 && (
+          <Text style={styles.prSummary}>
+            {prCount} {text.prCountLabel}
+          </Text>
+        )}
 
         <View style={styles.divider} />
         <WorkoutVolumeChart
