@@ -1,6 +1,6 @@
 import { useSessions } from '@/context/SessionContext';
 import { useSearchParams } from 'expo-router/build/hooks';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   Alert,
   ScrollView,
@@ -20,7 +20,6 @@ export default function SessionDetailScreen({ route }: any) {
   const { language } = useLanguage();
   const params = useSearchParams();
   const { getSessionById, deleteSession } = useSessions();
-  const [deleting, setDeleting] = useState(false);
 
   const rawSessionId =
     route?.params?.sessionId ??
@@ -104,7 +103,6 @@ export default function SessionDetailScreen({ route }: any) {
         text: text.remove,
         style: 'destructive',
         onPress: async () => {
-          setDeleting(true);
           await deleteSession(sessionId);
           nav.navigate('History');
         },

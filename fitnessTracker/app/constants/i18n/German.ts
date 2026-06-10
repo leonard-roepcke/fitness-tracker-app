@@ -126,4 +126,8 @@ export const German = {
   sessionDelete: "Session löschen",
   sessionDeleteTitle: "Session löschen?",
   sessionDeleteMessage: "Diese Trainingseinheit wird dauerhaft entfernt.",
+  exerciseHistoryHeading: "Übungshistorie",
+  exerciseHistoryEmpty: "Noch keine Einträge für diese Übung.",
+  exerciseBestWeight: "Bestes Gewicht",
+  exerciseBestReps: "Beste Wdh.",
 }

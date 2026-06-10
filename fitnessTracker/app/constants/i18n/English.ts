@@ -133,4 +133,8 @@ export const English = {
   sessionDelete: "Delete session",
   sessionDeleteTitle: "Delete session?",
   sessionDeleteMessage: "This training session will be permanently removed.",
+  exerciseHistoryHeading: "Exercise history",
+  exerciseHistoryEmpty: "No entries for this exercise yet.",
+  exerciseBestWeight: "Best weight",
+  exerciseBestReps: "Best reps",
 }

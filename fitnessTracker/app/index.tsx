@@ -5,6 +5,7 @@ import WorkoutEditScreen from './screens/WorkoutEditScreen';
 import WorkoutOverviewScreen from './screens/WorkoutOverviewScreen';
 import WorkoutScreen from './screens/WorkoutScreen';
 import WorkoutEndScreen from './screens/WorkoutEndScreen';
+import ExerciseHistoryScreen from './screens/ExerciseHistoryScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import SessionDetailScreen from './screens/SessionDetailScreen';
 import HealthScreen from './screens/HealthScreen';
@@ -22,6 +23,7 @@ export default function App() {
       <Stack.Screen name="WorkoutEnd" component={WorkoutEndScreen} />
       <Stack.Screen name="History" component={HistoryScreen} />
       <Stack.Screen name="SessionDetail" component={SessionDetailScreen} />
+      <Stack.Screen name="ExerciseHistory" component={ExerciseHistoryScreen} />
       <Stack.Screen name="Health" component={HealthScreen} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
       <Stack.Screen name="TermsOfUse" component={TermsOfUseScreen} />
