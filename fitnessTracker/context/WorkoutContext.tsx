@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Workout } from "../app/types/workout";
+import { normalizeWorkouts } from "../app/utils/workoutMigration";
 
 type WorkoutContextType = {
     workouts: Workout[] | null;
@@ -26,8 +27,14 @@ export const WorkoutProvider = ({ children }: any) => {
         (async () => {
             try {
                 const data = await AsyncStorage.getItem("workouts");
-                if (data) setWorkouts(JSON.parse(data));
-                else setWorkouts([]);
+                if (data) {
+                    const parsed: Workout[] = JSON.parse(data);
+                    const normalized = normalizeWorkouts(parsed);
+                    setWorkouts(normalized);
+                    if (JSON.stringify(parsed) !== JSON.stringify(normalized)) {
+                        await AsyncStorage.setItem("workouts", JSON.stringify(normalized));
+                    }
+                } else setWorkouts([]);
             } catch (err) {
                 setWorkouts([]);
             }

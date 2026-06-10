@@ -1,4 +1,5 @@
 export interface Exercise {
+  id?: string;
   name: string;
   sets: number;
   last_reps: number[];

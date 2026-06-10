@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from "../context/ThemeContext";
 import { TrackerProvider } from "../context/TrackerContext";
 import { WorkoutProvider } from "../context/WorkoutContext";
+import { SessionProvider } from "../context/SessionContext";
 import { LanguageProvider } from '@/context/LanguageContext';
 
 export default function RootLayout() {
@@ -12,6 +13,7 @@ export default function RootLayout() {
     <WeightProvider>
       <ThemeProvider>
         <WorkoutProvider>
+          <SessionProvider>
           <TrackerProvider>
             <LanguageProvider>
             <SafeAreaProvider>
@@ -21,6 +23,7 @@ export default function RootLayout() {
             </SafeAreaProvider>
             </LanguageProvider>
           </TrackerProvider>
+          </SessionProvider>
         </WorkoutProvider>
       </ThemeProvider>
     </WeightProvider>
