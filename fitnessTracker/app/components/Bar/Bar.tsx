@@ -29,7 +29,7 @@ export const Bar = () => {
             padding: 8,
             backgroundColor: colors.card,
             borderRadius: layouts.borderRadiusLarge,
-            marginHorizontal: 32,
+            marginHorizontal: 16,
             borderWidth: 1,
             borderColor: colors.border,
             ...elevatedShadow(colors),
@@ -56,6 +56,17 @@ export const Bar = () => {
                     name="dumbbell"
                     size={current === "WorkoutOverview" ? activeSize : inactiveSize}
                     color={iconColor("WorkoutOverview")}
+                />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => navigation.navigate("History")}
+                style={[styles.tab, current === "History" && styles.tabActive]}
+            >
+                <Ionicons
+                    name="time"
+                    size={current === "History" ? activeSize : inactiveSize}
+                    color={iconColor("History")}
                 />
             </TouchableOpacity>
 

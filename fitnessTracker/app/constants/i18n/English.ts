@@ -125,4 +125,12 @@ export const English = {
   workoutAbortConfirm: "Cancel workout",
   workoutAbortCancel: "Keep training",
   workoutNotesPlaceholder: "Notes: write here...",
+  historyHeading: "History",
+  historyEmpty: "No completed workouts yet.\nStart your first training!",
+  historyMinutes: "min",
+  sessionDetailHeading: "Session",
+  sessionNotFound: "Session not found",
+  sessionDelete: "Delete session",
+  sessionDeleteTitle: "Delete session?",
+  sessionDeleteMessage: "This training session will be permanently removed.",
 }
