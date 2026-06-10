@@ -1,4 +1,5 @@
-import { useTracker } from "@/context/TrackerContext";
+import { useSessions } from "@/context/SessionContext";
+import { getDailyStreakFromSessions, getWeeklyStreakFromSessions } from "@/app/utils/sessionStreak";
 import { Flame } from "lucide-react-native";
 import React,{useContext} from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -12,13 +13,13 @@ type StreakFlameProps = {
 export const StreakFlame: React.FC<StreakFlameProps> = ({
   size = 30,
 }) => {
-  const { getDailyStreak, getWeeklyStreak } = useTracker();
   const { colors } = useAppContext();
-  const { isWTrackerEnabled , isDailyStreakEnabled} = useContext(ThemeContext);
-  // Streak aus Context holen
-
-  const type = isDailyStreakEnabled?'daily':'weekly';
-  const streak = type === "daily" ? getDailyStreak() : getWeeklyStreak();
+  const { isDailyStreakEnabled } = useContext(ThemeContext);
+  const { sessions } = useSessions();
+  const type = isDailyStreakEnabled ? 'daily' : 'weekly';
+  const streak = type === "daily"
+    ? getDailyStreakFromSessions(sessions)
+    : getWeeklyStreakFromSessions(sessions);
   const color = isDailyStreakEnabled? colors.primary : colors.warning;
   
   return (

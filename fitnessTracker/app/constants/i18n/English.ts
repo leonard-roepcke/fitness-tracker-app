@@ -119,4 +119,10 @@ export const English = {
   workoutNotFound: "Workout not found",
   safe:"safe",
   remove:"remove",
+  lastTime: "Last time",
+  workoutAbortTitle: "Cancel workout?",
+  workoutAbortMessage: "Your progress in this session will be lost.",
+  workoutAbortConfirm: "Cancel workout",
+  workoutAbortCancel: "Keep training",
+  workoutNotesPlaceholder: "Notes: write here...",
 }

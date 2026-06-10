@@ -112,4 +112,10 @@ export const German = {
   workoutNotFound: "Workout nicht gefunden",
   safe:"Speichern",
   remove:"Löschen",
+  lastTime: "Letztes Mal",
+  workoutAbortTitle: "Training abbrechen?",
+  workoutAbortMessage: "Dein Fortschritt in dieser Session geht verloren.",
+  workoutAbortConfirm: "Abbrechen",
+  workoutAbortCancel: "Weiter trainieren",
+  workoutNotesPlaceholder: "Notizen: Schreibe hier...",
 }

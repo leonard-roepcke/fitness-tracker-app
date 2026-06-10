@@ -158,64 +158,50 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
   const completeSession = useCallback(
     async (sessionId: string): Promise<WorkoutSession | null> => {
-      let completed: WorkoutSession | null = null;
+      const fromActive = activeSession?.id === sessionId ? activeSession : null;
+      const fromStore = sessions.find((s) => s.id === sessionId);
+      const source = fromActive ?? fromStore ?? null;
+      if (!source) return null;
 
-      setActiveSession((prev) => {
-        if (!prev || prev.id !== sessionId) return prev;
-        completed = {
-          ...prev,
-          status: 'completed',
-          completedAt: Date.now(),
-          totalVolume: calcSessionVolume(prev.exercises),
-        };
-        return null;
-      });
+      const completed: WorkoutSession = {
+        ...source,
+        status: 'completed',
+        completedAt: Date.now(),
+        totalVolume: calcSessionVolume(source.exercises),
+      };
 
-      if (!completed) {
-        const existing = sessions.find((s) => s.id === sessionId);
-        if (existing) {
-          completed = {
-            ...existing,
-            status: 'completed',
-            completedAt: Date.now(),
-            totalVolume: calcSessionVolume(existing.exercises),
-          };
-        }
+      if (fromActive) {
+        setActiveSession(null);
       }
 
-      if (completed) {
-        const withoutDuplicate = sessions.filter((s) => s.id !== completed!.id);
-        await persistSessions([...withoutDuplicate, completed]);
-      }
-
+      const withoutDuplicate = sessions.filter((s) => s.id !== sessionId);
+      await persistSessions([...withoutDuplicate, completed]);
       return completed;
     },
-    [sessions]
+    [sessions, activeSession]
   );
 
   const abortSession = useCallback(
     async (sessionId: string, savePartial = false) => {
-      setActiveSession((prev) => {
-        if (!prev || prev.id !== sessionId) return prev;
+      const fromActive = activeSession?.id === sessionId ? activeSession : null;
+      if (!fromActive) return;
 
-        if (savePartial) {
-          const aborted: WorkoutSession = {
-            ...prev,
-            status: 'aborted',
-            completedAt: Date.now(),
-            totalVolume: calcSessionVolume(prev.exercises),
-          };
-          persistSessions([...sessions.filter((s) => s.id !== sessionId), aborted]);
-        }
-
-        return null;
-      });
-
-      if (!savePartial) {
-        setActiveSession((prev) => (prev?.id === sessionId ? null : prev));
+      if (savePartial) {
+        const aborted: WorkoutSession = {
+          ...fromActive,
+          status: 'aborted',
+          completedAt: Date.now(),
+          totalVolume: calcSessionVolume(fromActive.exercises),
+        };
+        await persistSessions([
+          ...sessions.filter((s) => s.id !== sessionId),
+          aborted,
+        ]);
       }
+
+      setActiveSession(null);
     },
-    [sessions]
+    [sessions, activeSession]
   );
 
   const discardActiveSession = useCallback((sessionId: string) => {

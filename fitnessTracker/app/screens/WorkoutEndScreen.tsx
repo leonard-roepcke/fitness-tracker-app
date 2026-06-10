@@ -1,4 +1,5 @@
 import { useTracker } from '@/context/TrackerContext';
+import { useSessions } from '@/context/SessionContext';
 import { CreateBox } from '../components/CreateBox';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useTheme } from '../hooks/useTheme';
@@ -7,7 +8,8 @@ import { useAppContext } from '../hooks/useAppContext';
 import { useWorkouts } from '../../context/WorkoutContext';
 import CardBox from '@/app/components/CardBox';
 import { WorkoutVolumeChart } from '../components/WorkoutVolumeChart';
-import { calcTotalVolume, getWorkoutVolumeHistory } from '../utils/workoutVolume';
+import { mergeVolumeHistory, sessionsToVolumeHistory } from '../utils/sessionStreak';
+import { calcSessionVolume } from '../utils/sessionVolume';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -15,27 +17,42 @@ export default function WorkoutEndScreen({ route }: any) {
   const colors = useTheme();
   const { text, nav, layouts } = useAppContext();
   const params = useSearchParams();
-  const { workouts } = useWorkouts();
+  const { workouts, updateWorkout } = useWorkouts();
   const { logWorkout, showWorkoutsById, workoutLogs } = useTracker();
+  const {
+    getSessionById,
+    completeSession,
+    discardActiveSession,
+    getSessionsByWorkoutId,
+  } = useSessions();
 
-  const rawId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
-  const workoutId = Number(rawId);
+  const rawSessionId = route?.params?.sessionId ?? ((params as any).get ? (params as any).get('sessionId') : (params as any).sessionId);
+  const sessionId = rawSessionId as string;
+  const rawWorkoutId = route?.params?.workoutId ?? ((params as any).get ? (params as any).get('workoutId') : (params as any).workoutId);
+  const workoutId = Number(rawWorkoutId);
+
+  const session = getSessionById(sessionId);
   const workout = workouts?.find((w) => w.id === workoutId);
 
   const summary = useMemo(() => {
-    if (!workout) return null;
+    if (!session) return null;
 
+    const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
     return {
-      totalVolume: calcTotalVolume(workout),
-      totalSets: workout.exercises.reduce((sum, ex) => sum + ex.sets, 0),
-      exerciseCount: workout.exercises.length,
+      totalVolume: calcSessionVolume(session.exercises),
+      totalSets,
+      exerciseCount: session.exercises.length,
     };
-  }, [workout]);
+  }, [session]);
 
   const volumeHistory = useMemo(() => {
     if (!workout) return [];
-    return getWorkoutVolumeHistory(showWorkoutsById(workout.id));
-  }, [workout, workoutLogs]);
+    const sessionEntries = sessionsToVolumeHistory(
+      getSessionsByWorkoutId(workout.id),
+      workout.id
+    );
+    return mergeVolumeHistory(sessionEntries, showWorkoutsById(workout.id));
+  }, [workout, workoutLogs, session, getSessionsByWorkoutId, showWorkoutsById]);
 
   const styles = StyleSheet.create({
     summaryGrid: {
@@ -76,7 +93,7 @@ export default function WorkoutEndScreen({ route }: any) {
     },
   });
 
-  if (!workout || !summary) {
+  if (!session || !workout || !summary) {
     return (
       <AppContainer heading={text.workoutendHeading} isBar={true}>
         <Text style={styles.notFound}>{text.workoutNotFound}</Text>
@@ -85,16 +102,25 @@ export default function WorkoutEndScreen({ route }: any) {
   }
 
   const goHome = async () => {
-    await logWorkout(workout);
+    await completeSession(sessionId);
+    const updatedWorkout = applySessionToWorkout(workout, session);
+    if (workouts) {
+      const updated = workouts.map((w) =>
+        w.id === workout.id ? updatedWorkout : w
+      );
+      updateWorkout(updated);
+      await logWorkout(updatedWorkout);
+    }
     nav.navigate('WorkoutOverview');
   };
 
   const delGoHome = () => {
+    discardActiveSession(sessionId);
     nav.navigate('WorkoutOverview');
   };
 
   return (
-    <AppContainer heading={`${text.workoutendHeading} ${workout.name}`} isBar={true}>
+    <AppContainer heading={`${text.workoutendHeading} ${session.workoutName}`} isBar={true}>
       <CardBox size={2.2}>
         <View style={styles.summaryGrid}>
           <View style={styles.statBlock}>
