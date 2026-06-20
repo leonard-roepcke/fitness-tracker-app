@@ -1,11 +1,11 @@
 import { useSessions } from '@/context/SessionContext';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import DraggableFlatList, { RenderItemParams, ScaleDecorator } from 'react-native-draggable-flatlist';
 import { generateId } from '../utils/generateId';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { CreateBox } from '../components/CreateBox';
 import { WorkoutBox } from '../components/WorkoutBox';
+import ReorderableWorkoutList from '../components/ReorderableWorkoutList';
 import { Workout } from "../types/workout";
 import { useAppContext } from '../hooks/useAppContext';
 import AppContainer from '../components/ui/AppContainer';
@@ -141,32 +141,28 @@ export default function WorkoutOverview() {
       updateWorkout([...workouts, template]);
     };
 
-    const handleFavoritesReorder = ({ data }: { data: Workout[] }) => {
+    const handleFavoritesReorder = (data: Workout[]) => {
       if (!workouts) return;
       updateWorkout([...data, ...regular]);
     };
 
-    const handleRegularReorder = ({ data }: { data: Workout[] }) => {
+    const handleRegularReorder = (data: Workout[]) => {
       if (!workouts) return;
       updateWorkout([...favorites, ...data]);
     };
 
-    const renderWorkoutItem = ({ item, drag, isActive }: RenderItemParams<Workout>) => {
+    const renderWorkoutCard = (item: Workout, dragHandlers: Record<string, unknown>, isDragging: boolean) => {
       const lastLabel = getLastTrainedLabel(item.id);
       return (
-        <ScaleDecorator>
-          <View style={styles.listItem}>
-            <WorkoutBox
-              variant="box"
-              workout={item}
-              onDrag={drag}
-              isDragging={isActive}
-              lastTrainedLabel={
-                lastLabel ? `${text.homeLastTrained}: ${lastLabel}` : null
-              }
-            />
-          </View>
-        </ScaleDecorator>
+        <WorkoutBox
+          variant="box"
+          workout={item}
+          dragPanHandlers={dragHandlers}
+          isDragging={isDragging}
+          lastTrainedLabel={
+            lastLabel ? `${text.homeLastTrained}: ${lastLabel}` : null
+          }
+        />
       );
     };
 
@@ -202,12 +198,11 @@ export default function WorkoutOverview() {
                     {favorites.length > 0 && (
                       <>
                         <Text style={styles.sectionTitle}>{text.homeFavorites}</Text>
-                        <DraggableFlatList
-                          data={favorites}
-                          keyExtractor={(item) => `fav-${item.id}`}
-                          renderItem={renderWorkoutItem}
-                          onDragEnd={handleFavoritesReorder}
-                          scrollEnabled={false}
+                        <ReorderableWorkoutList
+                          items={favorites}
+                          onReorder={handleFavoritesReorder}
+                          itemStyle={styles.listItem}
+                          renderItem={renderWorkoutCard}
                         />
                       </>
                     )}
@@ -216,12 +211,11 @@ export default function WorkoutOverview() {
                         {favorites.length > 0 && (
                           <Text style={styles.sectionTitle}>{text.homeAllWorkouts}</Text>
                         )}
-                        <DraggableFlatList
-                          data={regular}
-                          keyExtractor={(item) => `reg-${item.id}`}
-                          renderItem={renderWorkoutItem}
-                          onDragEnd={handleRegularReorder}
-                          scrollEnabled={false}
+                        <ReorderableWorkoutList
+                          items={regular}
+                          onReorder={handleRegularReorder}
+                          itemStyle={styles.listItem}
+                          renderItem={renderWorkoutCard}
                         />
                       </>
                     )}

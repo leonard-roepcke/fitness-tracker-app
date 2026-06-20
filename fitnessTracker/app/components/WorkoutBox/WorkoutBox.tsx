@@ -18,13 +18,13 @@ const WorkoutBox = ({
     workout,
     variant = "default",
     lastTrainedLabel = null,
-    onDrag,
+    dragPanHandlers,
     isDragging = false,
 }: {
     workout: Workout | string;
     variant?: string;
     lastTrainedLabel?: string | null;
-    onDrag?: () => void;
+    dragPanHandlers?: Record<string, unknown>;
     isDragging?: boolean;
 }) => {
     const colors = useTheme();
@@ -157,7 +157,7 @@ const WorkoutBox = ({
     }
 
     const cardContent = (
-        <View style={onDrag ? styles.draggableCard : undefined}>
+        <View style={dragPanHandlers ? styles.draggableCard : undefined}>
             <CardBox size={0.6}>
                 <TouchableOpacity style={styles.box} onPress={handlePress}>
                     <Text style={styles.boxText} numberOfLines={1}>
@@ -186,16 +186,16 @@ const WorkoutBox = ({
         </View>
     );
 
-    if (onDrag) {
+    if (dragPanHandlers) {
         return (
             <View style={styles.draggableRow}>
-                <TouchableOpacity
-                    onPressIn={onDrag}
+                <View
+                    {...dragPanHandlers}
                     style={styles.dragHandle}
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
                     <Ionicons name="reorder-three" size={24} color={colors.textSecondary} />
-                </TouchableOpacity>
+                </View>
                 {cardContent}
             </View>
         );
