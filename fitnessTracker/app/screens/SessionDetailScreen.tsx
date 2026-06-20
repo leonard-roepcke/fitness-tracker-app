@@ -1,8 +1,7 @@
 import { useSessions } from '@/context/SessionContext';
 import { useSearchParams } from 'expo-router/build/hooks';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { CreateBox } from '../components/CreateBox';
+import ConfirmModal from '../components/ConfirmModal';
 import AppContainer from '../components/ui/AppContainer';
 import { useAppContext } from '../hooks/useAppContext';
 import { useLanguage } from '../hooks/useLanguage';
@@ -20,6 +20,7 @@ export default function SessionDetailScreen({ route }: any) {
   const { language } = useLanguage();
   const params = useSearchParams();
   const { getSessionById, deleteSession } = useSessions();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const rawSessionId =
     route?.params?.sessionId ??
@@ -97,17 +98,13 @@ export default function SessionDetailScreen({ route }: any) {
   const duration = formatSessionDuration(session.startedAt, session.completedAt);
 
   const handleDelete = () => {
-    Alert.alert(text.sessionDeleteTitle, text.sessionDeleteMessage, [
-      { text: text.workoutAbortCancel, style: 'cancel' },
-      {
-        text: text.remove,
-        style: 'destructive',
-        onPress: async () => {
-          await deleteSession(sessionId);
-          nav.navigate('History');
-        },
-      },
-    ]);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    setShowDeleteModal(false);
+    await deleteSession(sessionId);
+    nav.navigate('History');
   };
 
   return (
@@ -161,6 +158,16 @@ export default function SessionDetailScreen({ route }: any) {
           />
         </View>
       </ScrollView>
+
+      <ConfirmModal
+        visible={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title={text.sessionDeleteTitle}
+        message={text.sessionDeleteMessage}
+        confirmLabel={text.remove}
+        cancelLabel={text.workoutAbortCancel}
+        onConfirm={confirmDelete}
+      />
     </AppContainer>
   );
 }

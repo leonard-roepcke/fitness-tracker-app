@@ -2,11 +2,11 @@ import Layouts from "@/app/constants/Layouts";
 import { useTheme } from '@/app/hooks/useTheme';
 import { useWeights } from '@/context/WeightContext';
 import CustomModal from '@/app/components/CustomModal';
+import MiniLineChart from '@/app/components/MiniLineChart';
 import CardBox from '@/app/components/CardBox';
 import GradientButton from '@/app/components/ui/GradientButton';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Svg, { Circle, Polyline } from 'react-native-svg';
 
 const layouts = Layouts;
 
@@ -34,29 +34,6 @@ export default function WStats() {
 
     return { current, change, weightValues, weekAverage };
   }, [weights]);
-
-  const chartContent = useMemo(() => {
-    if (!stats || chartSize.width === 0 || chartSize.height === 0) return null;
-
-    const values = stats.weightValues;
-    const min = Math.min(...values) - 2;
-    const max = Math.max(...values) + 2;
-    const range = max - min || 1;
-
-    const points = values.map((weight, index) => {
-      const x = (index / (values.length - 1 || 1)) * chartSize.width;
-      const y = chartSize.height - ((weight - min) / range) * chartSize.height;
-      return `${x},${y}`;
-    }).join(' ');
-
-    const circles = values.map((weight, index) => {
-      const x = (index / (values.length - 1 || 1)) * chartSize.width;
-      const y = chartSize.height - ((weight - min) / range) * chartSize.height;
-      return { x, y, key: index };
-    });
-
-    return { points, circles };
-  }, [stats, chartSize]);
 
   const handleAddWeight = async () => {
     if (newWeight && !isNaN(parseFloat(newWeight))) {
@@ -160,24 +137,14 @@ export default function WStats() {
             if (width > 0 && height > 0) setChartSize({ width, height });
           }}
         >
-          {chartContent && (
-            <Svg width={chartSize.width} height={chartSize.height}>
-              <Polyline
-                points={chartContent.points}
-                fill="none"
-                stroke={colors.primary}
-                strokeWidth="2"
-              />
-              {chartContent.circles.map((circle) => (
-                <Circle
-                  key={circle.key}
-                  cx={circle.x}
-                  cy={circle.y}
-                  r="4"
-                  fill={colors.primary}
-                />
-              ))}
-            </Svg>
+          {stats && chartSize.width > 0 && chartSize.height > 0 && (
+            <MiniLineChart
+              values={stats.weightValues}
+              width={chartSize.width}
+              height={chartSize.height}
+              formatLabel={(value) => `${value.toFixed(1)}`}
+              valuePadding={2}
+            />
           )}
         </View>
       </View>

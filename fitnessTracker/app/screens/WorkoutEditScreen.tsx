@@ -14,6 +14,7 @@ import { useWorkouts } from '../../context/WorkoutContext';
 import Bar from '../components/Bar';
 import { CreateBox } from '../components/CreateBox';
 import CustomModal from "../components/CustomModal";
+import ConfirmModal from '../components/ConfirmModal';
 import GradientButton from '../components/ui/GradientButton';
 import { NumberWheel } from '../components/NumberWheel';
 import { useAppContext } from '../hooks/useAppContext';
@@ -24,10 +25,11 @@ import { Exercise } from '../types/workout';
 export default function WorkoutEditScreen({ route }: any) {
   const workoutId = route?.params?.workoutId;
   const insets = useSafeAreaInsets();
-  const { colors, layouts, text } = useAppContext();
-  const { workouts, updateWorkout } = useWorkouts();
+  const { colors, layouts, text, nav } = useAppContext();
+  const { workouts, updateWorkout, deleteWorkout } = useWorkouts();
   const router = useRouter();
   const [setsModalIndex, setSetsModalIndex] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [focusedInputKey, setFocusedInputKey] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -151,8 +153,13 @@ export default function WorkoutEditScreen({ route }: any) {
   const back = () => router.back();
 
   const del = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
     if (workoutId === undefined) return;
-    saveWorkouts(workouts.filter((w) => w.id !== workoutId));
+    setShowDeleteModal(false);
+    deleteWorkout(workoutId);
     router.back();
   };
 
@@ -296,6 +303,16 @@ export default function WorkoutEditScreen({ route }: any) {
       </ScrollView>
 
       <Bar />
+
+      <ConfirmModal
+        visible={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title={text.workoutDeleteTitle}
+        message={text.workoutDeleteMessage}
+        confirmLabel={text.remove}
+        cancelLabel={text.workoutAbortCancel}
+        onConfirm={confirmDelete}
+      />
     </KeyboardAvoidingView>
   );
 }

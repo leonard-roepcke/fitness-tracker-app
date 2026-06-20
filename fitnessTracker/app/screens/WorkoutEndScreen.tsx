@@ -12,8 +12,9 @@ import { mergeVolumeHistory, sessionsToVolumeHistory } from '../utils/sessionStr
 import { applySessionToWorkout } from '../utils/syncTemplateFromSession';
 import { calcSessionVolume } from '../utils/sessionVolume';
 import { countSessionPRs } from '../utils/personalRecords';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import ConfirmModal from '../components/ConfirmModal';
 
 export default function WorkoutEndScreen({ route }: any) {
   const colors = useTheme();
@@ -36,6 +37,7 @@ export default function WorkoutEndScreen({ route }: any) {
 
   const session = getSessionById(sessionId);
   const workout = workouts?.find((w) => w.id === workoutId);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
 
   const prCount = useMemo(() => {
     if (!session) return 0;
@@ -130,6 +132,11 @@ export default function WorkoutEndScreen({ route }: any) {
   };
 
   const delGoHome = () => {
+    setShowDiscardModal(true);
+  };
+
+  const confirmDiscard = () => {
+    setShowDiscardModal(false);
     discardActiveSession(sessionId);
     nav.navigate('WorkoutOverview');
   };
@@ -169,6 +176,16 @@ export default function WorkoutEndScreen({ route }: any) {
         <CreateBox onPress={delGoHome} iconName="trash" text={text.remove} variant="accent" />
         <CreateBox onPress={goHome} iconName="home" text={text.safe} variant="accent" />
       </View>
+
+      <ConfirmModal
+        visible={showDiscardModal}
+        onClose={() => setShowDiscardModal(false)}
+        title={text.sessionDiscardTitle}
+        message={text.sessionDiscardMessage}
+        confirmLabel={text.remove}
+        cancelLabel={text.workoutAbortCancel}
+        onConfirm={confirmDiscard}
+      />
     </AppContainer>
   );
 }
