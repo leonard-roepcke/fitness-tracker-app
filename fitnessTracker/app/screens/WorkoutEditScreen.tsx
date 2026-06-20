@@ -208,9 +208,11 @@ export default function WorkoutEditScreen({ route }: any) {
           ref={(ref) => { inputRefs.current.workoutName = ref; }}
           style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}
         >
-          <CreateBox onPress={back} iconName='arrow-back' variant='borderless' />
+          <View style={{ flexShrink: 0 }}>
+            <CreateBox onPress={back} iconName='arrow-back' variant='borderless' />
+          </View>
           <TextInput
-            style={[styles.input, { flex: 1, height: 50 }]}
+            style={[styles.input, { flex: 1, height: 50, minWidth: 0 }]}
             value={workout.name}
             onChangeText={handleWorkoutNameChange}
             placeholder="Workout Name"
@@ -220,7 +222,9 @@ export default function WorkoutEditScreen({ route }: any) {
               scrollToInput('workoutName');
             }}
           />
-          <CreateBox onPress={del} iconName='trash' variant='borderless' iconColor={colors.danger} />
+          <View style={{ flexShrink: 0 }}>
+            <CreateBox onPress={del} iconName='trash' variant='borderless' iconColor={colors.danger} />
+          </View>
         </View>
 
         {workout.exercises.map((exercise, exIndex) => {
@@ -235,7 +239,7 @@ export default function WorkoutEditScreen({ route }: any) {
                 style={styles.exerciseHeader}
               >
                 <TextInput
-                  style={[styles.input, { flex: 1 }]}
+                  style={[styles.input, { flex: 1, minWidth: 0 }]}
                   value={exercise.name}
                   onChangeText={(value) => handleExerciseChange(exIndex, value)}
                   placeholder="Exercise Name"
@@ -246,12 +250,14 @@ export default function WorkoutEditScreen({ route }: any) {
                     scrollToInput(key);
                   }}
                 />
-                <CreateBox
-                  onPress={() => delExercise(exIndex)}
-                  iconName='trash'
-                  variant='borderless'
-                  iconColor={colors.danger}
-                />
+                <View style={{ flexShrink: 0 }}>
+                  <CreateBox
+                    onPress={() => delExercise(exIndex)}
+                    iconName='trash'
+                    variant='borderless'
+                    iconColor={colors.danger}
+                  />
+                </View>
               </View>
 
               <View style={styles.pickerRow}>

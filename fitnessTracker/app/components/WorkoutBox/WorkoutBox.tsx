@@ -2,6 +2,7 @@ import Layouts from "@/app/constants/Layouts";
 import { cardShadow } from "@/app/utils/shadows";
 import { useTracker } from '@/context/TrackerContext';
 import { useWorkouts } from '@/context/WorkoutContext';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -17,10 +18,14 @@ const WorkoutBox = ({
     workout,
     variant = "default",
     lastTrainedLabel = null,
+    onDrag,
+    isDragging = false,
 }: {
     workout: Workout | string;
     variant?: string;
     lastTrainedLabel?: string | null;
+    onDrag?: () => void;
+    isDragging?: boolean;
 }) => {
     const colors = useTheme();
     const navigation: any = useNavigation();
@@ -113,6 +118,22 @@ const WorkoutBox = ({
             right: 6,
             padding: 0,
         },
+        dragHandle: {
+            paddingVertical: 8,
+            paddingRight: 4,
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexShrink: 0,
+        },
+        draggableRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            opacity: isDragging ? 0.85 : 1,
+        },
+        draggableCard: {
+            flex: 1,
+            minWidth: 0,
+        },
     });
 
     if (variant === "default") {
@@ -135,8 +156,8 @@ const WorkoutBox = ({
         );
     }
 
-    return (
-        <View>
+    const cardContent = (
+        <View style={onDrag ? styles.draggableCard : undefined}>
             <CardBox size={0.6}>
                 <TouchableOpacity style={styles.box} onPress={handlePress}>
                     <Text style={styles.boxText} numberOfLines={1}>
@@ -162,6 +183,27 @@ const WorkoutBox = ({
             <CustomModal visible={showVolumeStats} onClose={() => setShowVolumeStats(false)}>
                 <WorkoutVolumeChart entries={volumeHistory} />
             </CustomModal>
+        </View>
+    );
+
+    if (onDrag) {
+        return (
+            <View style={styles.draggableRow}>
+                <TouchableOpacity
+                    onPressIn={onDrag}
+                    style={styles.dragHandle}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                    <Ionicons name="reorder-three" size={24} color={colors.textSecondary} />
+                </TouchableOpacity>
+                {cardContent}
+            </View>
+        );
+    }
+
+    return (
+        <View>
+            {cardContent}
         </View>
     );
 };

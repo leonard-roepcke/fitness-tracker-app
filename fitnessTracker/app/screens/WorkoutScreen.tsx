@@ -154,12 +154,11 @@ export default function WorkoutScreen({ route, navigation }: any) {
             marginBottom: 20,
         },
         modalButtonRow: {
-            flexDirection: 'row',
-            gap: 8,
+            gap: 10,
         },
         modalCancelButton: {
-            flex: 1,
-            paddingVertical: 12,
+            width: '100%',
+            paddingVertical: 14,
             borderRadius: layouts.borderRadius,
             borderWidth: 1,
             borderColor: colors.border,
@@ -325,7 +324,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
                     <GradientButton
                         title={text.workoutAbortConfirm}
                         onPress={confirmAbort}
-                        style={{ flex: 1 }}
+                        style={{ width: '100%' }}
                     />
                     <TouchableOpacity
                         style={styles.modalCancelButton}

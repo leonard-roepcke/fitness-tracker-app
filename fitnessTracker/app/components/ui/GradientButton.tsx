@@ -47,6 +47,7 @@ export default function GradientButton({
             color: active ? '#FFFFFF' : colors.textSecondary,
             fontSize: small ? 16 : compact ? 13 : 14,
             fontWeight: '600',
+            textAlign: 'center',
         },
     });
 
@@ -58,7 +59,14 @@ export default function GradientButton({
         >
             <GradientSurface variant={active ? 'primary' : 'surface'}>
                 <View style={small ? styles.innerSmall : styles.inner}>
-                    <Text style={styles.text}>{title}</Text>
+                    <Text
+                        style={styles.text}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.8}
+                    >
+                        {title}
+                    </Text>
                 </View>
             </GradientSurface>
         </TouchableOpacity>

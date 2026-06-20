@@ -1,6 +1,7 @@
 import { useSessions } from '@/context/SessionContext';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import DraggableFlatList, { RenderItemParams, ScaleDecorator } from 'react-native-draggable-flatlist';
 import { generateId } from '../utils/generateId';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { CreateBox } from '../components/CreateBox';
@@ -24,10 +25,10 @@ const MOTIVATION_KEYS = [
 ] as const;
 
 export default function WorkoutOverview() {
-    const {workouts, updateWorkout} = useWorkouts();
+    const { workouts, updateWorkout } = useWorkouts();
     const { getSessionsByWorkoutId } = useSessions();
     const { language } = useLanguage();
-    const {colors, nav, layouts, text} = useAppContext();
+    const { colors, layouts, text } = useAppContext();
     useOnboardingRedirect();
 
     const motivation = useMemo(() => {
@@ -35,12 +36,15 @@ export default function WorkoutOverview() {
       return (text as Record<string, string>)[key] ?? text.homeMotivation1;
     }, [text]);
 
-    const sortedWorkouts = useMemo(() => {
-      if (!workouts) return [];
-      const favorites = workouts.filter((w) => w.isFavorite);
-      const others = workouts.filter((w) => !w.isFavorite);
-      return [...favorites, ...others];
-    }, [workouts]);
+    const favorites = useMemo(
+      () => (workouts ?? []).filter((w) => w.isFavorite),
+      [workouts]
+    );
+
+    const regular = useMemo(
+      () => (workouts ?? []).filter((w) => !w.isFavorite),
+      [workouts]
+    );
 
     const getLastTrainedLabel = (workoutId: number): string | null => {
       const sessions = getSessionsByWorkoutId(workoutId);
@@ -51,12 +55,6 @@ export default function WorkoutOverview() {
     };
 
     const styles = StyleSheet.create({
-       title: {
-            fontSize: 24,
-            fontWeight: '600',
-            marginBottom: 8,
-            color: colors.text,
-        },
         subtitle: {
             fontSize: 16,
             color: colors.textSecondary,
@@ -113,6 +111,9 @@ export default function WorkoutOverview() {
           fontSize: 14,
           fontWeight: '500',
         },
+        listItem: {
+          marginBottom: layouts.marginVertical,
+        },
     });
 
     const addWorkout = () => {
@@ -140,49 +141,36 @@ export default function WorkoutOverview() {
       updateWorkout([...workouts, template]);
     };
 
-    const renderWorkoutGrid = (items: Workout[]) =>
-      items
-        .reduce((rows: Workout[][], item: Workout, index: number) => {
-          if (index % 2 === 0) rows.push([item]);
-          else rows[rows.length - 1].push(item);
-          return rows;
-        }, [])
-        .map((row, rowIndex) => (
-          <View
-            key={rowIndex}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: layouts.marginVertical,
-            }}
-          >
-            {row.map((w, i) => {
-              const lastLabel = getLastTrainedLabel(w.id);
-              return (
-                <View
-                  key={w.id}
-                  style={{
-                    flex: 1,
-                    marginLeft: i === 0 ? 0 : 8,
-                    marginRight: i === row.length - 1 ? 0 : 8,
-                  }}
-                >
-                  <WorkoutBox
-                    variant="box"
-                    workout={w}
-                    lastTrainedLabel={
-                      lastLabel ? `${text.homeLastTrained}: ${lastLabel}` : null
-                    }
-                  />
-                </View>
-              );
-            })}
+    const handleFavoritesReorder = ({ data }: { data: Workout[] }) => {
+      if (!workouts) return;
+      updateWorkout([...data, ...regular]);
+    };
+
+    const handleRegularReorder = ({ data }: { data: Workout[] }) => {
+      if (!workouts) return;
+      updateWorkout([...favorites, ...data]);
+    };
+
+    const renderWorkoutItem = ({ item, drag, isActive }: RenderItemParams<Workout>) => {
+      const lastLabel = getLastTrainedLabel(item.id);
+      return (
+        <ScaleDecorator>
+          <View style={styles.listItem}>
+            <WorkoutBox
+              variant="box"
+              workout={item}
+              onDrag={drag}
+              isDragging={isActive}
+              lastTrainedLabel={
+                lastLabel ? `${text.homeLastTrained}: ${lastLabel}` : null
+              }
+            />
           </View>
-        ));
+        </ScaleDecorator>
+      );
+    };
 
     const isEmpty = !workouts || workouts.length === 0;
-    const favorites = sortedWorkouts.filter((w) => w.isFavorite);
-    const regular = sortedWorkouts.filter((w) => !w.isFavorite);
 
     return (
         <AppContainer heading={text.workouts} isBar={true} headerRight={<StreakFlame />}>
@@ -214,7 +202,13 @@ export default function WorkoutOverview() {
                     {favorites.length > 0 && (
                       <>
                         <Text style={styles.sectionTitle}>{text.homeFavorites}</Text>
-                        {renderWorkoutGrid(favorites)}
+                        <DraggableFlatList
+                          data={favorites}
+                          keyExtractor={(item) => `fav-${item.id}`}
+                          renderItem={renderWorkoutItem}
+                          onDragEnd={handleFavoritesReorder}
+                          scrollEnabled={false}
+                        />
                       </>
                     )}
                     {regular.length > 0 && (
@@ -222,7 +216,13 @@ export default function WorkoutOverview() {
                         {favorites.length > 0 && (
                           <Text style={styles.sectionTitle}>{text.homeAllWorkouts}</Text>
                         )}
-                        {renderWorkoutGrid(regular)}
+                        <DraggableFlatList
+                          data={regular}
+                          keyExtractor={(item) => `reg-${item.id}`}
+                          renderItem={renderWorkoutItem}
+                          onDragEnd={handleRegularReorder}
+                          scrollEnabled={false}
+                        />
                       </>
                     )}
                     <CreateBox onPress={addWorkout} iconName='add' text={text.createWorkout} variant='accent' />

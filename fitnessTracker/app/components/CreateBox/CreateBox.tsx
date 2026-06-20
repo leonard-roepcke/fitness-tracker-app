@@ -61,6 +61,7 @@ export const CreateBox = ({
             borderRadius: layout.borderRadius,
             overflow: 'hidden',
             alignSelf: isLargeButton ? 'stretch' : 'auto',
+            flexShrink: isBorderless ? 0 : undefined,
             ...(isBorderless ? {} : cardShadow(colors)),
         },
         gradientFill: {
@@ -114,7 +115,12 @@ export const CreateBox = ({
         ]}>
             <Ionicons name={iconName} size={iconSize} color={resolvedIconColor} />
             {text && (
-                <Text style={isLargeButton ? styles.textPrimary : styles.textDefault}>
+                <Text
+                    style={isLargeButton ? styles.textPrimary : styles.textDefault}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.85}
+                >
                     {text}
                 </Text>
             )}

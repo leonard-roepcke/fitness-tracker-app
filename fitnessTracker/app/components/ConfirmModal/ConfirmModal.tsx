@@ -43,12 +43,11 @@ export default function ConfirmModal({
       marginBottom: 20,
     },
     buttonRow: {
-      flexDirection: 'row',
-      gap: 8,
+      gap: 10,
     },
     cancelButton: {
-      flex: 1,
-      paddingVertical: 12,
+      width: '100%',
+      paddingVertical: 14,
       borderRadius: layouts.borderRadius,
       borderWidth: 1,
       borderColor: colors.border,
@@ -67,7 +66,7 @@ export default function ConfirmModal({
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>
       <View style={styles.buttonRow}>
-        <GradientButton title={confirmLabel} onPress={onConfirm} style={{ flex: 1 }} />
+        <GradientButton title={confirmLabel} onPress={onConfirm} style={{ width: '100%' }} />
         <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
           <Text style={styles.cancelText}>{cancelLabel}</Text>
         </TouchableOpacity>
