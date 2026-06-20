@@ -15,19 +15,14 @@ function AppContainer({ children, heading = "", isBar = "", backbutton = false, 
       paddingTop: insets.top + 8,
       backgroundColor: colors.background,
     },
-    title: {
-      fontSize: 10,
-      fontWeight: '600',
-      marginBottom: layouts.marginVertical,
-      color: colors.text,
-    },
     headerRow: {
       flexDirection: 'row',
       alignItems: 'center',
       marginTop: 12,
+      marginBottom: layouts.marginVertical,
     },
     headerSide: {
-      width: 80,
+      width: 48,
       justifyContent: 'center',
     },
     headerSideRight: {
@@ -37,7 +32,7 @@ function AppContainer({ children, heading = "", isBar = "", backbutton = false, 
       flex: 1,
       fontSize: 32,
       fontWeight: "bold",
-      lineHeight: 32,
+      lineHeight: 36,
       color: colors.primaryDark,
       textAlign: 'center',
     },
@@ -47,7 +42,6 @@ function AppContainer({ children, heading = "", isBar = "", backbutton = false, 
       backgroundColor: colors.primary,
       borderRadius: 2,
       alignSelf: 'center',
-      marginTop: 8,
       marginBottom: layouts.marginVertical,
     },
     scrollContent: {
@@ -64,10 +58,13 @@ function AppContainer({ children, heading = "", isBar = "", backbutton = false, 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {heading !== "" && (
           <>
-            <Text style={styles.title}></Text>
             <View style={styles.headerRow}>
-              <View style={styles.headerSide} />
-              <Text style={styles.header}>{heading}</Text>
+              <View style={styles.headerSide}>
+                {backbutton && (
+                  <CreateBox onPress={back} iconName='arrow-back' variant='borderless' />
+                )}
+              </View>
+              <Text style={styles.header} numberOfLines={2}>{heading}</Text>
               <View style={[styles.headerSide, styles.headerSideRight]}>
                 {headerRight}
               </View>
@@ -77,11 +74,6 @@ function AppContainer({ children, heading = "", isBar = "", backbutton = false, 
         )}
 
         {children}
-        {backbutton && (
-          <View style={{ position: 'absolute', left: 0, top: insets.top + 8 }}>
-            <CreateBox onPress={back} iconName='arrow-back' />
-          </View>
-        )}
       </ScrollView>
 
       {isBar && <Bar />}

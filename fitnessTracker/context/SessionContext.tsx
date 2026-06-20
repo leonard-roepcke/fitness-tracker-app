@@ -21,6 +21,7 @@ import {
 } from '../app/utils/sessionVolume';
 
 const STORAGE_KEY = '@workout_sessions';
+const ACTIVE_SESSION_KEY = '@workout_active_session';
 
 type SessionContextType = {
   sessions: WorkoutSession[];
@@ -93,9 +94,20 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     (async () => {
       try {
-        const data = await AsyncStorage.getItem(STORAGE_KEY);
+        const [data, activeData] = await Promise.all([
+          AsyncStorage.getItem(STORAGE_KEY),
+          AsyncStorage.getItem(ACTIVE_SESSION_KEY),
+        ]);
         if (data) {
           setSessions(JSON.parse(data));
+        }
+        if (activeData) {
+          const parsed: WorkoutSession = JSON.parse(activeData);
+          if (parsed.status === 'in_progress') {
+            setActiveSession(parsed);
+          } else {
+            await AsyncStorage.removeItem(ACTIVE_SESSION_KEY);
+          }
         }
       } catch (e) {
         console.error('Failed to load sessions', e);
@@ -104,6 +116,20 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    if (activeSession) {
+      AsyncStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(activeSession)).catch(
+        (e) => console.error('Failed to persist active session', e)
+      );
+    } else {
+      AsyncStorage.removeItem(ACTIVE_SESSION_KEY).catch((e) =>
+        console.error('Failed to clear active session', e)
+      );
+    }
+  }, [activeSession, isLoaded]);
 
   const persistSessions = async (updated: WorkoutSession[]) => {
     setSessions(updated);
@@ -284,7 +310,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const clearAllSessions = useCallback(async () => {
     setSessions([]);
     setActiveSession(null);
-    await AsyncStorage.removeItem(STORAGE_KEY);
+    await AsyncStorage.multiRemove([STORAGE_KEY, ACTIVE_SESSION_KEY]);
   }, []);
 
   const getSessionById = useCallback(

@@ -113,11 +113,6 @@ export default function WorkoutOverview() {
           fontSize: 14,
           fontWeight: '500',
         },
-        lastTrained: {
-          fontSize: 11,
-          color: colors.textSecondary,
-          marginTop: 4,
-        },
     });
 
     const addWorkout = () => {
@@ -172,12 +167,13 @@ export default function WorkoutOverview() {
                     marginRight: i === row.length - 1 ? 0 : 8,
                   }}
                 >
-                  <WorkoutBox variant="box" workout={w} />
-                  {lastLabel && (
-                    <Text style={styles.lastTrained}>
-                      {text.homeLastTrained}: {lastLabel}
-                    </Text>
-                  )}
+                  <WorkoutBox
+                    variant="box"
+                    workout={w}
+                    lastTrainedLabel={
+                      lastLabel ? `${text.homeLastTrained}: ${lastLabel}` : null
+                    }
+                  />
                 </View>
               );
             })}

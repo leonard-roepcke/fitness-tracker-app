@@ -3,9 +3,10 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { useSessions } from "@/context/SessionContext";
 import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Alert, Keyboard, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { CreateBox } from '../components/CreateBox';
+import CustomModal from '../components/CustomModal';
 import { RepWeightPicker } from '../components/RepWeightPicker';
 import { RestTimer } from '../components/RestTimer';
 import GradientButton from '../components/ui/GradientButton';
@@ -34,6 +35,7 @@ export default function WorkoutScreen({ route, navigation }: any) {
     const [i_exercise, setI_exercise] = useState(0);
     const [i_set, setI_set] = useState(0);
     const [showRestTimer, setShowRestTimer] = useState(false);
+    const [showAbortModal, setShowAbortModal] = useState(false);
     const completingTimerRef = useRef(false);
     const sessionStartedRef = useRef(false);
 
@@ -137,6 +139,38 @@ export default function WorkoutScreen({ route, navigation }: any) {
             backgroundColor: colors.surface,
             ...cardShadow(colors),
         },
+        modalTitle: {
+            fontSize: 20,
+            fontWeight: '700',
+            color: colors.text,
+            marginBottom: 8,
+            textAlign: 'center',
+        },
+        modalMessage: {
+            fontSize: 15,
+            color: colors.textSecondary,
+            textAlign: 'center',
+            lineHeight: 22,
+            marginBottom: 20,
+        },
+        modalButtonRow: {
+            flexDirection: 'row',
+            gap: 8,
+        },
+        modalCancelButton: {
+            flex: 1,
+            paddingVertical: 12,
+            borderRadius: layouts.borderRadius,
+            borderWidth: 1,
+            borderColor: colors.border,
+            backgroundColor: colors.surface,
+            alignItems: 'center',
+        },
+        modalCancelText: {
+            fontSize: 16,
+            fontWeight: '600',
+            color: colors.text,
+        },
     });
 
     const setWeight = (value: number) => {
@@ -193,21 +227,13 @@ export default function WorkoutScreen({ route, navigation }: any) {
     };
 
     const back = () => {
-        Alert.alert(
-            text.workoutAbortTitle,
-            text.workoutAbortMessage,
-            [
-                { text: text.workoutAbortCancel, style: 'cancel' },
-                {
-                    text: text.workoutAbortConfirm,
-                    style: 'destructive',
-                    onPress: () => {
-                        discardActiveSession(session.id);
-                        nav.goBack();
-                    },
-                },
-            ]
-        );
+        setShowAbortModal(true);
+    };
+
+    const confirmAbort = () => {
+        setShowAbortModal(false);
+        discardActiveSession(session.id);
+        nav.goBack();
     };
 
     const handleEditPress = (id: number) => {
@@ -287,6 +313,28 @@ export default function WorkoutScreen({ route, navigation }: any) {
                 onSkip={handleTimerComplete}
                 skipLabel={text.skipTimer}
             />
+
+            <CustomModal
+                visible={showAbortModal}
+                onClose={() => setShowAbortModal(false)}
+                showCloseButton={false}
+            >
+                <Text style={styles.modalTitle}>{text.workoutAbortTitle}</Text>
+                <Text style={styles.modalMessage}>{text.workoutAbortMessage}</Text>
+                <View style={styles.modalButtonRow}>
+                    <GradientButton
+                        title={text.workoutAbortConfirm}
+                        onPress={confirmAbort}
+                        style={{ flex: 1 }}
+                    />
+                    <TouchableOpacity
+                        style={styles.modalCancelButton}
+                        onPress={() => setShowAbortModal(false)}
+                    >
+                        <Text style={styles.modalCancelText}>{text.workoutAbortCancel}</Text>
+                    </TouchableOpacity>
+                </View>
+            </CustomModal>
         </AppContainer>
     );
 }

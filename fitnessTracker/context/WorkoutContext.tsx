@@ -5,6 +5,7 @@ import { normalizeWorkouts } from "../app/utils/workoutMigration";
 
 type WorkoutContextType = {
     workouts: Workout[] | null;
+    isLoaded: boolean;
     addWorkout: (workout: Workout) => void;
     updateWorkout: (workouts: Workout[]) => void;
     deleteWorkout: (id: number) => void;
@@ -13,6 +14,7 @@ type WorkoutContextType = {
 
 const WorkoutContext = createContext<WorkoutContextType>({
     workouts: null,
+    isLoaded: false,
     addWorkout: () => {},
     updateWorkout: () => {},
     deleteWorkout: () => {},
@@ -21,6 +23,7 @@ const WorkoutContext = createContext<WorkoutContextType>({
 
 export const WorkoutProvider = ({ children }: any) => {
     const [workouts, setWorkouts] = useState<Workout[] | null>(null);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // ---------- Laden ----------
     useEffect(() => {
@@ -37,6 +40,8 @@ export const WorkoutProvider = ({ children }: any) => {
                 } else setWorkouts([]);
             } catch (err) {
                 setWorkouts([]);
+            } finally {
+                setIsLoaded(true);
             }
         })();
     }, []);
@@ -81,6 +86,7 @@ export const WorkoutProvider = ({ children }: any) => {
         <WorkoutContext.Provider
             value={{
                 workouts,
+                isLoaded,
                 addWorkout,
                 updateWorkout,
                 deleteWorkout,

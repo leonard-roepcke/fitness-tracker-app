@@ -13,7 +13,15 @@ import CustomModal from '../CustomModal';
 import CardBox from "../CardBox";
 import { WorkoutVolumeChart, WorkoutVolumeMiniChart } from '../WorkoutVolumeChart';
 
-const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | string, variant?: string }) => {
+const WorkoutBox = ({
+    workout,
+    variant = "default",
+    lastTrainedLabel = null,
+}: {
+    workout: Workout | string;
+    variant?: string;
+    lastTrainedLabel?: string | null;
+}) => {
     const colors = useTheme();
     const navigation: any = useNavigation();
     const layouts = Layouts;
@@ -94,6 +102,11 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
             fontSize: 18,
             fontWeight: "600",
         },
+        lastTrained: {
+            color: colors.textSecondary,
+            fontSize: 12,
+            marginTop: 4,
+        },
         editButton: {
             position: 'absolute',
             bottom: 6,
@@ -129,6 +142,11 @@ const WorkoutBox = ({ workout, variant = "default" }: { workout: Workout | strin
                     <Text style={styles.boxText} numberOfLines={1}>
                         {name}
                     </Text>
+                    {lastTrainedLabel ? (
+                        <Text style={styles.lastTrained} numberOfLines={1}>
+                            {lastTrainedLabel}
+                        </Text>
+                    ) : null}
                 </TouchableOpacity>
 
                 <WorkoutVolumeMiniChart
