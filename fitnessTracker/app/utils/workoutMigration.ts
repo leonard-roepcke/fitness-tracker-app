@@ -1,9 +1,9 @@
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from './generateId';
 import { Exercise, Workout } from '../types/workout';
 
 export const ensureExerciseId = (exercise: Exercise): Exercise => {
   if (exercise.id) return exercise;
-  return { ...exercise, id: uuidv4() };
+  return { ...exercise, id: generateId() };
 };
 
 export const normalizeWorkout = (workout: Workout): Workout => ({

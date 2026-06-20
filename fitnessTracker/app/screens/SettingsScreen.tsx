@@ -7,6 +7,7 @@ import { ThemeContext } from "../../context/ThemeContext";
 import { SettingsBox } from "../components/SettingsBox/SettinsBox";
 import { useAppContext } from '../hooks/useAppContext';
 import AppContainer from '../components/ui/AppContainer';
+import GradientSurface from '../components/ui/GradientSurface';
 import { useLanguage } from "@/app/hooks/useLanguage";
 import CustomModal from '../components/CustomModal';
 import { NumberWheel } from '../components/NumberWheel';

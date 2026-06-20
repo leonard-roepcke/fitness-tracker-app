@@ -1,7 +1,7 @@
 import { useSessions } from '@/context/SessionContext';
 import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '../utils/generateId';
 import { useWorkouts } from '../../context/WorkoutContext';
 import { CreateBox } from '../components/CreateBox';
 import { WorkoutBox } from '../components/WorkoutBox';
@@ -126,7 +126,7 @@ export default function WorkoutOverview() {
         const newWorkout: Workout = {
             id: newId,
             name: text.newWorkout,
-            exercises: [{ id: uuidv4(), name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10], trackWeight: true, trackReps: true }],
+            exercises: [{ id: generateId(), name: "Exercise", sets: 3, last_reps: [1,1,1], last_weight: [10,10,10], trackWeight: true, trackReps: true }],
             createdAt: Date.now(),
             isFavorite: false,
         };

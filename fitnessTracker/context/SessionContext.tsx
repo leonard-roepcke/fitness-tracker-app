@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '../app/utils/generateId';
 import {
   LastPerformance,
   SessionExercise,
@@ -63,7 +63,7 @@ const buildSessionFromWorkout = (workout: Workout): WorkoutSession => {
     }));
 
     return {
-      exerciseId: ex.id ?? uuidv4(),
+      exerciseId: ex.id ?? generateId(),
       name: ex.name,
       trackWeight: ex.trackWeight !== false,
       trackReps: ex.trackReps !== false,
@@ -73,7 +73,7 @@ const buildSessionFromWorkout = (workout: Workout): WorkoutSession => {
   });
 
   return {
-    id: uuidv4(),
+    id: generateId(),
     workoutId: workout.id,
     workoutName: workout.name,
     startedAt: Date.now(),

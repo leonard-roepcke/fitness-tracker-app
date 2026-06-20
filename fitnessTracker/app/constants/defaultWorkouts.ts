@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '../utils/generateId';
 import { Workout } from '../types/workout';
 
 export type DefaultWorkoutTemplate = {
@@ -46,7 +46,7 @@ export const createWorkoutFromTemplate = (
     id: nextId,
     name: language === 'german' ? template.nameDe : template.nameEn,
     exercises: template.exercises.map((ex) => ({
-      id: uuidv4(),
+      id: generateId(),
       name: language === 'german' ? ex.nameDe : ex.nameEn,
       sets: ex.sets,
       last_reps: Array(ex.sets).fill(8),
